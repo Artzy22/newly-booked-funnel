@@ -1,0 +1,134 @@
+// Video testimonials data + component
+const TESTIMONIALS = [
+  {
+    name: 'Isabel',
+    spa: 'Issil Beauty Spa',
+    market: 'Plano, TX',
+    quote: '"$18K in adspend. $220K in new patient revenue. Last month."',
+    stat: '$2.9M lifetime',
+    time: '02:14',
+    featured: true,
+  },
+  {
+    name: 'Natalie',
+    spa: 'Breeze Med Spa',
+    market: 'Year 1 → Year 2',
+    quote: '"I paid for the storefront — $300K — in cash, 100%."',
+    stat: '$2.7M lifetime',
+    time: '03:08',
+  },
+  {
+    name: 'Couzue',
+    spa: 'Papillon Med Spa',
+    market: 'Minnesota',
+    quote: '"I made almost $300,000 my first year in business."',
+    stat: '$0 → $300K',
+    time: '01:52',
+  },
+  {
+    name: 'Azmi',
+    spa: 'Cosmetica',
+    market: 'Dallas, TX',
+    quote: '"First month: $43K — no medical background, no high-ticket sales experience."',
+    stat: '$43K first month',
+    time: '02:36',
+  },
+  {
+    name: 'Micaela',
+    spa: 'Lemelana Med Spa',
+    market: 'Arlington, VA',
+    quote: '"We more than doubled the business with just Ivan\'s one service."',
+    stat: '2x with one simple service',
+    time: '01:48',
+  },
+  {
+    name: 'Eliana',
+    spa: 'Naturalness Med Spa',
+    market: 'Morrera, CA',
+    quote: '"$30K in pure profit within 45 days of joining."',
+    stat: '$30K extra profit, first 45 days',
+    time: '02:02',
+  },
+];
+
+function VideoCard({ t }) {
+  return (
+    <div className={`video-card${t.featured ? ' featured' : ''}`}>
+      <div className="video-thumb">
+        <span className="timecode">▸ {t.time}</span>
+        <button className="play-btn" aria-label="Play video">▶</button>
+        <div className="quote">{t.quote}</div>
+      </div>
+      <div className="video-meta">
+        <div>
+          <div className="name">{t.name}</div>
+          <div className="role">{t.spa} · {t.market}</div>
+        </div>
+        <div className="stat">{t.stat}</div>
+      </div>
+    </div>
+  );
+}
+
+function VideoTestimonials() {
+  return (
+    <div className="video-grid">
+      {TESTIMONIALS.map((t, i) => <VideoCard key={i} t={t} />)}
+    </div>
+  );
+}
+
+window.VideoTestimonials = VideoTestimonials;
+
+// FAQ
+const FAQS = [
+  {
+    q: 'What does this actually cost me?',
+    a: 'A small per-appointment fee plus a percentage of what we generate. We walk through the exact numbers on the diagnostic — they vary by package mix and spa size. The headline: you don\'t pay us a retainer. You pay us when you sell.',
+  },
+  {
+    q: 'My market is different. Are you sure this works in my city?',
+    a: 'The most common question we get. Honest answer: every city is different, but the operator math isn\'t. A North Texas medspa went from $50K to $300K/month in a market the owner described as "worst demographics." We\'ll look at your zip code on the diagnostic and tell you straight whether it\'s a fit.',
+  },
+  {
+    q: "I've been burned by marketing companies before. Why are you different?",
+    a: 'Because we have to perform to get paid. There\'s no retainer, no $5K/month invoice you fight to cancel. If the system doesn\'t generate revenue, we don\'t make money. That\'s not a marketing pitch — it\'s the structure.',
+  },
+  {
+    q: "I'm not a salesperson. Will I have to do consultations?",
+    a: 'For the first 30–45 days, yes — you\'ll learn the script. After that, our placed salesperson takes over. Spas where the owner sells personally for the first 6 months grow significantly faster than spas that delegate too early. Your onboarding is built around that.',
+  },
+  {
+    q: "I can't afford another marketing investment right now.",
+    a: 'Understood. The diagnostic is free. If after 45 minutes you don\'t see how this would generate more revenue than it costs, we don\'t sign you. We can\'t afford to onboard a spa that won\'t sell, because we don\'t get paid until they do.',
+  },
+  {
+    q: "Won't a commission cost me more than a retainer over a year?",
+    a: 'Not when you run the math. Most medspa packages cost roughly $130–$150 to fulfill and sell for $3,900–$10,000 — that\'s an 80%+-margin product. Our percentage comes off the top of that, and unlike a retainer, you only pay when one actually sells.',
+  },
+  {
+    q: 'I have a wellness program / new website / staff change in flight. Is now the wrong time?',
+    a: 'Cash flow is what carries you through every other change. Owners who wait for "everything in place" tend to be the same owners we talk to a year later in the same spot. The diagnostic costs you 45 minutes. Take it. Decide afterward.',
+  },
+];
+
+function FAQ() {
+  const [open, setOpen] = React.useState(0);
+  return (
+    <div className="faq-list">
+      {FAQS.map((f, i) => (
+        <div key={i} className="faq-item">
+          <button className="faq-q" aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}>
+            <span>{f.q}</span>
+            <span className="plus">+</span>
+          </button>
+          <div className="faq-a" style={{ maxHeight: open === i ? 400 : 0 }}>
+            <div className="faq-a-inner">{f.a}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+window.FAQ = FAQ;
