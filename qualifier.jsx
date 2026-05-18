@@ -75,6 +75,7 @@ function Qualifier({ accent }) {
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [phone, setPhone] = React.useState('');
+  const [consent, setConsent] = React.useState(false);
 
   const current = QUALIFIER_STEPS[step];
   const total = QUALIFIER_STEPS.length;
@@ -108,7 +109,7 @@ function Qualifier({ accent }) {
 
   const submitContact = (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+    if (!name.trim() || !email.trim() || !consent) return;
     const all = { ...answers, name, email, phone };
     setAnswers(all);
 
@@ -286,7 +287,17 @@ function Qualifier({ accent }) {
           <input className="qualifier-input" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} />
           <input className="qualifier-input" type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
           <input className="qualifier-input" type="tel" placeholder="Phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          <button type="submit" className="btn btn-gold btn-block btn-lg">Book my free diagnostic →</button>
+          <label className="qualifier-consent">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+            />
+            <span>
+              I agree to receive text messages from <b>Newly Booked</b> about programs and updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.
+            </span>
+          </label>
+          <button type="submit" className="btn btn-gold btn-block btn-lg" disabled={!consent}>Book my free diagnostic →</button>
           <div className="qualifier-fineprint">No retainer pitch · No 12-month contract · No setter callback</div>
         </form>
       )}

@@ -332,6 +332,31 @@ p { margin: 0; }
   text-align: center;
 }
 
+.qualifier-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 2px 2px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: var(--navy-200);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  user-select: none;
+}
+.qualifier-consent input[type="checkbox"] {
+  margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--gold-500);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.qualifier-consent b { color: var(--gold-400); font-weight: 600; }
+.qualifier-consent:hover { color: var(--paper); }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
 .disqualified, .qualifier-success {
   background: rgba(201, 169, 97, 0.08);
   border: 1px solid var(--gold-700);
