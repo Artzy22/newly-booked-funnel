@@ -219,7 +219,7 @@ function CfApp() {
             <div className="cf-hero-video-head">
               <div className="cf-hero-video-eyebrow">Before the call</div>
               <div className="cf-hero-video-title">
-                Three minutes that save you <em>fifteen</em>.
+                Get a better understanding of <em>what we do</em>.
               </div>
             </div>
             <div className="cf-hero-video-frame">
