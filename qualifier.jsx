@@ -59,6 +59,7 @@ function Qualifier({ accent }) {
   const [textVal, setTextVal] = React.useState('');
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
 
   const current = QUALIFIER_STEPS[step];
   const total = QUALIFIER_STEPS.length;
@@ -84,11 +85,12 @@ function Qualifier({ accent }) {
   const submitContact = (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    const all = { ...answers, name, email };
+    const all = { ...answers, name, email, phone };
     setAnswers(all);
     const params = new URLSearchParams({
       name: name.trim(),
       email: email.trim(),
+      phone: phone.trim(),
       city: all.city || '',
       revenue: all.revenue || '',
       treatment: all.treatment || '',
@@ -200,6 +202,7 @@ function Qualifier({ accent }) {
         <form onSubmit={submitContact} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <input className="qualifier-input" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} />
           <input className="qualifier-input" type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="qualifier-input" type="tel" placeholder="Phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
           <button type="submit" className="btn btn-gold btn-block btn-lg">Book my free diagnostic →</button>
           <div className="qualifier-fineprint">No retainer pitch · No 12-month contract · No setter callback</div>
         </form>
