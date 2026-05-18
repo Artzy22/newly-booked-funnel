@@ -26,6 +26,7 @@ const TESTIMONIALS = [
     quote: '"I made almost $300,000 my first year in business."',
     stat: '$0 → $300K',
     time: '01:52',
+    wistiaId: 'krkefwptbl',
   },
   {
     name: 'Azmi',
@@ -50,6 +51,7 @@ const TESTIMONIALS = [
     quote: '"$30K in pure profit within 45 days of joining."',
     stat: '$30K extra profit, first 45 days',
     time: '02:02',
+    wistiaId: '69l69xocrq',
   },
 ];
 
