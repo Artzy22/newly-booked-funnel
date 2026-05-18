@@ -216,7 +216,12 @@ function CfApp() {
               CF_TWEAK_DEFAULTS object (preCallVideoId) when the real
               recording is uploaded. */}
           <div className="cf-hero-video">
-            <div className="cf-hero-video-label">Watch this before our call</div>
+            <div className="cf-hero-video-head">
+              <div className="cf-hero-video-eyebrow">Before the call</div>
+              <div className="cf-hero-video-title">
+                Three minutes that save you <em>fifteen</em>.
+              </div>
+            </div>
             <div className="cf-hero-video-frame">
               <wistia-player media-id={tweaks.preCallVideoId} aspect="1.7777777777777777"></wistia-player>
             </div>
