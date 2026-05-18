@@ -59,7 +59,6 @@ function Qualifier({ accent }) {
   const [textVal, setTextVal] = React.useState('');
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [phone, setPhone] = React.useState('');
 
   const current = QUALIFIER_STEPS[step];
   const total = QUALIFIER_STEPS.length;
@@ -85,12 +84,11 @@ function Qualifier({ accent }) {
   const submitContact = (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    const all = { ...answers, name, email, phone };
+    const all = { ...answers, name, email };
     setAnswers(all);
     const params = new URLSearchParams({
       name: name.trim(),
       email: email.trim(),
-      phone: phone.trim(),
       city: all.city || '',
       revenue: all.revenue || '',
       treatment: all.treatment || '',
@@ -202,7 +200,6 @@ function Qualifier({ accent }) {
         <form onSubmit={submitContact} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <input className="qualifier-input" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} />
           <input className="qualifier-input" type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input className="qualifier-input" type="tel" placeholder="Mobile number (optional)" value={phone} onChange={(e) => setPhone(e.target.value)} />
           <button type="submit" className="btn btn-gold btn-block btn-lg">Book my free diagnostic →</button>
           <div className="qualifier-fineprint">No retainer pitch · No 12-month contract · No setter callback</div>
         </form>
@@ -212,7 +209,7 @@ function Qualifier({ accent }) {
         {step > 0 ? (
           <button className="qualifier-back" onClick={goBack}>← Back</button>
         ) : <span></span>}
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--navy-300)', letterSpacing: '0.1em' }}>SECURE · 256-BIT</span>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--navy-300)', letterSpacing: '0.1em' }}>SECURE</span>
       </div>
     </div>
   );
