@@ -69,8 +69,12 @@ function CfApp() {
   const urlVals = useCfMemo(() => {
     const p = new URLSearchParams(window.location.search);
     const out = {};
+    // GHL may redirect with first_name (preferred) — fall back to a full
+    // name from the qualifier flow.
+    const first = p.get('first_name');
     const name = p.get('name');
-    if (name && name.trim()) out.ownerName = name.trim().split(' ')[0];
+    if (first && first.trim()) out.ownerName = first.trim();
+    else if (name && name.trim()) out.ownerName = name.trim().split(' ')[0];
     const slot = p.get('slot');
     if (slot && slot.includes(' · ')) {
       const [d, ti] = slot.split(' · ');

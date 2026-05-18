@@ -1,4 +1,49 @@
 // Scheduling page — composes the post-form flow.
+
+// GHL booking widget. Loads the per-calendar iframe + the embed script that
+// auto-resizes the iframe to the widget's actual content height. The lead's
+// name/email/phone come in via URL params from the qualifier and get
+// forwarded to GHL so the form starts pre-filled.
+const NB_GHL_BOOKING_URL = 'https://link.newlybooked.com/widget/booking/CliIjsZuqGH68pPCXKCm';
+const NB_GHL_EMBED_SCRIPT = 'https://link.newlybooked.com/js/form_embed.js';
+
+function GhlBookingWidget() {
+  React.useEffect(() => {
+    if (document.getElementById('ghl-form-embed-script')) return;
+    const s = document.createElement('script');
+    s.id = 'ghl-form-embed-script';
+    s.src = NB_GHL_EMBED_SCRIPT;
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
+
+  const src = React.useMemo(() => {
+    const p = new URLSearchParams(window.location.search);
+    const fullName = (p.get('name') || '').trim();
+    const [firstName, ...rest] = fullName.split(/\s+/);
+    const lastName = rest.join(' ');
+    const out = new URLSearchParams();
+    if (firstName) out.set('first_name', firstName);
+    if (lastName) out.set('last_name', lastName);
+    const email = p.get('email');
+    if (email) out.set('email', email);
+    const phone = p.get('phone');
+    if (phone) out.set('phone', phone);
+    const qs = out.toString();
+    return qs ? `${NB_GHL_BOOKING_URL}?${qs}` : NB_GHL_BOOKING_URL;
+  }, []);
+
+  return (
+    <iframe
+      src={src}
+      style={{ width: '100%', minHeight: 720, border: 'none', overflow: 'hidden', display: 'block' }}
+      scrolling="no"
+      id="ghl-booking-CliIjsZuqGH68pPCXKCm"
+      title="Book your Newly Booked Strategy Call"
+    />
+  );
+}
+
 const { useState: useSchAppState, useEffect: useSchAppEffect } = React;
 
 const SCH_FAQ = [
@@ -141,12 +186,12 @@ function SchedApp() {
         </div>
       </section>
 
-      {/* SCHEDULER */}
+      {/* SCHEDULER — GHL booking widget */}
       <section className="sched-section" id="schedule" data-screen-label="02 Scheduler">
         <div className="container">
-          <h2 className="section-title">Select your appointment time.</h2>
-          <p className="section-sub">Slots fill from the top. We hold each appointment for 10 minutes once you select.</p>
-          <Scheduler />
+          <h2 className="section-title">Pick a time that works for you.</h2>
+          <p className="section-sub">Forty-five minutes, video. Your name, email, and phone are pre-filled from the qualifier.</p>
+          <GhlBookingWidget />
           <div className="sched-fineprint">
             45-MINUTE CALL <span className="sep">✦</span> ZOOM VIDEO <span className="sep">✦</span> COMMISSION ONLY
           </div>
