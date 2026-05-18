@@ -8,6 +8,7 @@ const TESTIMONIALS = [
     stat: '$2.9M lifetime',
     time: '02:14',
     featured: true,
+    wistiaId: '8t1vtmy0my',
   },
   {
     name: 'Natalie',
