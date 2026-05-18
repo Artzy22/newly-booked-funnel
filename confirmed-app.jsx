@@ -203,29 +203,26 @@ function CfApp() {
         </div>
       </section>
 
-      {/* ADD TO CALENDAR */}
+      {/* ADD TO CALENDAR — compact strip */}
       <section className="cf-cal" data-screen-label="03 Add to Calendar">
         <div className="container">
-          <div className="head">
-            <div className="label">Don't let life get in the way</div>
-            <h2>Add the call to your calendar <em>now</em>.</h2>
-            <div className="sub">Owners who add the invite in the first five minutes are 3× more likely to show up. Pick your tool. We'll handle the rest.</div>
+          <div className="cf-cal-strip">
+            <span className="cf-cal-label">Save the time</span>
+            <div className="cf-cal-row">
+              <a className="cf-cal-btn primary" href="#" onClick={(e) => e.preventDefault()}>
+                <span className="glyph">G</span>Google
+              </a>
+              <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
+                <span className="glyph"></span>Apple
+              </a>
+              <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
+                <span className="glyph">O</span>Outlook
+              </a>
+              <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
+                <span className="glyph">.ics</span>Download
+              </a>
+            </div>
           </div>
-          <div className="cf-cal-row">
-            <a className="cf-cal-btn primary" href="#" onClick={(e) => e.preventDefault()}>
-              <span className="glyph">G</span>Google Calendar
-            </a>
-            <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
-              <span className="glyph"></span>Apple Calendar
-            </a>
-            <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
-              <span className="glyph">O</span>Outlook
-            </a>
-            <a className="cf-cal-btn" href="#" onClick={(e) => e.preventDefault()}>
-              <span className="glyph">.ics</span>Download
-            </a>
-          </div>
-          <div className="cf-cal-stat">3× show-up rate when you save the invite within 5 minutes.</div>
         </div>
       </section>
 
