@@ -194,7 +194,10 @@ function CfApp() {
       <section className="cf-cal" data-screen-label="02 Add to Calendar">
         <div className="container">
           <div className="cf-cal-strip">
-            <span className="cf-cal-label">Save the time</span>
+            <div className="cf-cal-lbl">
+              <span className="cf-cal-label">Add to your calendar</span>
+              <span className="cf-cal-sub">Save the time</span>
+            </div>
             <div className="cf-cal-row">
               <a className="cf-cal-btn primary" href="#" onClick={(e) => e.preventDefault()}>
                 <span className="glyph">G</span>Google
