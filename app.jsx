@@ -493,8 +493,8 @@ function App() {
             <div className="brand"><span className="dot"></span>Newly Booked</div>
             <div>© 2026 Newly Booked · We Only Make Money When You Do</div>
             <div style={{ display: 'flex', gap: 22 }}>
-              <a href="#" style={{ textDecoration: 'none' }}>Terms</a>
-              <a href="#" style={{ textDecoration: 'none' }}>Privacy</a>
+              <a href="terms.html" style={{ textDecoration: 'none' }}>Terms</a>
+              <a href="privacy.html" style={{ textDecoration: 'none' }}>Privacy</a>
               <a href="#qualify" style={{ textDecoration: 'none', color: 'var(--gold-400)' }}>Qualify →</a>
             </div>
           </div>

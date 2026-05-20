@@ -272,8 +272,8 @@ function CfApp() {
           <div className="legal">
             <span>© 2026 Newly Booked · We Only Make Money When You Do</span>
             <div style={{ display: 'flex', gap: 22 }}>
-              <a href="#">Terms</a>
-              <a href="#">Privacy</a>
+              <a href="terms.html">Terms</a>
+              <a href="privacy.html">Privacy</a>
               <a href={window.__NB_LANDING_URL || 'index.html'}>← Back to site</a>
             </div>
           </div>
