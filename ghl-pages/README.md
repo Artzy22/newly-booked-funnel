@@ -40,6 +40,21 @@ this folder.
 4. Replace `[REPLACE_WITH_LANDING_PAGE_URL]` with your landing page URL.
 5. Save and publish.
 
+### 4. Privacy Policy (`privacy-page.html`)
+
+1. New funnel step → "Privacy Policy" → URL slug `/privacy`.
+2. Empty canvas, Custom HTML element.
+3. Paste `privacy-page.html`.
+4. Replace all three placeholders:
+   - `[REPLACE_WITH_LANDING_PAGE_URL]` → your landing page URL
+   - `[REPLACE_WITH_PRIVACY_PAGE_URL]` → this page's URL
+   - `[REPLACE_WITH_TERMS_PAGE_URL]` → the terms page URL
+5. Save and publish.
+
+### 5. Terms of Service (`terms-page.html`)
+
+Same as Privacy — new funnel step, slug `/terms`, paste the file, replace the same three placeholders, publish. The legal text loads inline; styling pulls from the CDN.
+
 ## How the funnel hand-off works
 
 ```
