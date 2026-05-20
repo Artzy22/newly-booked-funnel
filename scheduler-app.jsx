@@ -4,12 +4,12 @@
 // auto-resizes the iframe to the widget's actual content height. The lead's
 // name/email/phone come in via URL params from the qualifier and get
 // forwarded to GHL so the form starts pre-filled.
-// Using GHL's default leadconnectorhq subdomain instead of the custom
-// link.newlybooked.com — the custom domain's SSL cert hasn't fully
-// provisioned yet and breaks the iframe load. Switch back once GHL's
-// auto-issued cert lands on the custom domain.
-const NB_GHL_BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/CliIjsZuqGH68pPCXKCm';
-const NB_GHL_EMBED_SCRIPT = 'https://api.leadconnectorhq.com/js/form_embed.js';
+// New booking calendar BGNQmAzoXkDO1ZTo90c0 on the branded
+// link.newlybooked.com subdomain. If SSL on the custom domain is still
+// half-provisioned and the iframe fails with ERR_SSL_PROTOCOL_ERROR,
+// swap the host to api.leadconnectorhq.com (same path works there).
+const NB_GHL_BOOKING_URL = 'https://link.newlybooked.com/widget/booking/BGNQmAzoXkDO1ZTo90c0';
+const NB_GHL_EMBED_SCRIPT = 'https://link.newlybooked.com/js/form_embed.js';
 
 function GhlBookingWidget() {
   React.useEffect(() => {
