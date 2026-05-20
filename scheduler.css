@@ -398,6 +398,14 @@
   pointer-events: none;
 }
 
+/* GHL booking iframe floor — small enough on desktop that a short
+   calendar doesn't leave blank space below it, tall enough on mobile
+   that the stacked layout has room before form_embed.js auto-resize fires. */
+.ghl-booking-iframe { min-height: 620px; }
+@media (max-width: 768px) {
+  .ghl-booking-iframe { min-height: 1100px; }
+}
+
 .sched-fineprint {
   text-align: center;
   margin-top: 22px;

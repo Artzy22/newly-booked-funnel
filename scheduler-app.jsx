@@ -54,7 +54,8 @@ function GhlBookingWidget() {
   return (
     <iframe
       src={src}
-      style={{ width: '100%', minHeight: 1100, border: 'none', overflow: 'hidden', display: 'block' }}
+      className="ghl-booking-iframe"
+      style={{ width: '100%', border: 'none', overflow: 'hidden', display: 'block' }}
       scrolling="no"
       id={iframeId}
       title="Book your Newly Booked Strategy Call"
@@ -206,7 +207,7 @@ function SchedApp() {
           <p className="section-sub">Forty-five minutes, video. Your name, email, and phone are pre-filled from the qualifier.</p>
           <GhlBookingWidget />
           <div className="sched-fineprint">
-            45-MINUTE CALL <span className="sep">✦</span> ZOOM VIDEO <span className="sep">✦</span> COMMISSION ONLY
+            ZOOM VIDEO <span className="sep">✦</span> COMMISSION ONLY
           </div>
         </div>
       </section>
