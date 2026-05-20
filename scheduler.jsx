@@ -263,7 +263,7 @@ function Scheduler() {
               if (v) out.set(k, v);
             }
             out.set('slot', selectedSlotLabel);
-            const base = window.__NB_CONFIRMED_URL || 'confirmed.html';
+            const base = window.nbUrl('__NB_CONFIRMED_URL', 'confirmed.html');
             window.location.href = `${base}${base.includes('?') ? '&' : '?'}${out.toString()}`;
           }}
         >

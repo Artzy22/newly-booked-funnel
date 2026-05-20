@@ -162,7 +162,7 @@ function SchedApp() {
       {/* Top bar */}
       <div className="topbar">
         <div className="topbar-inner">
-          <a href={window.__NB_LANDING_URL || 'index.html'} className="brand" style={{ textDecoration: 'none' }}>
+          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand" style={{ textDecoration: 'none' }}>
             <span className="dot"></span>Newly Booked
           </a>
           <span style={{
@@ -293,9 +293,9 @@ function SchedApp() {
             <div className="brand"><span className="dot"></span>Newly Booked</div>
             <div>© 2026 Newly Booked · We Only Make Money When You Do</div>
             <div style={{ display: 'flex', gap: 22 }}>
-              <a href={window.__NB_TERMS_URL || 'terms.html'} style={{ textDecoration: 'none' }}>Terms</a>
-              <a href={window.__NB_PRIVACY_URL || 'privacy.html'} style={{ textDecoration: 'none' }}>Privacy</a>
-              <a href={window.__NB_LANDING_URL || 'index.html'} style={{ textDecoration: 'none', color: 'var(--gold-400)' }}>← Back to site</a>
+              <a href={window.nbUrl('__NB_TERMS_URL', 'terms.html')} style={{ textDecoration: 'none' }}>Terms</a>
+              <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')} style={{ textDecoration: 'none' }}>Privacy</a>
+              <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} style={{ textDecoration: 'none', color: 'var(--gold-400)' }}>← Back to site</a>
             </div>
           </div>
         </div>

@@ -418,8 +418,23 @@ function TweakButton({ label, onClick, secondary = false }) {
   );
 }
 
+// Resolve a configured window.__NB_*_URL global, ignoring unreplaced
+// placeholder strings like '[REPLACE_WITH_LANDING_PAGE_URL]'. If the user
+// pasted a GHL page but forgot to do the find-and-replace pass, the global
+// is still the placeholder; without this guard the JSX would render
+// href='[REPLACE_WITH_LANDING_PAGE_URL]' which (with <base href> set) the
+// browser resolves to the CDN — i.e. bounces leads off-domain. Treat any
+// placeholder as 'not configured' so the fallback fires.
+function nbUrl(name, fallback) {
+  const v = window[name];
+  if (typeof v !== 'string' || !v) return fallback;
+  if (v.indexOf('[REPLACE_') === 0) return fallback;
+  return v;
+}
+
 Object.assign(window, {
   useTweaks, TweaksPanel, TweakSection, TweakRow,
   TweakSlider, TweakToggle, TweakRadio, TweakSelect,
   TweakText, TweakNumber, TweakColor, TweakButton,
+  nbUrl,
 });

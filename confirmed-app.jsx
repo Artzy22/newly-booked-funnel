@@ -127,7 +127,7 @@ function CfApp() {
       {/* UTILITY BAR */}
       <div className="cf-utility">
         <div className="cf-utility-inner">
-          <a href={window.__NB_LANDING_URL || 'index.html'} className="brand" style={{ textDecoration: 'none', fontSize: 18 }}>
+          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand" style={{ textDecoration: 'none', fontSize: 18 }}>
             <span className="dot"></span>Newly Booked
           </a>
         </div>
@@ -272,9 +272,9 @@ function CfApp() {
           <div className="legal">
             <span>© 2026 Newly Booked · We Only Make Money When You Do</span>
             <div style={{ display: 'flex', gap: 22 }}>
-              <a href={window.__NB_TERMS_URL || 'terms.html'}>Terms</a>
-              <a href={window.__NB_PRIVACY_URL || 'privacy.html'}>Privacy</a>
-              <a href={window.__NB_LANDING_URL || 'index.html'}>← Back to site</a>
+              <a href={window.nbUrl('__NB_TERMS_URL', 'terms.html')}>Terms</a>
+              <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')}>Privacy</a>
+              <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')}>← Back to site</a>
             </div>
           </div>
         </div>
