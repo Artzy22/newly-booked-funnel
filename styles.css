@@ -312,6 +312,16 @@ p { margin: 0; }
 }
 .qualifier-input:focus { border-color: var(--gold-500); }
 .qualifier-input::placeholder { color: var(--navy-300); }
+.qualifier-input.invalid { border-color: #c05a5a; }
+.qualifier-input.invalid:focus { border-color: #d97676; }
+.qualifier-input-error {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: #d97676;
+  margin-top: -4px;
+  margin-left: 2px;
+  letter-spacing: 0.01em;
+}
 
 .qualifier-foot {
   margin-top: auto;

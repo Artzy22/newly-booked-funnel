@@ -14,6 +14,22 @@ function setNativeInputValue(input, value) {
   input.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
+// Phone helpers — strip everything that's not a digit, format as (xxx) xxx-xxxx
+// as the lead types, and call a 10-digit string valid (US-style).
+function phoneDigits(raw) {
+  return String(raw || '').replace(/\D/g, '');
+}
+function formatPhone(raw) {
+  const d = phoneDigits(raw).slice(0, 10);
+  if (d.length === 0) return '';
+  if (d.length < 4) return `(${d}`;
+  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+function isValidPhone(raw) {
+  return phoneDigits(raw).length === 10;
+}
+
 const QUALIFIER_STEPS = [
   {
     key: 'owner',
@@ -108,7 +124,7 @@ function Qualifier({ accent }) {
 
   const submitContact = (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+    if (!name.trim() || !email.trim() || !isValidPhone(phone)) return;
     const all = { ...answers, name, email, phone };
     setAnswers(all);
 
@@ -286,8 +302,18 @@ function Qualifier({ accent }) {
         <form onSubmit={submitContact} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <input className="qualifier-input" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} />
           <input className="qualifier-input" type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input className="qualifier-input" type="tel" placeholder="Phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          <button type="submit" className="btn btn-gold btn-block btn-lg">Book my free diagnostic →</button>
+          <input
+            className={`qualifier-input${phone && !isValidPhone(phone) ? ' invalid' : ''}`}
+            type="tel"
+            inputMode="numeric"
+            placeholder="Phone number"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+          />
+          {phone && !isValidPhone(phone) && (
+            <div className="qualifier-input-error">Please enter a 10-digit phone number.</div>
+          )}
+          <button type="submit" className="btn btn-gold btn-block btn-lg" disabled={!isValidPhone(phone)}>Book my free diagnostic →</button>
           <div className="qualifier-consent-note">
             By clicking <b>Book my free diagnostic</b>, you agree to receive text messages from Newly Booked about programs and updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.
           </div>
