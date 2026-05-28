@@ -418,18 +418,39 @@ function TweakButton({ label, onClick, secondary = false }) {
   );
 }
 
-// Resolve a configured window.__NB_*_URL global, ignoring unreplaced
-// placeholder strings like '[REPLACE_WITH_LANDING_PAGE_URL]'. If the user
-// pasted a GHL page but forgot to do the find-and-replace pass, the global
-// is still the placeholder; without this guard the JSX would render
-// href='[REPLACE_WITH_LANDING_PAGE_URL]' which (with <base href> set) the
-// browser resolves to the CDN — i.e. bounces leads off-domain. Treat any
-// placeholder as 'not configured' so the fallback fires.
+// Built-in production URLs for the five funnel pages. Used as a hard
+// safety net so the brand logo and footer links never bounce visitors
+// off-domain even if a GHL Custom HTML element is still holding the
+// OLD wrapper (with [REPLACE_*] placeholders) from the first paste.
+const NB_PROD_URLS = {
+  __NB_LANDING_URL:   'https://newlybooked.com/landing-page-480036',
+  __NB_SCHEDULE_URL:  'https://newlybooked.com/schedule',
+  __NB_CONFIRMED_URL: 'https://newlybooked.com/thank-you-page-847536',
+  __NB_PRIVACY_URL:   'https://newlybooked.com/privacy-page',
+  __NB_TERMS_URL:     'https://newlybooked.com/terms-1902-page',
+};
+
+// Resolve a configured window.__NB_*_URL global.
+// 1. If the wrapper set a real URL, use it.
+// 2. Else if we're on a production host (anything other than localhost
+//    or the GitHub Pages dev mirror), fall back to the hardcoded
+//    newlybooked.com URL above so brand links never go off-domain.
+// 3. Else (local dev / GH Pages preview) use the relative fallback so
+//    the funnel still works end-to-end without GHL.
 function nbUrl(name, fallback) {
   const v = window[name];
-  if (typeof v !== 'string' || !v) return fallback;
-  if (v.indexOf('[REPLACE_') === 0) return fallback;
-  return v;
+  if (typeof v === 'string' && v && v.indexOf('[REPLACE_') !== 0) {
+    return v;
+  }
+  const host = (window.location && window.location.hostname) || '';
+  const isLocalOrPreview = !host
+    || host === 'localhost'
+    || host === '127.0.0.1'
+    || host.endsWith('.github.io');
+  if (!isLocalOrPreview && NB_PROD_URLS[name]) {
+    return NB_PROD_URLS[name];
+  }
+  return fallback;
 }
 
 Object.assign(window, {
