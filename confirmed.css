@@ -1124,15 +1124,19 @@
 .cf-ht-play-btn:active {
   transform: translate(-50%, -50%) scale(0.96);
 }
+/* SVG triangle — viewBox is offset 1px right of center so the visual
+   centroid of the triangle (about 1/3 from the left edge of its
+   bounding box) lands on the button's exact center. */
 .cf-ht-play-btn__icon {
-  font-size: 16px;
-  line-height: 1;
-  padding-left: 3px; /* optical center the triangle */
+  width: 14px;
+  height: 14px;
+  display: block;
+  margin-left: 2px; /* optical-center the triangle inside the circle */
 }
 .cf-ht-card.is-playing .cf-ht-play-btn { display: none; }
 @media (max-width: 640px) {
   .cf-ht-play-btn { width: 40px; height: 40px; }
-  .cf-ht-play-btn__icon { font-size: 14px; padding-left: 2px; }
+  .cf-ht-play-btn__icon { width: 12px; height: 12px; margin-left: 2px; }
 }
 
 /* Placeholder — shown until a Wistia id is assigned. Subtle so the tile

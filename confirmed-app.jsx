@@ -102,7 +102,14 @@ function HammerThemTile({ item }) {
                 aria-label={`Play: ${item.q}`}
                 onClick={handlePlay}
               >
-                <span className="cf-ht-play-btn__icon" aria-hidden="true">▸</span>
+                <svg
+                  className="cf-ht-play-btn__icon"
+                  viewBox="0 0 12 14"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <polygon points="1,0.5 12,7 1,13.5" fill="currentColor" />
+                </svg>
               </button>
             )}
           </>
