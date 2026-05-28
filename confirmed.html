@@ -14,6 +14,15 @@
   <link rel="stylesheet" href="confirmed.css" />
 
   <script src="https://fast.wistia.com/player.js" async></script>
+  <!-- Disable the big center play button on every Wistia embed.
+       Bottom-bar play triangle is all we need. -->
+  <script>
+    window._wq = window._wq || [];
+    window._wq.push({
+      id: '_all',
+      options: { playButton: false, bigPlayButton: false }
+    });
+  </script>
 </head>
 <body>
   <div id="root"></div>

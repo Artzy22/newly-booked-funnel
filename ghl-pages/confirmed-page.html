@@ -41,6 +41,17 @@
 
   <script src="https://fast.wistia.com/player.js" async></script>
 
+  <!-- Disable the big center play button on every Wistia embed on the
+       page. Visitors use the small play triangle in the bottom control
+       bar — keeps Ivan's face visible and the tile clean. -->
+  <script>
+    window._wq = window._wq || [];
+    window._wq.push({
+      id: '_all',
+      options: { playButton: false, bigPlayButton: false }
+    });
+  </script>
+
   <script>
     // EDIT: back-to-site URL — used for header/footer links.
     window.__NB_LANDING_URL = "[REPLACE_WITH_LANDING_PAGE_URL]";
