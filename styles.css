@@ -329,6 +329,63 @@ p { margin: 0; }
 .qualifier-input::placeholder { color: var(--navy-300); }
 .qualifier-input.invalid { border-color: #c05a5a; }
 .qualifier-input.invalid:focus { border-color: #d97676; }
+
+/* Custom autocomplete dropdown (city step). Replaces the unstylable
+   browser-native <datalist> with an on-brand dark/gold dropdown
+   that matches the qualifier card. Suggestions only render once
+   the lead has typed something, so focus doesn't dump 330 cities. */
+.nb-ac {
+  position: relative;
+  width: 100%;
+}
+.nb-ac-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--navy-800, #16243f);
+  border: 1px solid var(--navy-700);
+  border-radius: 6px;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.5),
+              0 2px 8px rgba(0, 0, 0, 0.3);
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-700) transparent;
+  animation: nbAcFadeIn 140ms ease-out;
+}
+@keyframes nbAcFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nb-ac-list::-webkit-scrollbar { width: 6px; }
+.nb-ac-list::-webkit-scrollbar-track { background: transparent; }
+.nb-ac-list::-webkit-scrollbar-thumb {
+  background: var(--gold-700);
+  border-radius: 3px;
+}
+.nb-ac-item {
+  padding: 10px 14px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--paper);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+.nb-ac-item.is-active,
+.nb-ac-item:hover {
+  background: var(--gold-500);
+  color: var(--navy-900);
+}
 .qualifier-input-error {
   font-family: "Inter", sans-serif;
   font-size: 11px;

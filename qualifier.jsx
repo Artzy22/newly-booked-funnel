@@ -30,6 +30,92 @@ function isValidPhone(raw) {
   return phoneDigits(raw).length === 10;
 }
 
+// Custom autocomplete dropdown for the city step. Browser-native
+// <datalist> can't be styled, so we render our own: matches the
+// qualifier card's dark/gold aesthetic, supports keyboard nav
+// (arrow up/down + Enter + Escape), click-outside-to-close, and
+// only shows the dropdown once the lead has typed something so
+// they don't get blasted with a 330-city dump on focus.
+function NbAutocomplete({ value, onChange, suggestions, placeholder, autoFocus }) {
+  const [open, setOpen] = React.useState(false);
+  const [highlight, setHighlight] = React.useState(0);
+  const wrapperRef = React.useRef(null);
+
+  const filtered = React.useMemo(() => {
+    const q = (value || '').trim().toLowerCase();
+    if (!q) return []; // hide until user types
+    return suggestions
+      .filter((s) => s.toLowerCase().indexOf(q) !== -1)
+      .slice(0, 50);
+  }, [value, suggestions]);
+
+  React.useEffect(() => { setHighlight(0); }, [value]);
+
+  React.useEffect(() => {
+    const handleDocMouseDown = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleDocMouseDown);
+    return () => document.removeEventListener('mousedown', handleDocMouseDown);
+  }, []);
+
+  const handleKeyDown = (e) => {
+    if (!open || filtered.length === 0) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlight((h) => Math.min(h + 1, filtered.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlight((h) => Math.max(h - 1, 0));
+    } else if (e.key === 'Enter' && filtered[highlight]) {
+      e.preventDefault();
+      onChange(filtered[highlight]);
+      setOpen(false);
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div className="nb-ac" ref={wrapperRef}>
+      <input
+        className="qualifier-input"
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => { onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={handleKeyDown}
+        autoComplete="address-level2"
+        autoFocus={autoFocus}
+      />
+      {open && filtered.length > 0 && (
+        <ul className="nb-ac-list" role="listbox">
+          {filtered.map((s, i) => (
+            <li
+              key={s}
+              className={`nb-ac-item${i === highlight ? ' is-active' : ''}`}
+              role="option"
+              aria-selected={i === highlight}
+              onMouseDown={(e) => {
+                // mousedown (not click) so it fires before the input's blur
+                e.preventDefault();
+                onChange(s);
+                setOpen(false);
+              }}
+              onMouseEnter={() => setHighlight(i)}
+            >
+              {s}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 // Curated US city autocomplete list (~330 entries) covering the top
 // 200 metros by population plus affluent suburbs and known medspa
 // markets (Beverly Hills, Scottsdale, Naples FL, etc.). Rendered as
@@ -399,22 +485,23 @@ function Qualifier({ accent }) {
 
       {current.type === 'text' && (
         <form onSubmit={submitText} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input
-            className="qualifier-input"
-            type="text"
-            placeholder={current.placeholder}
-            value={textVal}
-            onChange={(e) => setTextVal(e.target.value)}
-            list={current.suggestionsId || undefined}
-            autoComplete="address-level2"
-            autoFocus
-          />
-          {current.suggestions && current.suggestionsId && (
-            <datalist id={current.suggestionsId}>
-              {current.suggestions.map((s) => (
-                <option key={s} value={s} />
-              ))}
-            </datalist>
+          {current.suggestions ? (
+            <NbAutocomplete
+              value={textVal}
+              onChange={setTextVal}
+              suggestions={current.suggestions}
+              placeholder={current.placeholder}
+              autoFocus
+            />
+          ) : (
+            <input
+              className="qualifier-input"
+              type="text"
+              placeholder={current.placeholder}
+              value={textVal}
+              onChange={(e) => setTextVal(e.target.value)}
+              autoFocus
+            />
           )}
           <button type="submit" className="btn btn-gold btn-block">Continue →</button>
         </form>
