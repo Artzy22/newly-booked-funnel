@@ -23,20 +23,20 @@ const CF_ACCENTS = {
 // null to the media id. While null, the tile renders a styled placeholder
 // (4:5 navy frame, gold play badge, title up top, speaker down bottom).
 const CF_HAMMERTHEM = [
-  { ix: 1,  q: "I haven't got enough time.",                          wistiaId: null },
-  { ix: 2,  q: "How do we make you stand out?",                       wistiaId: null },
-  { ix: 3,  q: "How do we know it works?",                            wistiaId: null },
-  { ix: 4,  q: "Is it better for me to make the ads, or you?",        wistiaId: null },
-  { ix: 6,  q: "How fast can I see results?",                         wistiaId: null },
-  { ix: 7,  q: "Is hiring an agency a short-term fix?",               wistiaId: null },
-  { ix: 8,  q: "I've tried ads before — it didn't work.",             wistiaId: null },
-  { ix: 9,  q: "Do you have testimonials?",                           wistiaId: null },
-  { ix: 10, q: "Do you guarantee results?",                           wistiaId: null },
-  { ix: 11, q: "Which treatment should I advertise?",                 wistiaId: null },
-  { ix: 12, q: "How our patient sales team works.",                   wistiaId: null },
-  { ix: 13, q: "Why 9 out of 10 medspas fail with agencies.",         wistiaId: null },
-  { ix: 14, q: "If you've been burned before.",                       wistiaId: null },
-  { ix: 15, q: "How our patient acquisition system works.",           wistiaId: null },
+  { ix: 1,  q: "I haven't got enough time.",                          wistiaId: 'bfmbtvg832' },
+  { ix: 2,  q: "How do we make you stand out?",                       wistiaId: 'm6169m7kzu' },
+  { ix: 3,  q: "How do we know it works?",                            wistiaId: '9u2ckyrqak' },
+  { ix: 4,  q: "Is it better for me to make the ads, or you?",        wistiaId: '32piq6olrt' },
+  { ix: 6,  q: "How fast can I see results?",                         wistiaId: '56fd2qfcan' },
+  { ix: 7,  q: "Is hiring an agency a short-term fix?",               wistiaId: 'hgbgrog83d' },
+  { ix: 8,  q: "I've tried ads before, it didn't work.",              wistiaId: 'p2fzrg1hip' },
+  { ix: 9,  q: "Do you have testimonials?",                           wistiaId: '71evnaexa7' },
+  { ix: 10, q: "Do you guarantee results?",                           wistiaId: '38zhblnara' },
+  { ix: 11, q: "Which treatment should I advertise?",                 wistiaId: 'ahhhq7v5d9' },
+  { ix: 12, q: "How our patient sales team works.",                   wistiaId: 'esh8li4zt4' },
+  { ix: 13, q: "Why 9 out of 10 medspas fail with agencies.",         wistiaId: 'q9gvm2tpk2' },
+  { ix: 14, q: "If you've been burned before.",                       wistiaId: '253llfn0ms' },
+  { ix: 15, q: "How our patient acquisition system works.",           wistiaId: 'i2wlf5j7is' },
 ];
 
 function useCfHammerWistia(id) {
