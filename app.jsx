@@ -80,10 +80,13 @@ function App() {
 
   return (
     <>
-      {/* Top bar */}
+      {/* Top bar — unified sticky paper bar with NB monogram + wordmark */}
       <div className="topbar">
         <div className="topbar-inner">
-          <div className="brand"><span className="dot"></span>Newly Booked</div>
+          <a href="#hero" className="brand">
+            <img className="nb-logo" src="assets/brand/nb-logo-dark.png" alt="Newly Booked" />
+            <span>Newly Booked</span>
+          </a>
           <nav className="topnav">
             <a href="#proof">Proof</a>
             <a href="#mechanism">Mechanism</a>

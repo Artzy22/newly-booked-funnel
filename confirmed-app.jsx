@@ -215,12 +215,31 @@ function CfApp() {
 
   return (
     <>
-      {/* UTILITY BAR */}
-      <div className="cf-utility">
-        <div className="cf-utility-inner">
-          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand" style={{ textDecoration: 'none', fontSize: 18 }}>
-            <span className="dot"></span>Newly Booked
+      {/* Top bar — unified sticky paper bar with the confirmation status
+          stamp on the right so the moment of "you're booked" stays
+          present as the lead scrolls. */}
+      <div className="topbar">
+        <div className="topbar-inner">
+          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand">
+            <img className="nb-logo" src="assets/brand/nb-logo-dark.png" alt="Newly Booked" />
+            <span>Newly Booked</span>
           </a>
+          <span style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 11,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-3)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: 999,
+              background: 'var(--green, #1F6B3A)',
+            }}></span>
+            Call Confirmed
+          </span>
         </div>
       </div>
 
@@ -273,10 +292,15 @@ function CfApp() {
         </div>
       </section>
 
-      {/* SMS CALLOUT — mirrors "Check your phone" */}
+      {/* SMS / inbox CALLOUT — mirrors "Check your phone" pattern. */}
       <section className="cf-sms" data-screen-label="03 SMS Callout">
         <div className="container">
-          <div className="icon" aria-hidden="true">@</div>
+          <div className="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="M3 7l9 6 9-6" />
+            </svg>
+          </div>
           <div className="body">
             <div className="h"><strong>Check your inbox now.</strong> A confirmation from <em>Newly Booked</em> with the Zoom link should hit in the next 2 minutes.</div>
             <div className="p">

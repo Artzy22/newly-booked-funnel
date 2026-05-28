@@ -177,11 +177,12 @@ function SchedApp() {
 
   return (
     <>
-      {/* Top bar */}
+      {/* Top bar — unified sticky paper bar; right side shows funnel step. */}
       <div className="topbar">
         <div className="topbar-inner">
-          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand" style={{ textDecoration: 'none' }}>
-            <span className="dot"></span>Newly Booked
+          <a href={window.nbUrl('__NB_LANDING_URL', 'index.html')} className="brand">
+            <img className="nb-logo" src="assets/brand/nb-logo-dark.png" alt="Newly Booked" />
+            <span>Newly Booked</span>
           </a>
           <span style={{
             fontFamily: 'Inter, sans-serif',
