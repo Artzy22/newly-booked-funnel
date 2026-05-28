@@ -8,8 +8,7 @@ const CF_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "callTimezone": "ET",
   "duration": 45,
   "headlineVariation": 0,
-  "accent": "gold",
-  "preCallVideoId": "8t1vtmy0my"
+  "accent": "gold"
 }/*EDITMODE-END*/;
 
 const CF_ACCENTS = {
@@ -158,20 +157,6 @@ function CfApp() {
     Object.entries(a).forEach(([k, v]) => r.style.setProperty(`--gold-${k}`, v));
   }, [tweaks.accent]);
 
-  // Lazy-load the per-media Wistia embed script for the pre-call video.
-  useCfEffect(() => {
-    const id = tweaks.preCallVideoId;
-    if (!id) return;
-    const tag = `wistia-embed-${id}`;
-    if (document.getElementById(tag)) return;
-    const s = document.createElement('script');
-    s.id = tag;
-    s.src = `https://fast.wistia.com/embed/${id}.js`;
-    s.type = 'module';
-    s.async = true;
-    document.body.appendChild(s);
-  }, [tweaks.preCallVideoId]);
-
   const HEADLINES = [
     {
       h: <>You're locked in, <em>{v.ownerName}</em>.</>,
@@ -208,20 +193,24 @@ function CfApp() {
           </div>
           <h1>{head.h}</h1>
           <p className="lede">{head.sub}</p>
+        </div>
+      </section>
 
-          {/* Watch-before-call video. Swap the wistiaId on the
-              CF_TWEAK_DEFAULTS object (preCallVideoId) when the real
-              recording is uploaded. */}
-          <div className="cf-hero-video">
-            <div className="cf-hero-video-head">
-              <div className="cf-hero-video-eyebrow">Before the call</div>
-              <div className="cf-hero-video-title">
-                Get a better understanding of <em>what we do</em>.
-              </div>
-            </div>
-            <div className="cf-hero-video-frame">
-              <wistia-player media-id={tweaks.preCallVideoId} aspect="1.7777777777777777"></wistia-player>
-            </div>
+      {/* HAMMER THEM — 14 short Ivan-on-camera answers, slotted directly
+          under the locked-in hero as the lead's primary pre-call homework.
+          Replaces the single 'watch this' overview video — pick-your-question
+          converts better than one-size-fits-all. */}
+      <section className="cf-hammerthem" data-screen-label="02 Before the Call">
+        <div className="container">
+          <div className="head">
+            <div className="label">Before the call</div>
+            <h2>Get a clear understanding of <em>what we do</em>.</h2>
+            <p className="lede">Two minutes each. Every objection we get on intro calls, on camera. Pick the ones that apply, skip the rest.</p>
+          </div>
+          <div className="cf-ht-grid">
+            {CF_HAMMERTHEM.map((item) => (
+              <HammerThemTile key={item.ix} item={item} />
+            ))}
           </div>
         </div>
       </section>
@@ -261,27 +250,8 @@ function CfApp() {
         </div>
       </section>
 
-      {/* HAMMER THEM — 14 short Ivan-on-camera answers to common objections.
-          Sits between proof (testimonials above) and process (how it works
-          below): owners get convinced by other owners, then their remaining
-          doubts get answered one-by-one by the operator. */}
-      <section className="cf-hammerthem" data-screen-label="06 Asked & Answered">
-        <div className="container">
-          <div className="head">
-            <div className="label">Asked &amp; answered</div>
-            <h2>Pick a question. <em>Get a straight answer.</em></h2>
-            <p className="lede">Two minutes each. Every objection we get on intro calls, on camera.</p>
-          </div>
-          <div className="cf-ht-grid">
-            {CF_HAMMERTHEM.map((item) => (
-              <HammerThemTile key={item.ix} item={item} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* HOW IT WORKS — 3 steps */}
-      <section className="cf-how" data-screen-label="07 How It Works">
+      <section className="cf-how" data-screen-label="06 How It Works">
         <div className="container">
           <div className="head">
             <div className="label">How it works</div>
@@ -308,7 +278,7 @@ function CfApp() {
       </section>
 
       {/* HOW TO PREPARE */}
-      <section className="cf-prep" data-screen-label="08 How to Prepare">
+      <section className="cf-prep" data-screen-label="07 How to Prepare">
         <div className="container">
           <div className="head">
             <div className="label">Get the most from your call</div>
