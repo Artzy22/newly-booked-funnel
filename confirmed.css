@@ -112,19 +112,21 @@
   margin-bottom: 0;
 }
 
-/* HERO meta band — when / where / cost / duration */
+/* HERO meta band — where / length / cost. The "When" cell was dropped
+   because GHL doesn't pass the call slot through the redirect, so it
+   was leaking the EDITMODE placeholder date to every real lead. */
 .cf-hero-meta {
   margin-top: 44px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0;
   background: rgba(255,255,255,0.02);
   border: 1px solid var(--navy-700);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
 }
 .cf-hero-meta .cell {
-  padding: 22px 26px;
+  padding: 24px 28px;
   border-right: 1px solid var(--navy-700);
 }
 .cf-hero-meta .cell:last-child { border-right: none; }
@@ -152,18 +154,17 @@
   margin-top: 6px;
   letter-spacing: 0.04em;
 }
-/* Stack 2×2 on tablet, 1-column on phones so the cells stay legible. */
-@media (max-width: 720px) {
-  .cf-hero-meta { grid-template-columns: repeat(2, 1fr); }
-  .cf-hero-meta .cell { padding: 18px 20px; border-right: none; }
-  .cf-hero-meta .cell:nth-child(odd) { border-right: 1px solid var(--navy-700); }
-  .cf-hero-meta .cell:nth-child(-n+2) { border-bottom: 1px solid var(--navy-700); }
-}
-@media (max-width: 440px) {
+/* 3 cells fit comfortably across at tablet width; stack on phones
+   with a hairline divider between rows for a cleaner read. */
+@media (max-width: 560px) {
   .cf-hero-meta { grid-template-columns: 1fr; }
-  .cf-hero-meta .cell,
-  .cf-hero-meta .cell:nth-child(odd) { border-right: none; }
-  .cf-hero-meta .cell:not(:last-child) { border-bottom: 1px solid var(--navy-700); }
+  .cf-hero-meta .cell {
+    padding: 20px 22px;
+    border-right: none;
+  }
+  .cf-hero-meta .cell:not(:last-child) {
+    border-bottom: 1px solid var(--navy-700);
+  }
 }
 
 /* HERO video — replaces the when/format/length/cost meta strip */

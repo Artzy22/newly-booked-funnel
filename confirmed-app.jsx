@@ -236,11 +236,6 @@ function CfApp() {
           <p className="lede">{head.sub}</p>
           <div className="cf-hero-meta">
             <div className="cell">
-              <div className="lbl">When</div>
-              <div className="val"><em>{v.callDate}</em></div>
-              <div className="sub">{v.callTime} {v.callTimezone}</div>
-            </div>
-            <div className="cell">
               <div className="lbl">Where</div>
               <div className="val">Zoom</div>
               <div className="sub">Video link in your email</div>
