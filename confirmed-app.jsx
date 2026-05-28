@@ -58,27 +58,17 @@ function HammerThemTile({ item }) {
   return (
     <article className={`cf-ht-card${item.wistiaId ? ' has-wistia' : ' pending'}`}>
       <div className="cf-ht-frame">
-        {/* Title overlay — sits on top of the video / placeholder, dark gradient
-            for readability against either a navy fill or a Wistia poster. */}
-        <div className="cf-ht-overlay top">
-          <div className="cf-ht-title">{item.q}</div>
-        </div>
-
+        {/* No HTML overlays — the videos already have in-frame chyrons for
+            the question title and Ivan's lower-third. Doubling up covered
+            his face on the poster and made the grid feel busy. */}
         {item.wistiaId ? (
           <wistia-player media-id={item.wistiaId} aspect="0.8"></wistia-player>
         ) : (
           <div className="cf-ht-placeholder" aria-hidden="true">
+            <div className="cf-ht-pending-title">{item.q}</div>
             <span className="cf-ht-play">▸</span>
           </div>
         )}
-
-        {/* Speaker overlay — two lines, mirrors Byron's B2C reference. */}
-        <div className="cf-ht-overlay bottom">
-          <div className="cf-ht-speaker">
-            <div className="cf-ht-name">Ivan Merlo-Iglikov</div>
-            <div className="cf-ht-role">CEO of Newly Booked</div>
-          </div>
-        </div>
       </div>
     </article>
   );
