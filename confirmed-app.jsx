@@ -203,9 +203,9 @@ function CfApp() {
       <section className="cf-hammerthem" data-screen-label="02 Before the Call">
         <div className="container">
           <div className="head">
-            <div className="label">What owners ask</div>
-            <h2>The 14 questions every owner asks <em>Ivan</em>.</h2>
-            <p className="lede">Answered on camera. Two minutes each. Watch what applies.</p>
+            <div className="label">Before the call</div>
+            <h2>The 14 questions every owner asks, <em>answered</em>.</h2>
+            <p className="lede">Two minutes each. On camera. Watch what applies.</p>
           </div>
           <div className="cf-ht-grid">
             {CF_HAMMERTHEM.map((item) => (
