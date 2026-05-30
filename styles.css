@@ -680,6 +680,24 @@ wistia-player:not(:defined) {
   .nb-play-btn__icon { width: 11px; height: 11px; margin-left: 2px; }
 }
 
+/* Testimonial videos are 16:9 landscape, way larger than the 4:5
+   Hammer Them tiles — so the same 58×40 button reads as too small
+   in context. Bump up about 30% for testimonial cards only. */
+.video-thumb .nb-play-btn {
+  width: 76px;
+  height: 52px;
+  border-radius: 10px;
+}
+.video-thumb .nb-play-btn__icon {
+  width: 17px;
+  height: 17px;
+  margin-left: 3px;
+}
+@media (max-width: 640px) {
+  .video-thumb .nb-play-btn { width: 64px; height: 44px; border-radius: 9px; }
+  .video-thumb .nb-play-btn__icon { width: 14px; height: 14px; margin-left: 2px; }
+}
+
 .video-thumb .play-btn {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 64px; height: 64px; border-radius: 999px;
