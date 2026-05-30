@@ -98,12 +98,12 @@ function HammerThemTile({ item }) {
             {!playing && (
               <button
                 type="button"
-                className="cf-ht-play-btn"
+                className="nb-play-btn"
                 aria-label={`Play: ${item.q}`}
                 onClick={handlePlay}
               >
                 <svg
-                  className="cf-ht-play-btn__icon"
+                  className="nb-play-btn__icon"
                   viewBox="0 0 12 14"
                   aria-hidden="true"
                   focusable="false"

@@ -75,12 +75,65 @@ function useWistiaEmbed(id) {
 
 function VideoCard({ t }) {
   useWistiaEmbed(t.wistiaId);
-  const cls = `video-card${t.featured ? ' featured' : ''}${t.wistiaId ? ' has-wistia' : ''}`;
+  const playerRef = React.useRef(null);
+  const [playing, setPlaying] = React.useState(false);
+
+  // Click overlay → tell Wistia to play; wait for the custom element
+  // to register if the loader script hasn't run yet.
+  const handlePlay = React.useCallback(() => {
+    setPlaying(true);
+    const el = playerRef.current;
+    if (!el) return;
+    const tryPlay = () => {
+      try {
+        if (typeof el.play === 'function') {
+          const p = el.play();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        }
+      } catch (_) { /* ignore */ }
+    };
+    if (window.customElements && typeof el.play !== 'function') {
+      window.customElements.whenDefined('wistia-player').then(tryPlay).catch(() => {});
+    } else {
+      tryPlay();
+    }
+  }, []);
+
+  // Catch playback started another way (autoplay, user clicked within
+  // Wistia's UI before our overlay hid) so the button doesn't linger.
+  React.useEffect(() => {
+    const el = playerRef.current;
+    if (!el) return undefined;
+    const onPlay = () => setPlaying(true);
+    el.addEventListener('play', onPlay);
+    return () => el.removeEventListener('play', onPlay);
+  }, [t.wistiaId]);
+
+  const cls = `video-card${t.featured ? ' featured' : ''}${t.wistiaId ? ' has-wistia' : ''}${playing ? ' is-playing' : ''}`;
   return (
     <div className={cls}>
       <div className="video-thumb">
         {t.wistiaId ? (
-          <wistia-player media-id={t.wistiaId} aspect="1.7777777777777777"></wistia-player>
+          <>
+            <wistia-player ref={playerRef} media-id={t.wistiaId} aspect="1.7777777777777777"></wistia-player>
+            {!playing && (
+              <button
+                type="button"
+                className="nb-play-btn"
+                aria-label={`Play testimonial from ${t.name}`}
+                onClick={handlePlay}
+              >
+                <svg
+                  className="nb-play-btn__icon"
+                  viewBox="0 0 12 14"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <polygon points="1,0.5 12,7 1,13.5" fill="currentColor" />
+                </svg>
+              </button>
+            )}
+          </>
         ) : (
           <>
             <span className="timecode">▸ {t.time}</span>

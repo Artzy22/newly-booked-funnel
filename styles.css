@@ -632,6 +632,54 @@ wistia-player:not(:defined) {
   height: 100%;
   filter: blur(5px);
 }
+/* Shared custom play-button overlay (.nb-play-btn). Used by both the
+   Hammer Them tile grid on the confirmed page AND the testimonial
+   grid on landing + confirmed. Wistia's big-play-button is disabled
+   site-wide via the _wq config, so this is the only affordance besides
+   the bottom control bar. Hides when the parent gets .is-playing. */
+.nb-play-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 40px;
+  border-radius: 8px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(15, 24, 42, 0.68);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 6px 16px rgba(10, 22, 40, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transition: transform 160ms ease, background 160ms ease;
+  z-index: 3;
+}
+.nb-play-btn:hover,
+.nb-play-btn:focus-visible {
+  transform: translate(-50%, -50%) scale(1.05);
+  background: rgba(15, 24, 42, 0.86);
+  outline: none;
+}
+.nb-play-btn:active {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+.nb-play-btn__icon {
+  width: 13px;
+  height: 13px;
+  display: block;
+  margin-left: 2px; /* optical-center the triangle */
+}
+.is-playing .nb-play-btn { display: none; }
+@media (max-width: 640px) {
+  .nb-play-btn { width: 50px; height: 35px; border-radius: 7px; }
+  .nb-play-btn__icon { width: 11px; height: 11px; margin-left: 2px; }
+}
+
 .video-thumb .play-btn {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 64px; height: 64px; border-radius: 999px;
