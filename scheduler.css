@@ -398,12 +398,20 @@
   pointer-events: none;
 }
 
-/* GHL booking iframe floor — small enough on desktop that a short
-   calendar doesn't leave blank space below it, tall enough on mobile
-   that the stacked layout has room before form_embed.js auto-resize fires. */
-.ghl-booking-iframe { min-height: 620px; }
+/* GHL booking iframe floor — set just below typical calendar content
+   height so form_embed.js can resize precisely without us blocking it.
+   The previous 1100px mobile floor was leaving ~300-400px of dead
+   whitespace below the calendar before "ZOOM VIDEO · COMMISSION ONLY"
+   because it overrode form_embed.js's smaller computed height. */
+.ghl-booking-iframe { min-height: 540px; }
 @media (max-width: 768px) {
-  .ghl-booking-iframe { min-height: 1100px; }
+  /* Real GHL mobile calendar content is ~700-780px (calendar header
+     + 6 week rows + timezone dropdown). Previous floor of 1100px was
+     leaving ~300-400px of dead whitespace under the iframe before
+     "ZOOM VIDEO · COMMISSION ONLY". 700px hugs the actual content
+     tightly while still tall enough that 6-row months (Jan, Apr,
+     July, etc.) aren't clipped. */
+  .ghl-booking-iframe { min-height: 700px; }
 }
 
 .sched-fineprint {
