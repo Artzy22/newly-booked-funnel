@@ -1555,21 +1555,50 @@ body.airy .hero { padding: 110px 0 80px; }
   .section { padding: 64px 0 !important; }
   #numbers.section { padding: 32px 0 !important; }
   .section.dense { padding: 48px 0 !important; }
-  .hero { padding: 40px 0 32px !important; }
-  .hero-eyebrow-row { flex-wrap: wrap; gap: 10px; margin-bottom: 22px; font-size: 10px; }
+  /* Mobile-first hero: compact eyebrow + tight headline + 1-line lede +
+     qualifier first-step visible above the fold on iPhone 14 (390x844).
+     Drops to ~24px hero padding so vertical budget is form-friendly. */
+  .hero { padding: 20px 0 24px !important; }
+  .hero-grid { gap: 24px !important; }
+  .hero-eyebrow-row { flex-wrap: wrap; gap: 10px; margin-bottom: 14px; font-size: 10px; }
   .hero-eyebrow-row .pill { padding: 5px 9px; }
-  .hero-headline { margin-bottom: 22px; }
-  h1 { font-size: clamp(34px, 9vw, 48px); }
-  h2 { font-size: clamp(28px, 7vw, 40px); }
-  .hero-sub { font-size: 16px; margin-bottom: 24px; }
-  .hero-stamps { font-size: 11px; gap: 6px 12px; }
+  /* Tighter, smaller, conversion-focused mobile headline.
+     Was clamp(34, 9vw, 48) — now compresses to fit 3-4 lines of the
+     long offer copy so the qualifier's first step is reachable
+     without scrolling. */
+  .hero-headline { margin-bottom: 12px; }
+  h1 { font-size: clamp(26px, 7.4vw, 34px); line-height: 1.08; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(26px, 6.6vw, 36px); }
+  .hero-sub { font-size: 15px; margin-bottom: 16px; line-height: 1.45; max-width: 100%; }
+  /* Hide the inline trust stamps on mobile — the same three reassurances
+     repeat in the qualifier card's fineprint, so dropping them here
+     buys back ~28px of above-the-fold vertical space. */
+  .hero-stamps { display: none; }
   .hero-trust-row { grid-template-columns: 1fr; gap: 18px; margin-top: 28px; padding-top: 22px; }
   .hero-trust-stat { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; }
   .hero-trust-stat .num { font-size: 26px; }
   .hero-trust-stat .lbl { margin-top: 0; font-size: 10px; text-align: right; max-width: 60%; }
-  .qualifier-card { padding: 28px 22px 22px; min-height: auto; }
-  .qualifier-q { font-size: 22px; }
-  .qualifier-opt { padding: 12px 14px; font-size: 13px; }
+  /* Qualifier card — tighter padding so the question + 2 answer
+     buttons all sit above the fold. Touch targets bumped to ≥48px
+     and font-size bumped to 16px on text inputs to prevent iOS
+     auto-zoom on focus. */
+  .qualifier-card { padding: 22px 20px 20px; min-height: auto; }
+  .qualifier-q { font-size: 19px; line-height: 1.22; margin-bottom: 16px; }
+  .qualifier-opt {
+    padding: 14px 16px;
+    font-size: 15px;
+    min-height: 48px;
+    touch-action: manipulation; /* skip iOS 300ms tap delay */
+  }
+  .qualifier-input {
+    font-size: 16px; /* avoid iOS auto-zoom on focus */
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+  .qualifier-progress .seg { height: 3px; } /* slightly more visible */
+  .qualifier-head { padding-bottom: 14px; margin-bottom: 16px; }
+  .qualifier-head .label { font-size: 10px; }
+  .qualifier-head .step { font-size: 12px; }
   .video-grid { grid-template-columns: 1fr; gap: 18px; }
   .video-card.featured { grid-column: span 1; }
   .video-card.featured .video-thumb .quote { font-size: 22px; }
@@ -1632,8 +1661,13 @@ body.airy .hero { padding: 110px 0 80px; }
   .topbar-inner .brand .nb-logo { width: 28px; height: 28px; }
   .hero-eyebrow-row .pill { display: none; }
   .qualifier-head { flex-wrap: wrap; gap: 8px; }
-  .qualifier-card { padding: 24px 18px 20px; }
-  .qualifier-q { font-size: 19px; }
+  .qualifier-card { padding: 20px 16px 18px; }
+  .qualifier-q { font-size: 18px; line-height: 1.22; margin-bottom: 14px; }
+  .qualifier-opt { padding: 13px 14px; font-size: 14px; min-height: 46px; }
+  /* Even tighter eyebrow row on tiny phones so the form steals the
+     first impression. */
+  .hero-eyebrow-row { margin-bottom: 10px; }
+  .hero-sub { font-size: 14px; margin-bottom: 14px; }
 }
 
 
