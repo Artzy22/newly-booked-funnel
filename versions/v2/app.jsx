@@ -1,56 +1,9 @@
-// Main App — composes all sections. Uses tweaks for hero variations, density, accent.
+// Combined page — the funnel is the hero, then editorial proof sections below.
 const { useState, useEffect } = React;
 
-const HERO_VARIATIONS = [
-  {
-    eyebrow: 'For Medspa Owners Doing $30K–$200K/Month',
-    headline: <>Add <em>$50K–$100K/Month</em> in cash patients<br/>without tire-kickers, retainers, or a 12-month lock.</>,
-    sub: 'We book your calendar with pre-qualified patients through Cherry, train you on our $7M+ closing script, and only get paid when patients pay you. Our top clients add $30K–$60K in profit within 90 days.',
-  },
-  {
-    eyebrow: 'Performance-based growth for medspas',
-    headline: <>We only make money <em>when your patients pay</em>.</>,
-    sub: 'No retainer. No 12-month contract. No dashboard of cold leads. We pre-qualify, we close, and we take a percentage only when a package sells.',
-  },
-  {
-    eyebrow: 'Case study · North Texas',
-    headline: <>From <em>$50K → $300K</em> per month.<br/>In a market the owner called "worst demographics."</>,
-    sub: 'It\'s not the city. It\'s the funnel. We open yours in a free 45-minute diagnostic and show you exactly where you\'re leaking: set rate, deposit rate, close rate, package mix.',
-  },
-];
-
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "heroVariation": 0,
-  "ctaCopy": "See If We Have Your Area Available",
-  "accent": "gold",
-  "qualifierPosition": "inline",
-  "socialProofLayout": "bento",
-  "density": "default",
-  "showStickyCta": true,
-  "showMarquee": true
-}/*EDITMODE-END*/;
-
-const ACCENT_PRESETS = {
-  gold: { 700: '#9A7E3F', 600: '#B89351', 500: '#C9A961', 400: '#D9BD7E', 200: '#EFE0BB', 50: '#FAF5E6' },
-  emerald: { 700: '#1F5D3F', 600: '#2A7A55', 500: '#3A9268', 400: '#5DAE85', 200: '#A8D2BC', 50: '#E8F2EC' },
-  copper: { 700: '#8C4A2A', 600: '#A85D38', 500: '#C26F44', 400: '#D58D6A', 200: '#EBC5AE', 50: '#F8EAE0' },
-  ink: { 700: '#1B2D4A', 600: '#2A3F60', 500: '#43597A', 400: '#6B7E9C', 200: '#B5C0D2', 50: '#E8ECF3' },
-};
+const CTA = 'See if your area is open';
 
 function App() {
-  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-
-  useEffect(() => {
-    const a = ACCENT_PRESETS[tweaks.accent] || ACCENT_PRESETS.gold;
-    const r = document.documentElement;
-    Object.entries(a).forEach(([k, v]) => r.style.setProperty(`--gold-${k}`, v));
-  }, [tweaks.accent]);
-
-  useEffect(() => {
-    document.body.classList.remove('tight', 'airy');
-    if (tweaks.density === 'tight') document.body.classList.add('tight');
-    if (tweaks.density === 'airy') document.body.classList.add('airy');
-  }, [tweaks.density]);
 
   // When this page is embedded in GHL, a <base href="https://artzy22.github.io/...">
   // tag is set so relative asset URLs resolve to the CDN. But a side-effect is
@@ -76,50 +29,13 @@ function App() {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  const hero = HERO_VARIATIONS[tweaks.heroVariation] || HERO_VARIATIONS[0];
-
   return (
     <>
-      {/* Top bar */}
-      <div className="topbar">
-        <div className="topbar-inner">
-          <div className="brand"><span className="dot"></span>Newly Booked</div>
-          <nav className="topnav">
-            <a href="#proof">Proof</a>
-            <a href="#mechanism">Mechanism</a>
-            <a href="#how">How it works</a>
-            <a href="#faq">FAQ</a>
-          </nav>
-          <a href="#qualify" className="btn btn-primary">{tweaks.ctaCopy} →</a>
-        </div>
-      </div>
-
-      {/* HERO with inline qualifier */}
-      <section className="hero" id="hero" data-screen-label="01 Hero">
-        <div className="container">
-          <div className="hero-grid">
-            <div>
-              <div className="hero-eyebrow-row">
-                <span><span className="pulse"></span>4 partner slots open · April</span>
-                <span className="pill">{hero.eyebrow}</span>
-              </div>
-              <h1 className="hero-headline">{hero.headline}</h1>
-              <p className="hero-sub">{hero.sub}</p>
-              <div className="hero-stamps">
-                <span className="hero-stamp">No retainer</span>
-                <span className="hero-stamp">No 12-month lock</span>
-                <span className="hero-stamp">Commission only</span>
-              </div>
-            </div>
-            <div>
-              <Qualifier accent={tweaks.accent} />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* HERO = the multi-step funnel */}
+      <Funnel embedded />
 
       {/* MARQUEE */}
-      {tweaks.showMarquee && (
+      {(
         <>
         <div className="marquee">
           <div className="marquee-inner">
@@ -179,7 +95,7 @@ function App() {
           </div>
           <ScreenshotWall />
           <div style={{ textAlign: 'center', marginTop: 56 }}>
-            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{tweaks.ctaCopy} </a>
+            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
             <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-200)', marginTop: 14, letterSpacing: '0.06em' }}>
               60-second qualifier · No retainer · No 12-month lock
             </div>
@@ -502,7 +418,7 @@ function App() {
             <li><span className="ix">— III.</span>A 30-day plan you can run yourself, even if we don't sign</li>
           </ul>
           <div className="final-cta-row">
-            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{tweaks.ctaCopy} </a>
+            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
             <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-200)', letterSpacing: '0.06em' }}>
               No retainer pitch · No 12-month contract · Commission only
             </span>
@@ -526,54 +442,11 @@ function App() {
       </footer>
 
       {/* Sticky qualify CTA */}
-      {tweaks.showStickyCta && (
-        <a href="#qualify" className="sticky-cta">
-          <span style={{ width: 7, height: 7, borderRadius: 999, background: 'var(--navy-900)', display: 'inline-block' }}></span>
-          60-second qualifier
-          <span>→</span>
-        </a>
-      )}
-
-      {/* Tweaks */}
-      <TweaksPanel>
-        <TweakSection label="Hero">
-          <TweakSelect label="Headline" value={tweaks.heroVariation}
-            onChange={(v) => setTweak('heroVariation', parseInt(v))}
-            options={[
-              { value: 0, label: '01 · Outcome + offer' },
-              { value: 1, label: '02 · Pure positioning' },
-              { value: 2, label: '03 · Case study lead' },
-            ]}
-          />
-          <TweakText label="CTA copy" value={tweaks.ctaCopy}
-            onChange={(v) => setTweak('ctaCopy', v)} />
-        </TweakSection>
-        <TweakSection label="Look">
-          <TweakRadio label="Accent" value={tweaks.accent}
-            onChange={(v) => setTweak('accent', v)}
-            options={[
-              { value: 'gold', label: 'Gold' },
-              { value: 'emerald', label: 'Emerald' },
-              { value: 'copper', label: 'Copper' },
-              { value: 'ink', label: 'Ink' },
-            ]}
-          />
-          <TweakRadio label="Density" value={tweaks.density}
-            onChange={(v) => setTweak('density', v)}
-            options={[
-              { value: 'tight', label: 'Tight' },
-              { value: 'default', label: 'Default' },
-              { value: 'airy', label: 'Airy' },
-            ]}
-          />
-        </TweakSection>
-        <TweakSection label="Page">
-          <TweakToggle label="Marquee bar" value={tweaks.showMarquee}
-            onChange={(v) => setTweak('showMarquee', v)} />
-          <TweakToggle label="Sticky CTA" value={tweaks.showStickyCta}
-            onChange={(v) => setTweak('showStickyCta', v)} />
-        </TweakSection>
-      </TweaksPanel>
+      <a href="#qualify" className="sticky-cta">
+        <span style={{ width: 7, height: 7, borderRadius: 999, background: 'var(--navy-900)', display: 'inline-block' }}></span>
+        See if your area is open
+        <span>→</span>
+      </a>
     </>
   );
 }

@@ -75,12 +75,16 @@ function useWistiaEmbed(id) {
 
 function VideoCard({ t }) {
   useWistiaEmbed(t.wistiaId);
+  const [played, setPlayed] = React.useState(false);
   const cls = `video-card${t.featured ? ' featured' : ''}${t.wistiaId ? ' has-wistia' : ''}`;
   return (
     <div className={cls}>
-      <div className="video-thumb">
+      <div className="video-thumb" onClick={t.wistiaId ? () => setPlayed(true) : undefined}>
         {t.wistiaId ? (
-          <wistia-player media-id={t.wistiaId} aspect="1.7777777777777777"></wistia-player>
+          <>
+            <wistia-player media-id={t.wistiaId} aspect="1.7777777777777777"></wistia-player>
+            {!played && <button className="play-btn" aria-label="Play video">▶</button>}
+          </>
         ) : (
           <>
             <span className="timecode">▸ {t.time}</span>
