@@ -1,0 +1,72 @@
+<!--
+  NEWLY BOOKED — V2 FUNNEL LANDING PAGE (for GoHighLevel)
+
+  HOW TO USE:
+  1. In GHL → Funnels → open (or create) your funnel.
+  2. Add a new funnel step (e.g. URL slug /apply).
+  3. Open the page editor → delete every default element so the canvas is empty.
+  4. Drag in a single "Custom HTML / Code" element, full width.
+  5. Copy EVERYTHING below from the <!doctype html> line down and paste it in.
+  6. Save and publish.
+
+  OPTIONAL WIRING (leave as-is to use the built-in hosted pages):
+  - Send QUALIFIED leads to your own GHL booking page:
+      replace [REPLACE_WITH_SCHEDULE_PAGE_URL]
+  - Point the footer legal links at your GHL pages:
+      replace [REPLACE_WITH_PRIVACY_PAGE_URL] and [REPLACE_WITH_TERMS_PAGE_URL]
+  Disqualified leads always go to the hosted dq page.
+
+  All CSS, JS, fonts, videos, and images stream from
+  artzy22.github.io/newly-booked-funnel/versions/v2/. Push an edit to the
+  repo and this GHL page updates automatically — no re-paste needed.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Newly Booked — See if your area is open</title>
+  <meta name="description" content="Answer a few quick questions to see if your medspa qualifies for Newly Booked. Pre-qualified, pre-financed patients on Cherry-approved budgets. We only get paid when patients pay you." />
+
+  <!-- All relative URLs in this page resolve against this base. -->
+  <base href="https://artzy22.github.io/newly-booked-funnel/versions/v2/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet" />
+
+  <script>
+    var __v = Date.now();
+    document.write('<link rel="stylesheet" href="styles.css?v=' + __v + '">');
+    document.write('<link rel="stylesheet" href="funnel.css?v=' + __v + '">');
+  </script>
+
+  <script src="https://fast.wistia.com/player.js" async></script>
+
+  <!-- EDIT (optional): send QUALIFIED leads to your GHL booking page. -->
+  <script>window.__NB_SCHEDULE_URL = "[REPLACE_WITH_SCHEDULE_PAGE_URL]";</script>
+  <!-- EDIT (optional): footer legal links. -->
+  <script>
+    window.__NB_PRIVACY_URL = "[REPLACE_WITH_PRIVACY_PAGE_URL]";
+    window.__NB_TERMS_URL   = "[REPLACE_WITH_TERMS_PAGE_URL]";
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="cities.js"></script>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    (function () {
+      var v = Date.now();
+      ['logo-marquee.jsx','screenshots.jsx','testimonials-faq.jsx','funnel-app.jsx','app.jsx'].forEach(function (s) {
+        document.write('<script type="text/babel" src="' + s + '?v=' + v + '"><\/script>');
+      });
+    })();
+  </script>
+</body>
+</html>
