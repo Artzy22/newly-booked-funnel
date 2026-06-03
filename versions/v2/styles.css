@@ -7,12 +7,12 @@
   --navy-500: #43597A;
   --navy-300: #8A9AB3;
   --navy-200: #C5D0E0;
-  --gold-700: #9A7E3F;
-  --gold-600: #B89351;
-  --gold-500: #C9A961;
-  --gold-400: #D9BD7E;
-  --gold-200: #EFE0BB;
-  --gold-50:  #FAF5E6;
+  --gold-700: #1C3CB8;
+  --gold-600: #2348D4;
+  --gold-500: #2B54E8;
+  --gold-400: #5C79F2;
+  --gold-200: #BCC8FA;
+  --gold-50:  #EDF1FE;
   --paper:    #FAF7F2;
   --paper-2:  #F2EEE5;
   --ink:      #0E1620;
@@ -155,7 +155,7 @@ p { margin: 0; }
 .btn-primary:hover { background: var(--navy-700); }
 .btn-gold {
   background: var(--gold-500);
-  color: var(--navy-900);
+  color: #fff;
 }
 .btn-gold:hover { background: var(--gold-400); }
 .btn-ghost {
@@ -1313,7 +1313,7 @@ wistia-player:not(:defined) {
   position: fixed;
   bottom: 24px; right: 24px;
   z-index: 30;
-  background: var(--gold-500); color: var(--navy-900);
+  background: var(--gold-500); color: #fff;
   padding: 14px 20px;
   border-radius: 999px;
   font-family: "Inter", sans-serif;
