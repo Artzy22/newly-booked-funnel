@@ -120,6 +120,26 @@ const labelFor = (stepId, value) => {
   return o ? o.label : (value || '');
 };
 
+// iClosed booking widget — loads the embed script once, then renders inline.
+function IClosedCalendar() {
+  useEffect(() => {
+    if (document.getElementById('iclosed-widget-script')) return;
+    const s = document.createElement('script');
+    s.id = 'iclosed-widget-script';
+    s.src = 'https://app.iclosed.io/assets/widget.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
+  return (
+    <div
+      className="iclosed-widget"
+      data-url="https://app.iclosed.io/e/newlybooked/setter-call"
+      title="INTRO CALL"
+      style={{ width: '100%', height: '620px' }}
+    ></div>
+  );
+}
+
 function Funnel({ embedded } = {}) {
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -129,6 +149,7 @@ function Funnel({ embedded } = {}) {
   const [phone, setPhone] = useState('');
   const [tries, setTries] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [showCal, setShowCal] = useState(false);
   const [otherMode, setOtherMode] = useState(false);
   const [showCity, setShowCity] = useState(false);
   useEffect(() => { setOtherMode(false); setShowCity(false); }, [idx]);
@@ -179,53 +200,47 @@ function Funnel({ embedded } = {}) {
   const submit = () => {
     setTries((t) => t + 1);
     if (contactBad) return;
-    setSubmitting(true);
 
-    const all = { ...answers };
-    const dq = isDisqualified(all);
-    const params = new URLSearchParams({
-      name: name.trim(), email: email.trim(), phone: phone.trim(),
-      business: (all.business || '').trim(), city: (all.city || '').trim(),
-      location: labelFor('location', all.location),
-      treatment: labelFor('treatment', all.treatment),
-      revenue: labelFor('revenue', all.revenue),
-      frisat: labelFor('frisat', all.frisat),
-      tenure: labelFor('tenure', all.tenure),
-      status: dq ? 'dq' : 'qualified',
-    });
-
-    // GHL hook (pending the new GHL form): if a hidden GHL form is present,
-    // fill its standard contact fields and submit it for contact creation.
-    const ghlForm = document.querySelector('.nb-hidden-form');
-    if (ghlForm) {
-      const setByName = (n, val) => {
-        const inp = ghlForm.querySelector(`input[name="${n}"]`);
-        if (inp && val != null) {
-          const proto = window.HTMLInputElement.prototype;
-          const d = Object.getOwnPropertyDescriptor(proto, 'value');
-          if (d && d.set) d.set.call(inp, val); else inp.value = val;
-          inp.dispatchEvent(new Event('input', { bubbles: true }));
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      };
-      const parts = name.trim().split(/\s+/);
-      setByName('first_name', parts.shift() || '');
-      setByName('last_name', parts.join(' '));
-      setByName('full_name', name.trim());
-      setByName('name', name.trim());
-      setByName('email', email.trim());
-      setByName('phone', phone.trim());
-      setByName('city', (all.city || '').trim());
-      ghlForm.querySelectorAll('input[type="checkbox"]').forEach((cb) => { if (!cb.checked) cb.click(); });
-      const btn = ghlForm.querySelector('button[type="submit"]') || ghlForm.querySelector('button');
-      if (btn) btn.click();
+    // Disqualified → DQ page (the only other page). DQ rules are in DQ_RULES above.
+    if (isDisqualified(answers)) {
+      setSubmitting(true);
+      const params = new URLSearchParams({
+        name: name.trim(), email: email.trim(), phone: phone.trim(),
+        business: (answers.business || '').trim(), city: (answers.city || '').trim(),
+        status: 'dq',
+      });
+      const dest = nbUrl('__NB_DQ_URL', 'dq.html');
+      setTimeout(() => {
+        window.location.href = `${dest}${dest.includes('?') ? '&' : '?'}${params.toString()}`;
+      }, 300);
+      return;
     }
 
-    const dest = dq ? nbUrl('__NB_DQ_URL', 'dq.html') : nbUrl('__NB_SCHEDULE_URL', 'schedule.html');
-    setTimeout(() => {
-      window.location.href = `${dest}${dest.includes('?') ? '&' : '?'}${params.toString()}`;
-    }, 850);
+    // Qualified → reveal the iClosed calendar inline on this same page.
+    setShowCal(true);
+    try { window.scrollTo(0, 0); } catch (e) {}
   };
+
+  // Qualified view — the iClosed calendar revealed inline.
+  if (showCal) {
+    const first = name.trim().split(/\s+/)[0];
+    return (
+      <div className="pf-root" id="qualify">
+        <div className="pf-top">
+          <div className="pf-logo"><span className="pf-mark">N<i></i>B</span><span className="pf-wordmark">Newly Booked</span></div>
+        </div>
+        <div className="pf-stage">
+          <div className="pf-inner pf-anim" key="cal">
+            <div className="pf-eyebrow">You qualify</div>
+            <h1 className="pf-q">Pick your time{first ? `, ${first}` : ''}.</h1>
+            <p className="pf-sub">A 45-minute video call with a senior partner — we’ll map out exactly how we’d add $50K–$100K/month to your spa.</p>
+            <div className="pf-cal"><IClosedCalendar /></div>
+          </div>
+        </div>
+        <div className="pf-progress"><div className="pf-progress-bar" style={{ width: '100%' }}></div></div>
+      </div>
+    );
+  }
 
   return (
     <div className="pf-root" id="qualify">
