@@ -123,25 +123,11 @@
       if (email) pre.set('email', email);
       if (phone) pre.set('phone', phone);
       var bookUrl = ICLOSED + (pre.toString() ? ('?' + pre.toString()) : '');
-      var book = document.getElementById('sch-book');
-      book.setAttribute('data-iclosed-link', bookUrl);
-
-      // The button opens the iClosed popup on this page. iClosed's embedding is
-      // still rolling out, so if the popup iframe is blocked (no message back),
-      // fall back to a new tab so the booking always works. Once embedding is
-      // live everywhere this never fires and it stays a clean on-page popup.
-      book.addEventListener('click', function () {
-        var ok = false;
-        var onMsg = function (e) { if (String(e.origin).indexOf('iclosed.io') !== -1) ok = true; };
-        window.addEventListener('message', onMsg);
-        setTimeout(function () {
-          window.removeEventListener('message', onMsg);
-          if (!ok) {
-            document.querySelectorAll('.iclosed-popup-overlay').forEach(function (n) { n.remove(); });
-            window.open(bookUrl, '_blank', 'noopener');
-          }
-        }, 1800);
-      });
+      // iClosed's widget.js opens the popup overlay on THIS page from the
+      // button's data-embed-type="popup". No new-tab fallback — it stays on the
+      // page. The calendar renders inside the popup once iClosed allows
+      // embedding for this domain (iClosed → Settings → allowed website domains).
+      document.getElementById('sch-book').setAttribute('data-iclosed-link', bookUrl);
     })();
   </script>
 </body>
