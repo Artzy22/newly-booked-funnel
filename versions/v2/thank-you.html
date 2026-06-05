@@ -3,92 +3,285 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Newly Booked — You're booked</title>
-  <meta name="description" content="Your Newly Booked diagnostic call is confirmed. Here's what happens next before your call with a senior partner." />
+  <title>Newly Booked · You're booked</title>
   <meta name="robots" content="noindex" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,500..600&display=swap" rel="stylesheet" />
+  <script src="https://fast.wistia.com/player.js" async></script>
 
   <style>
     :root{
-      --navy-900:#0A1628; --navy-500:#43597A; --navy-300:#8A9AB3;
-      --blue-700:#1C3CB8; --blue-600:#2348D4; --blue-500:#2B54E8; --blue-400:#5C79F2;
-      --blue-50:#EDF1FE; --line:#E5E9F1; --green:#149E55;
+      --navy-900:#0A1628;--navy-700:#1A2A44;--navy-500:#43597A;--navy-300:#8A9AB3;
+      --blue-700:#1C3CB8;--blue-600:#2348D4;--blue-500:#2B54E8;--blue-400:#5C79F2;--blue-50:#EDF1FE;
+      --line:#E5E9F1;--tile:#F2F5FB;--green:#149E55;--paper:#fff;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:"Inter",sans-serif;color:var(--navy-900);-webkit-font-smoothing:antialiased;
-      background:radial-gradient(135% 72% at 50% -10%,#E7EEFF 0%,#F4F7FE 44%,#fff 80%);
-      min-height:100vh; min-height:100svh;
-    }
-    .wrap{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;max-width:600px;margin:0 auto}
-    .top{display:flex;align-items:center;padding:22px 24px}
-    .logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--navy-900)}
-    .mark{display:inline-flex;align-items:center;gap:3px;background:var(--navy-900);color:#fff;
-      font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:15px;line-height:1;letter-spacing:.5px;padding:7px 9px 8px;border-radius:6px}
-    .mark i{width:1px;height:13px;background:rgba(255,255,255,.55);display:inline-block}
+    body{font-family:"Inter",sans-serif;color:var(--navy-900);-webkit-font-smoothing:antialiased;
+      background:radial-gradient(120% 52% at 50% -8%,#E7EEFF 0%,#F4F7FE 38%,#fff 70%)}
+    .container{width:100%;max-width:1080px;margin:0 auto;padding:0 22px}
+    .narrow{max-width:680px}
+    em{font-style:normal;color:var(--blue-500);font-weight:inherit}
 
-    .stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 24px 48px}
-    .check{width:92px;height:92px;border-radius:999px;display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(160deg,#1EB866,#0E8F4C);color:#fff;margin-bottom:24px;
-      box-shadow:0 20px 40px -14px rgba(20,158,85,.55);animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both}
-    .check svg{width:46px;height:46px}
+    /* Top bar */
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .topbar-in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--navy-900);text-decoration:none}
+    .mark{display:inline-flex;align-items:center;gap:3px;background:var(--navy-900);color:#fff;font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:14px;line-height:1;letter-spacing:.5px;padding:6px 8px 7px;border-radius:6px}
+    .mark i{width:1px;height:12px;background:rgba(255,255,255,.55);display:inline-block}
+    .stamp{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--navy-300)}
+    .stamp .dot{width:6px;height:6px;border-radius:999px;background:var(--green)}
+
+    /* Hero */
+    .hero{text-align:center;padding:48px 0 8px}
+    .check{width:84px;height:84px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;
+      background:linear-gradient(160deg,#1EB866,#0E8F4C);color:#fff;box-shadow:0 20px 40px -14px rgba(20,158,85,.55);animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both}
+    .check svg{width:42px;height:42px}
     @keyframes pop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
     .eyebrow{font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
-    h1{font-weight:800;font-size:clamp(30px,7vw,46px);line-height:1.1;letter-spacing:-.025em;max-width:14ch}
-    .sub{margin-top:16px;font-size:16px;font-weight:500;color:var(--navy-500);line-height:1.55;max-width:40ch}
-    .sub b{color:var(--navy-900);font-weight:700}
+    .hero h1{font-weight:800;font-size:clamp(30px,6.4vw,48px);line-height:1.08;letter-spacing:-.025em;max-width:15ch;margin:0 auto}
+    .hero .lede{margin:16px auto 0;font-size:16px;font-weight:500;color:var(--navy-500);line-height:1.55;max-width:46ch}
+    .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:560px;margin:30px auto 0}
+    .meta .cell{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 12px;box-shadow:0 14px 30px -22px rgba(10,22,40,.3)}
+    .meta .lbl{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--navy-300)}
+    .meta .val{font-weight:800;font-size:20px;margin-top:6px;letter-spacing:-.01em}
+    .meta .csub{font-size:11.5px;color:var(--navy-500);margin-top:3px}
 
-    .steps{width:100%;max-width:430px;margin:34px auto 0;text-align:left;background:#fff;border:1px solid var(--line);
-      border-radius:18px;box-shadow:0 22px 50px -28px rgba(10,22,40,.3);overflow:hidden}
-    .steps .lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--navy-300);padding:18px 22px 10px}
-    .step{display:flex;gap:14px;align-items:flex-start;padding:14px 22px;border-top:1px solid var(--line)}
-    .step .n{flex-shrink:0;width:28px;height:28px;border-radius:999px;background:var(--blue-50);color:var(--blue-600);
-      font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
-    .step h3{font-size:15px;font-weight:700;letter-spacing:-.01em}
-    .step p{font-size:13.5px;color:var(--navy-500);line-height:1.5;margin-top:2px}
+    /* Section shell */
+    section{padding:54px 0}
+    .head{text-align:center;max-width:640px;margin:0 auto 30px}
+    .label{font-weight:700;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-600);margin-bottom:12px}
+    .head h2{font-weight:800;font-size:clamp(24px,4.4vw,34px);line-height:1.14;letter-spacing:-.02em}
+    .head .lede{margin-top:12px;font-size:15.5px;color:var(--navy-500);line-height:1.55}
 
-    .note{margin-top:26px;font-size:13px;color:var(--navy-300);line-height:1.55;max-width:38ch}
-    .home{margin-top:22px;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--blue-600);text-decoration:none}
-    .home:hover{color:var(--blue-700)}
-    @media (max-width:560px){ .check{width:80px;height:80px}.check svg{width:40px;height:40px} }
+    /* Hammer Them grid */
+    .ht{background:var(--tile);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .ht-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .ht-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 40px -26px rgba(10,22,40,.35)}
+    .ht-frame{position:relative;width:100%;aspect-ratio:4/5;background:var(--navy-900)}
+    .ht-frame wistia-player{width:100%;height:100%;display:block}
+    .ht-q{padding:14px 16px 16px;font-weight:700;font-size:14.5px;line-height:1.3;letter-spacing:-.01em}
+    .ht-q .n{color:var(--blue-500);font-weight:800;margin-right:6px}
+
+    /* SMS callout */
+    .sms .box{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;max-width:760px;margin:0 auto;box-shadow:0 18px 44px -28px rgba(10,22,40,.32)}
+    .sms .ic{flex-shrink:0;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--blue-50);color:var(--blue-600)}
+    .sms .h{font-size:15.5px;font-weight:600;line-height:1.5}
+    .sms .p{font-size:13.5px;color:var(--navy-500);line-height:1.5;margin-top:5px}
+
+    /* FAQ */
+    .faq{max-width:680px;margin:0 auto}
+    .faq-item{border-bottom:1px solid var(--line)}
+    .faq-q{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+      text-align:left;font-family:inherit;font-weight:700;font-size:16px;color:var(--navy-900);padding:18px 2px;letter-spacing:-.01em}
+    .faq-q .plus{flex-shrink:0;width:24px;height:24px;border-radius:999px;background:var(--blue-50);color:var(--blue-600);font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+    .faq-item.open .faq-q .plus{transform:rotate(45deg)}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+    .faq-a-in{font-size:14.5px;color:var(--navy-500);line-height:1.6;padding:0 2px 18px}
+
+    /* Testimonials */
+    .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .tcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 40px -26px rgba(10,22,40,.35)}
+    .tcard wistia-player{width:100%;display:block;aspect-ratio:16/9}
+
+    /* How it works / prepare */
+    .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .s3{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;box-shadow:0 18px 40px -28px rgba(10,22,40,.3)}
+    .s3 .num{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:26px;color:var(--blue-500)}
+    .s3 h4{font-weight:800;font-size:16.5px;margin-top:8px;letter-spacing:-.01em}
+    .s3 p{font-size:14px;color:var(--navy-500);line-height:1.55;margin-top:8px}
+    .prep{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+    .prow{display:grid;grid-template-columns:130px 1fr;gap:18px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 14px 34px -26px rgba(10,22,40,.3)}
+    .prow .when{font-weight:800;font-size:12.5px;letter-spacing:.04em;color:var(--blue-600);padding-top:2px}
+    .prow h4{font-weight:700;font-size:15.5px;letter-spacing:-.01em}
+    .prow p{font-size:13.5px;color:var(--navy-500);line-height:1.55;margin-top:4px}
+    .prep-call{max-width:760px;margin:18px auto 0;background:var(--blue-50);border:1px solid #D8E0FB;border-radius:16px;padding:18px 22px;font-size:14px;color:var(--navy-700);line-height:1.6}
+    .prep-call strong{color:var(--navy-900)}
+
+    /* Footer */
+    .foot{border-top:1px solid var(--line);padding:34px 0 44px;text-align:center}
+    .foot .micro{font-size:11.5px;color:var(--navy-300);line-height:1.6;max-width:760px;margin:14px auto 0}
+    .foot .legal{margin-top:16px;font-size:12px;color:var(--navy-500);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;align-items:center}
+    .foot .legal a{color:var(--navy-500);text-decoration:none;font-weight:600}
+
+    @media (max-width:860px){ .ht-grid{grid-template-columns:repeat(2,1fr)} .tg{grid-template-columns:repeat(2,1fr)} .steps3{grid-template-columns:1fr} }
+    @media (max-width:560px){
+      .ht-grid{grid-template-columns:1fr} .tg{grid-template-columns:1fr}
+      .meta{grid-template-columns:1fr;max-width:320px} .stamp{display:none}
+      .prow{grid-template-columns:1fr;gap:6px}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top"><div class="logo"><span class="mark">N<i></i>B</span>Newly Booked</div></div>
-
-    <div class="stage">
-      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.3 4.3L19 7"/></svg></div>
-      <div class="eyebrow">Call confirmed</div>
-      <h1 id="ty-h1">You're booked.</h1>
-      <p class="sub" id="ty-sub">Your intro call is locked in. We just emailed your <b>calendar invite and video link</b> — check your inbox (and spam, just in case).</p>
-
-      <div class="steps">
-        <div class="lbl">Before your call</div>
-        <div class="step"><span class="n">1</span><div><h3>Accept the calendar invite</h3><p>Add it to your calendar so you don’t miss it — the video link is inside.</p></div></div>
-        <div class="step"><span class="n">2</span><div><h3>Know your numbers</h3><p>Have a rough idea of your monthly revenue and current new-patient flow — it makes the 15 minutes sharper.</p></div></div>
-        <div class="step"><span class="n">3</span><div><h3>Come curious, not committed</h3><p>It’s a no-pressure conversation. If there’s a fit, we’ll map out how many new patients you should be seeing — and how to get there.</p></div></div>
-      </div>
-
-      <p class="note">Need to reschedule? Use the link in your confirmation email.</p>
-      <a class="home" href="index.html">← Back to Newly Booked</a>
+  <div class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="index.html"><span class="mark">N<i></i>B</span>Newly Booked</a>
+      <span class="stamp"><span class="dot"></span>Call confirmed</span>
     </div>
   </div>
 
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.3 4.3L19 7"/></svg></div>
+      <div class="eyebrow">Call confirmed</div>
+      <h1 id="ty-h1">You're booked.</h1>
+      <p class="lede">Your 15 minute intro call is locked in. A calendar invite and the video link are on the way to your inbox right now. Below is everything worth watching before we talk.</p>
+      <div class="meta">
+        <div class="cell"><div class="lbl">Where</div><div class="val">Zoom</div><div class="csub">Video link in your email</div></div>
+        <div class="cell"><div class="lbl">Length</div><div class="val">15 min</div><div class="csub">With a specialist</div></div>
+        <div class="cell"><div class="lbl">Cost</div><div class="val"><em>$0</em></div><div class="csub">No retainer, no contract</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HAMMER THEM -->
+  <section class="ht">
+    <div class="container">
+      <div class="head">
+        <div class="label">Before the call</div>
+        <h2>The 14 questions every owner asks, <em>answered</em>.</h2>
+        <p class="lede">Two minutes each. On camera. Watch the ones that apply to you.</p>
+      </div>
+      <div class="ht-grid" id="ht-grid"></div>
+    </div>
+  </section>
+
+  <!-- SMS CALLOUT -->
+  <section class="sms">
+    <div class="container">
+      <div class="box">
+        <div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+        <div>
+          <div class="h"><strong>Check your inbox now.</strong> A confirmation from <em>Newly Booked</em> with the video link should land in the next 2 minutes.</div>
+          <div class="p">Don't see it? Check spam, then reply to any previous Newly Booked email and we'll resend it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="container">
+      <div class="head"><div class="label">Still on the fence?</div><h2>The four we get most often.</h2></div>
+      <div class="faq" id="faq"></div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="ht">
+    <div class="container">
+      <div class="head"><div class="label">Hear it from them</div><h2>Owners running this model <em>right now</em>.</h2></div>
+      <div class="tg" id="tg"></div>
+    </div>
+  </section>
+
+  <!-- HOW TO PREPARE -->
+  <section>
+    <div class="container">
+      <div class="head"><div class="label">Get the most from your call</div><h2>How to prepare.</h2></div>
+      <div class="prep">
+        <div class="prow"><div class="when">Have ready</div><div><h4>A rough revenue number</h4><p>Top line for the last 90 days, inside a 10% band. We use it to size what new patient volume should look like for your spa.</p></div></div>
+        <div class="prow"><div class="when">Know roughly</div><div><h4>Your average package price</h4><p>Across your top services. We'll show you what pre qualified, financing approved traffic does to that number.</p></div></div>
+        <div class="prow"><div class="when">Day of</div><div><h4>Be somewhere quiet for 15 minutes</h4><p>A phone is fine. We just want your full attention so the conversation is useful for both of us.</p></div></div>
+      </div>
+      <div class="prep-call"><strong>These small steps make the difference.</strong> Owners who show up ready walk away with a clear read on the numbers. Either way, just show up on time.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="container">
+      <div class="stamp" style="justify-content:center;color:var(--navy-500)"><span class="dot"></span>Newly Booked</div>
+      <p class="micro">© 2026 Newly Booked. All rights reserved. Results may vary. Individual outcomes depend on multiple factors including market saturation, operational maturity, in spa staffing, and adherence to playbook recommendations. Testimonials reflect individual partner experiences and are not a guarantee of results. We only get paid when your patients pay you.</p>
+      <div class="legal"><span>© 2026 Newly Booked · We only make money when you do</span><a href="index.html">Back to site</a></div>
+    </div>
+  </footer>
+
   <script>
     (function () {
+      // Personalize the headline.
       try {
         var p = new URLSearchParams(location.search);
-        var name = (p.get('name') || '').trim();
-        if (!name) { name = sessionStorage.getItem('nb_name') || ''; }
+        var name = (p.get('name') || p.get('first_name') || '').trim();
+        if (!name) name = sessionStorage.getItem('nb_name') || '';
         if (name) {
           var first = name.split(/\s+/)[0].replace(/[<>&]/g, '');
           document.getElementById('ty-h1').textContent = "You're booked, " + first + '.';
         }
       } catch (e) {}
+
+      // Hammer-Them: 14 on-camera answers to the most common objections.
+      var HAMMER = [
+        [1,"I haven't got enough time.","bfmbtvg832"],
+        [2,"How do we make you stand out?","m6169m7kzu"],
+        [3,"How do we know it works?","9u2ckyrqak"],
+        [4,"Should I make the ads, or you?","32piq6olrt"],
+        [5,"How fast can I see results?","56fd2qfcan"],
+        [6,"Is an agency a short-term fix?","hgbgrog83d"],
+        [7,"I've tried ads before, it didn't work.","p2fzrg1hip"],
+        [8,"Do you have testimonials?","71evnaexa7"],
+        [9,"Do you guarantee results?","38zhblnara"],
+        [10,"Which treatment should I advertise?","ahhhq7v5d9"],
+        [11,"How our patient sales team works.","esh8li4zt4"],
+        [12,"Why 9 of 10 medspas fail with agencies.","q9gvm2tpk2"],
+        [13,"If you've been burned before.","253llfn0ms"],
+        [14,"How our patient acquisition system works.","i2wlf5j7is"]
+      ];
+      // Testimonials: owners on camera.
+      var TESTI = ["8t1vtmy0my","s6a0lg2l2b","krkefwptbl","f0vlaj8cng","4ft5xbenoa","69l69xocrq"];
+
+      function wistiaEmbed(id) {
+        if (document.getElementById('we-' + id)) return;
+        var s = document.createElement('script');
+        s.id = 'we-' + id; s.src = 'https://fast.wistia.com/embed/' + id + '.js';
+        s.async = true; s.type = 'module';
+        document.body.appendChild(s);
+      }
+
+      var grid = document.getElementById('ht-grid');
+      HAMMER.forEach(function (it) {
+        var n = it[0], q = it[1], id = it[2];
+        wistiaEmbed(id);
+        var card = document.createElement('article');
+        card.className = 'ht-card';
+        card.innerHTML = '<div class="ht-frame"><wistia-player media-id="' + id + '" aspect="0.8"></wistia-player></div>';
+        grid.appendChild(card);
+      });
+
+      var tg = document.getElementById('tg');
+      TESTI.forEach(function (id) {
+        wistiaEmbed(id);
+        var c = document.createElement('div');
+        c.className = 'tcard';
+        c.innerHTML = '<wistia-player media-id="' + id + '" aspect="1.7777777777777777"></wistia-player>';
+        tg.appendChild(c);
+      });
+
+      // FAQ
+      var FAQ = [
+        ["I've never heard of Newly Booked. How do I know this is real?","We've partnered with 25+ medspas across the U.S. since 2023 and added more than $12M in tracked partner revenue last year. The video testimonials and screenshots on our site are unedited. Your specialist will walk you through real case studies live on the call."],
+        ["What if we're not a fit?","You'll know on the call. We pre qualified you because the math looked right from your answers. If we dig in and the model doesn't pencil, or your market is already saturated for our system, we'll tell you straight, with reasons. No nurture emails."],
+        ["How does your team work with my staff day to day?","Light touch. Our setter team handles outreach and qualifies leads through Cherry before they hit your calendar, so your front desk never gets bombarded. The only daily touch is a short morning training call by Zoom."],
+        ["What if I need to reschedule?","Use the link in your confirmation email. We'd rather you show up at the right time than burn a slot at the wrong one. Just don't ghost. These slots fill fast and another owner is waiting on yours."]
+      ];
+      var faq = document.getElementById('faq');
+      FAQ.forEach(function (it, i) {
+        var item = document.createElement('div');
+        item.className = 'faq-item' + (i === 0 ? ' open' : '');
+        item.innerHTML = '<button class="faq-q" type="button"><span>' + it[0] + '</span><span class="plus">+</span></button>' +
+                         '<div class="faq-a"><div class="faq-a-in">' + it[1] + '</div></div>';
+        var btn = item.querySelector('.faq-q');
+        var ans = item.querySelector('.faq-a');
+        if (i === 0) ans.style.maxHeight = ans.scrollHeight + 40 + 'px';
+        btn.addEventListener('click', function () {
+          var isOpen = item.classList.contains('open');
+          faq.querySelectorAll('.faq-item').forEach(function (el) { el.classList.remove('open'); el.querySelector('.faq-a').style.maxHeight = '0'; });
+          if (!isOpen) { item.classList.add('open'); ans.style.maxHeight = ans.scrollHeight + 40 + 'px'; }
+        });
+        faq.appendChild(item);
+      });
     })();
   </script>
 </body>

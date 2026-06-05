@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Newly Booked — Pick your time</title>
+  <title>Newly Booked · Pick your time</title>
   <meta name="description" content="You qualified. Book your Newly Booked 15-minute intro call with a patient generation specialist." />
   <meta name="robots" content="noindex" />
 
@@ -43,7 +43,7 @@
     .meta span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--navy-500)}
     .meta svg{width:15px;height:15px;color:var(--blue-500)}
 
-    /* Booking card — the button opens the iClosed popup on this page */
+    /* Booking card. The button opens the iClosed popup on this page */
     .cal{width:100%;max-width:560px;margin:26px auto 0;background:#fff;border:1px solid var(--line);
       border-radius:20px;box-shadow:0 26px 60px -30px rgba(10,22,40,.34);
       display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:48px 26px}
@@ -78,7 +78,7 @@
         You qualify
       </div>
       <h1 id="sch-h1">Pick your time.</h1>
-      <p class="sub">A quick <b style="color:var(--navy-900);font-weight:700">15-minute intro call</b> with a patient generation specialist. We’ll look at your local market, your current offerings, and your experience — then estimate how many new patients you should be seeing, and whether Newly Booked is the right fit. No pressure, just a conversation.</p>
+      <p class="sub">A quick <b style="color:var(--navy-900);font-weight:700">15-minute intro call</b> with a patient generation specialist. We’ll look at your local market, your current offerings, and your experience, then estimate how many new patients you should be seeing, and whether Newly Booked is the right fit. No pressure, just a conversation.</p>
       <div class="meta">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 minutes</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.5-2.5v9L15 14M4 7h9a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z"/></svg>Video call</span>
@@ -88,7 +88,7 @@
       <div class="cal">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>
         <h2>Book your intro call</h2>
-        <p>Tap below to open your calendar and grab a 15-minute slot — right here, takes about 30 seconds.</p>
+        <p>Tap below to open your calendar and grab a 15-minute slot, right here. Takes about 30 seconds.</p>
         <button class="book-btn" id="sch-book" type="button"
                 data-iclosed-link="https://app.iclosed.io/e/newlybooked/setter-call"
                 data-embed-type="popup">
@@ -124,7 +124,7 @@
       if (phone) pre.set('phone', phone);
       var bookUrl = ICLOSED + (pre.toString() ? ('?' + pre.toString()) : '');
       // iClosed's widget.js opens the popup overlay on THIS page from the
-      // button's data-embed-type="popup". No new-tab fallback — it stays on the
+      // button's data-embed-type="popup". No new-tab fallback. It stays on the
       // page. The calendar renders inside the popup once iClosed allows
       // embedding for this domain (iClosed → Settings → allowed website domains).
       document.getElementById('sch-book').setAttribute('data-iclosed-link', bookUrl);
