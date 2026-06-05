@@ -107,9 +107,13 @@
     (function () {
       var ICLOSED = 'https://app.iclosed.io/e/newlybooked/setter-call';
       var p = new URLSearchParams(location.search);
-      var name = (p.get('name') || '').trim();
-      var email = (p.get('email') || '').trim();
-      var phone = (p.get('phone') || '').trim();
+      // Read from the URL first, then fall back to localStorage — the GHL form
+      // redirect lands here with no query params, but the funnel saved the
+      // lead's details under nb_name / nb_email / nb_phone before redirecting.
+      var ls = function (k) { try { return (localStorage.getItem(k) || '').trim(); } catch (e) { return ''; } };
+      var name = (p.get('name') || ls('nb_name') || '').trim();
+      var email = (p.get('email') || ls('nb_email') || '').trim();
+      var phone = (p.get('phone') || ls('nb_phone') || '').trim();
 
       if (name) {
         var first = name.split(/\s+/)[0].replace(/[<>&]/g, '');

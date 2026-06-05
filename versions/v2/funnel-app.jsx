@@ -237,6 +237,15 @@ function Funnel({ embedded } = {}) {
     if (contactBad) return;
     setSubmitting(true);
 
+    // Persist contact info so the schedule page can prefill the iClosed popup.
+    // The GHL hidden-form redirect doesn't carry URL params, so localStorage is
+    // the only thing that survives the hop to the schedule page.
+    try {
+      localStorage.setItem('nb_name', name.trim());
+      localStorage.setItem('nb_email', email.trim());
+      localStorage.setItem('nb_phone', phone.trim());
+    } catch (e) {}
+
     const dq = isDisqualified(answers);
 
     // Qualified + a hidden GHL form on the page ("nb-hidden-form" element
