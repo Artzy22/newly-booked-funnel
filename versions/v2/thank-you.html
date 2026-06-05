@@ -55,14 +55,21 @@
     .head h2{font-weight:800;font-size:clamp(24px,4.4vw,34px);line-height:1.14;letter-spacing:-.02em}
     .head .lede{margin-top:12px;font-size:15.5px;color:var(--navy-500);line-height:1.55}
 
+    /* Shared video tile + custom play button (matches the landing page) */
+    .video-thumb{position:relative;background:var(--navy-900);overflow:hidden;cursor:pointer}
+    .video-thumb wistia-player{display:block;width:100%;height:100%}
+    .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82px;height:54px;border-radius:12px;
+      background:rgba(56,66,82,.72);border:none;z-index:3;pointer-events:none;box-shadow:0 6px 20px rgba(10,22,40,.35);
+      display:flex;align-items:center;justify-content:center;transition:transform .18s ease,background .18s ease}
+    .play-btn::after{content:"";margin-left:3px;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff}
+    .video-thumb:hover .play-btn{transform:translate(-50%,-50%) scale(1.05);background:rgba(56,66,82,.88)}
+    .video-thumb.is-playing .play-btn{display:none}
+
     /* Hammer Them grid */
     .ht{background:var(--tile);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .ht-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .ht-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 40px -26px rgba(10,22,40,.35)}
-    .ht-frame{position:relative;width:100%;aspect-ratio:4/5;background:var(--navy-900)}
-    .ht-frame wistia-player{width:100%;height:100%;display:block}
-    .ht-q{padding:14px 16px 16px;font-weight:700;font-size:14.5px;line-height:1.3;letter-spacing:-.01em}
-    .ht-q .n{color:var(--blue-500);font-weight:800;margin-right:6px}
+    .ht-card .video-thumb{aspect-ratio:4/5}
 
     /* SMS callout */
     .sms .box{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;max-width:760px;margin:0 auto;box-shadow:0 18px 44px -28px rgba(10,22,40,.32)}
@@ -80,10 +87,14 @@
     .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
     .faq-a-in{font-size:14.5px;color:var(--navy-500);line-height:1.6;padding:0 2px 18px}
 
-    /* Testimonials */
-    .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .tcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 40px -26px rgba(10,22,40,.35)}
-    .tcard wistia-player{width:100%;display:block;aspect-ratio:16/9}
+    /* Testimonials — landscape cards with meta, like the landing page */
+    .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .tcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 40px -26px rgba(10,22,40,.35)}
+    .tcard .video-thumb{aspect-ratio:16/9}
+    .tmeta{padding:13px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-top:1px solid var(--line)}
+    .tmeta .name{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:15.5px;letter-spacing:-.01em}
+    .tmeta .role{font-size:11px;color:var(--navy-300);margin-top:2px}
+    .tmeta .stat{font-size:11px;font-weight:700;color:var(--blue-600);text-align:right;max-width:44%;line-height:1.3}
 
     /* How it works / prepare */
     .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -229,8 +240,15 @@
         [13,"If you've been burned before.","253llfn0ms"],
         [14,"How our patient acquisition system works.","i2wlf5j7is"]
       ];
-      // Testimonials: owners on camera.
-      var TESTI = ["8t1vtmy0my","s6a0lg2l2b","krkefwptbl","f0vlaj8cng","4ft5xbenoa","69l69xocrq"];
+      // Testimonials: id, name, spa · market, stat (matches the landing cards).
+      var TESTI = [
+        ["8t1vtmy0my","Isabel","Issil Beauty Spa · Plano, TX","$2.9M lifetime"],
+        ["s6a0lg2l2b","Natalie","Breeze Med Spa · Year 1 to 2","$2.7M lifetime"],
+        ["krkefwptbl","Couzue","Papillon Med Spa · Minnesota","$0 to $300K"],
+        ["f0vlaj8cng","Azmi","Cosmetica · Dallas, TX","$43K first month"],
+        ["4ft5xbenoa","Micaela","Lemelana Med Spa · Arlington, VA","2x with one service"],
+        ["69l69xocrq","Eliana","Naturalness Med Spa · Morrera, CA","$30K profit, first 45 days"]
+      ];
 
       function wistiaEmbed(id) {
         if (document.getElementById('we-' + id)) return;
@@ -240,22 +258,36 @@
         document.body.appendChild(s);
       }
 
+      // A video tile with the custom play button overlay. Hide the button once
+      // the video starts (the button is decorative; clicks pass through to Wistia).
+      function videoThumb(id, aspect) {
+        wistiaEmbed(id);
+        var t = document.createElement('div');
+        t.className = 'video-thumb';
+        t.innerHTML = '<wistia-player media-id="' + id + '" aspect="' + aspect + '"></wistia-player>' +
+                      '<button class="play-btn" type="button" aria-label="Play video"></button>';
+        t.querySelector('wistia-player').addEventListener('play', function () { t.classList.add('is-playing'); });
+        return t;
+      }
+
       var grid = document.getElementById('ht-grid');
       HAMMER.forEach(function (it) {
-        var n = it[0], q = it[1], id = it[2];
-        wistiaEmbed(id);
         var card = document.createElement('article');
         card.className = 'ht-card';
-        card.innerHTML = '<div class="ht-frame"><wistia-player media-id="' + id + '" aspect="0.8"></wistia-player></div>';
+        card.appendChild(videoThumb(it[2], '0.8'));
         grid.appendChild(card);
       });
 
       var tg = document.getElementById('tg');
-      TESTI.forEach(function (id) {
-        wistiaEmbed(id);
+      TESTI.forEach(function (t) {
         var c = document.createElement('div');
         c.className = 'tcard';
-        c.innerHTML = '<wistia-player media-id="' + id + '" aspect="1.7777777777777777"></wistia-player>';
+        c.appendChild(videoThumb(t[0], '1.7777777777777777'));
+        var meta = document.createElement('div');
+        meta.className = 'tmeta';
+        meta.innerHTML = '<div><div class="name">' + t[1] + '</div><div class="role">' + t[2] + '</div></div>' +
+                         '<div class="stat">' + t[3] + '</div>';
+        c.appendChild(meta);
         tg.appendChild(c);
       });
 
