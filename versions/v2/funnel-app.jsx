@@ -444,9 +444,9 @@ function Funnel({ embedded } = {}) {
 
       {!submitting && !embedded && (
         <div className="pf-foot">
-          <a href={nbUrl('__NB_TERMS_URL', 'terms.html')}>Terms</a>
+          <a href={nbUrl('__NB_TERMS_URL', 'terms.html')} target="_blank" rel="noopener noreferrer">Terms</a>
           <span className="sep">·</span>
-          <a href={nbUrl('__NB_PRIVACY_URL', 'privacy.html')}>Privacy</a>
+          <a href={nbUrl('__NB_PRIVACY_URL', 'privacy.html')} target="_blank" rel="noopener noreferrer">Privacy</a>
         </div>
       )}
       <div className="pf-progress"><div className="pf-progress-bar" style={{ width: `${Math.max(progress, 4)}%` }}></div></div>
