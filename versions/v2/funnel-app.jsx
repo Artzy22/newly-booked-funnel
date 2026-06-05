@@ -45,13 +45,32 @@ function setNativeInputValue(input, value) {
   input.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
+// Normalize a string for matching: unify dash and curly-apostrophe variants,
+// collapse whitespace, lowercase. Lets answer labels with em/en dashes (e.g.
+// "Yes — Kybella / PCDC", "$10K – $30K") match the GHL radio option values.
+function nbNorm(s) {
+  return String(s || '')
+    .replace(/[‒-―−]/g, '-')
+    .replace(/[‘’]/g, "'")
+    .replace(/\s+/g, ' ').trim().toLowerCase();
+}
+// A GHL form field's visible label (custom fields get random input names, so
+// we identify text fields by label instead of name).
+function fieldLabel(form, input) {
+  const l = input.id ? form.querySelector('label[for="' + input.id + '"]') : null;
+  if (l) return (l.textContent || '').trim();
+  const c = input.closest('label');
+  return c ? (c.textContent || '').trim() : '';
+}
 // Fill a hidden GHL form (rendered in the same page DOM, custom class
-// "nb-hidden-form") with the lead's data. Standard fields go by name; the
-// remaining single-line text inputs are custom fields, filled by builder
-// order. Create the 7 custom fields in this exact order on the GHL form:
-//   1 Owns medspa · 2 Physical location · 3 Top treatment · 4 Monthly revenue
-//   5 Weekend consults · 6 Years in business · 7 Business name
-const NB_CUSTOM_ORDER = ['own', 'location', 'treatment', 'revenue', 'frisat', 'tenure', 'business'];
+// "nb-hidden-form") with the lead's data, then its submit creates the contact.
+//   - Standard contact fields by input name.
+//   - Radio custom fields (Owns Medspa, Physical Location, Top Treatment,
+//     Monthly Revenue, Weekend Consults): GHL stores the option label as the
+//     radio value, so click the radio whose value matches the answer. Answer
+//     strings are unique across questions, so there is no ambiguity.
+//   - Text custom fields (Years in Business, Company Business Name): GHL gives
+//     these random input names, so match them by their visible label.
 function fillGhlForm(form, d) {
   const setByName = (n, v) => { const i = form.querySelector('input[name="' + n + '"]'); if (i && v != null) setNativeInputValue(i, v); };
   const parts = (d.name || '').trim().split(/\s+/);
@@ -64,9 +83,29 @@ function fillGhlForm(form, d) {
   setByName('email', d.email);
   setByName('phone', d.phone);
   setByName('city', d.city);
-  const known = ['first_name','last_name','full_name','name','phone','email','email1','address1','address','street_address','city','state','country','postal_code','postalCode','Search'];
-  const custom = Array.from(form.querySelectorAll('input[type="text"]')).filter((i) => known.indexOf(i.name) === -1);
-  NB_CUSTOM_ORDER.forEach((k, idx) => { if (custom[idx]) setNativeInputValue(custom[idx], d[k] || ''); });
+
+  // Radio custom fields: click the option whose value matches the answer.
+  const radios = Array.from(form.querySelectorAll('input[type="radio"]'));
+  [d.own, d.location, d.treatment, d.revenue, d.frisat].forEach((val) => {
+    if (!val) return;
+    const nv = nbNorm(val);
+    const r = radios.find((x) => nbNorm(x.value) === nv || nbNorm(fieldLabel(form, x)) === nv);
+    if (r && !r.checked) r.click();
+  });
+
+  // Text custom fields, matched by label (their input names are random ids).
+  const setByLabel = (labelText, v) => {
+    if (v == null) return;
+    const lt = labelText.toLowerCase();
+    const skip = ['first_name', 'last_name', 'full_name', 'name'];
+    const match = Array.from(form.querySelectorAll('input[type="text"], textarea'))
+      .find((i) => skip.indexOf(i.name) === -1 && fieldLabel(form, i).toLowerCase().indexOf(lt) !== -1);
+    if (match) setNativeInputValue(match, v);
+  };
+  setByLabel('years in business', d.tenure);
+  setByLabel('company business name', d.business);
+
+  // Consent checkboxes
   form.querySelectorAll('input[type="checkbox"]').forEach((cb) => { if (!cb.checked) cb.click(); });
 }
 
