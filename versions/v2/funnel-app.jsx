@@ -34,6 +34,41 @@ function nbUrl(name, def) {
 }
 window.nbUrl = nbUrl;
 
+// React stores input values in framework state; setting input.value directly
+// is ignored. Use the native setter then fire input/change so the framework
+// (GHL's form) picks it up.
+function setNativeInputValue(input, value) {
+  const proto = input.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+  const setter = Object.getOwnPropertyDescriptor(proto, 'value');
+  if (setter && setter.set) setter.set.call(input, value); else input.value = value;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+// Fill a hidden GHL form (rendered in the same page DOM, custom class
+// "nb-hidden-form") with the lead's data. Standard fields go by name; the
+// remaining text inputs are custom fields, filled by builder order:
+// 0 = business, 1 = monthly revenue, 2 = top treatment.
+function fillGhlForm(form, d) {
+  const setByName = (n, v) => { const i = form.querySelector('input[name="' + n + '"]'); if (i && v != null) setNativeInputValue(i, v); };
+  const parts = (d.name || '').trim().split(/\s+/);
+  const first = parts.shift() || '';
+  const last = parts.join(' ');
+  setByName('first_name', first);
+  setByName('last_name', last);
+  setByName('full_name', d.name);
+  setByName('name', d.name);
+  setByName('email', d.email);
+  setByName('phone', d.phone);
+  setByName('city', d.city);
+  const known = ['first_name','last_name','full_name','name','phone','email','email1','address1','address','street_address','city','state','country','postal_code','postalCode','Search'];
+  const custom = Array.from(form.querySelectorAll('input[type="text"]')).filter((i) => known.indexOf(i.name) === -1);
+  if (custom[0]) setNativeInputValue(custom[0], d.business || '');
+  if (custom[1]) setNativeInputValue(custom[1], d.revenue || '');
+  if (custom[2]) setNativeInputValue(custom[2], d.treatment || '');
+  form.querySelectorAll('input[type="checkbox"]').forEach((cb) => { if (!cb.checked) cb.click(); });
+}
+
 function phoneDigits(raw) { return String(raw || '').replace(/\D/g, ''); }
 function formatPhone(raw) {
   const d = phoneDigits(raw).slice(0, 10);
@@ -203,8 +238,28 @@ function Funnel({ embedded } = {}) {
 
     const dq = isDisqualified(answers);
 
-    // Push the full lead to GHL (set __NB_GHL_WEBHOOK to a GHL inbound-webhook
-    // URL). Fire-and-forget with keepalive so it survives the redirect.
+    // Qualified + a hidden GHL form on the page ("nb-hidden-form" element
+    // dropped on the GHL funnel page) → fill it and click its submit. GHL
+    // creates the contact and runs the form's On-Submit redirect to the
+    // schedule page. DQ leads skip this and go to the DQ page below.
+    const ghlForm = document.querySelector('.nb-hidden-form');
+    if (ghlForm && !dq) {
+      fillGhlForm(ghlForm, {
+        name: name.trim(), email: email.trim(), phone: phone.trim(),
+        city: (answers.city || '').trim(), business: (answers.business || '').trim(),
+        revenue: labelFor('revenue', answers.revenue),
+        treatment: labelFor('treatment', answers.treatment),
+      });
+      setTimeout(() => {
+        const btn = ghlForm.querySelector('button[type="submit"]') || ghlForm.querySelector('button');
+        if (btn) btn.click();
+      }, 250);
+      return;
+    }
+
+    // Otherwise: push the full lead to GHL via webhook (if __NB_GHL_WEBHOOK is
+    // set) and redirect ourselves. Covers DQ leads and any page (e.g. the
+    // standalone repo build) that has no hidden GHL form.
     const lead = {
       name: name.trim(), email: email.trim(), phone: phone.trim(),
       business: (answers.business || '').trim(), city: (answers.city || '').trim(),
