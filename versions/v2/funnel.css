@@ -66,11 +66,12 @@
 .pf-back:hover { color: var(--gold-600); }
 .pf-back[hidden] { visibility: hidden; }
 .pf-slots {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; flex-shrink: 0;
   background: #fff; border: 1px solid var(--line); border-radius: 999px;
-  padding: 7px 14px; font-size: 12.5px; font-weight: 600; color: var(--navy-500);
+  padding: 7px 13px; font-size: 12px; font-weight: 600; color: var(--navy-500);
   box-shadow: 0 6px 16px -10px rgba(10, 22, 40, 0.28);
 }
+.pf-logo .pf-wordmark { white-space: nowrap; }
 .pf-pulse {
   width: 7px; height: 7px; border-radius: 999px; background: #149E55; flex-shrink: 0;
   box-shadow: 0 0 0 0 rgba(20, 158, 85, 0.5); animation: pf-pulse 2s infinite;
@@ -103,7 +104,7 @@
   max-width: 16ch;
 }
 .pf-q.lg { max-width: 16ch; font-size: clamp(31px, 6.4vw, 60px); }
-.pf-q .pf-hl { color: var(--gold-500); }
+.pf-q .pf-hl { color: var(--gold-500); white-space: nowrap; }
 .pf-sub {
   font-size: clamp(15px, 1.6vw, 19px); line-height: 1.5;
   color: var(--navy-500); margin: 18px auto 0; max-width: 46ch;

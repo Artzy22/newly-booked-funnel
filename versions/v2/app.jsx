@@ -119,7 +119,7 @@ function App() {
             </div>
             <div className="number-cell">
               <div className="lbl">Approval rate</div>
-              <div className="num">80<em>%+</em></div>
+              <div className="num"><em>80%+</em></div>
               <div className="sub">Patients pre-qualified for financing before the consult.</div>
             </div>
           </div>

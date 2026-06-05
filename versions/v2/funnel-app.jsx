@@ -93,8 +93,8 @@ const STEPS = [
     q: '55% of sales happen Friday & Saturday. Can you take consults on those days?',
     sub: 'Our top spas treat the weekend as their biggest revenue window.',
     options: [
-      { v: 'yes', label: 'Yes, I can', emoji: '✅', img: 'assets/funnel/frisat-yes.png' },
-      { v: 'no', label: 'No', emoji: '🚫', img: 'assets/funnel/frisat-no.png', dq: true },
+      { v: 'yes', label: 'Yes, I can', icon: 'check' },
+      { v: 'no', label: 'No', icon: 'x', dq: true },
     ],
   },
   {
@@ -267,7 +267,7 @@ function Funnel({ embedded } = {}) {
       <div className="pf-top">
         <div className="pf-logo"><span className="pf-mark">N<i></i>B</span><span className="pf-wordmark">Newly Booked</span></div>
         {idx === 0 && !submitting ? (
-          <div className="pf-slots"><span className="pf-pulse"></span>4 spots left · this month</div>
+          <div className="pf-slots"><span className="pf-pulse"></span>4 spots left this month</div>
         ) : (
           <button className="pf-back" hidden={submitting} onClick={goBack}>← Back</button>
         )}
