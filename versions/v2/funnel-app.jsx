@@ -140,7 +140,12 @@ const labelFor = (stepId, value) => {
   return o ? o.label : (value || '');
 };
 
-// iClosed booking widget — loads the embed script once, then renders inline.
+// iClosed booking. iClosed serves X-Frame-Options: DENY for this link, so the
+// inline/popup iframe is blocked on every domain until embedding is enabled in
+// the iClosed account. We trigger the popup (works once embedding is on) and,
+// if no message arrives from the iframe (i.e. it was blocked), fall back to
+// opening the scheduler in a new tab so booking always works.
+const ICLOSED_LINK = 'https://app.iclosed.io/e/newlybooked/setter-call';
 function ScheduleCalendar() {
   useEffect(() => {
     if (document.getElementById('iclosed-widget-script')) return;
@@ -150,13 +155,28 @@ function ScheduleCalendar() {
     s.async = true;
     document.body.appendChild(s);
   }, []);
+  const onClick = () => {
+    let loaded = false;
+    const onMsg = (e) => { if (String(e.origin).indexOf('iclosed.io') !== -1) loaded = true; };
+    window.addEventListener('message', onMsg);
+    setTimeout(() => {
+      window.removeEventListener('message', onMsg);
+      if (!loaded) {
+        document.querySelectorAll('.iclosed-popup-overlay').forEach((n) => n.remove());
+        window.open(ICLOSED_LINK, '_blank', 'noopener');
+      }
+    }, 1600);
+  };
   return (
-    <div
-      className="iclosed-widget"
-      data-url="https://app.iclosed.io/e/newlybooked/setter-call"
-      title="INTRO CALL"
-      style={{ width: '100%', height: '620px' }}
-    ></div>
+    <button
+      type="button"
+      className="pf-cal-btn"
+      data-iclosed-link={ICLOSED_LINK}
+      data-embed-type="popup"
+      onClick={onClick}
+    >
+      Pick your time →
+    </button>
   );
 }
 
