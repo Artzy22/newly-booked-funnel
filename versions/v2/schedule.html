@@ -153,6 +153,9 @@
       window.addEventListener('message', function (e) {
         if (String(e.origin).indexOf('iclosed.io') === -1) return;
         got = true;
+        // The iframe is actually rendering → show it inline, drop the fallback
+        // even if it briefly appeared while waiting.
+        document.getElementById('sch-cal').classList.remove('blocked');
         var loader = document.getElementById('sch-loader');
         if (loader) loader.style.display = 'none';
         // Best-effort: move to the thank-you page on a booking confirmation.
