@@ -47,8 +47,11 @@ function setNativeInputValue(input, value) {
 
 // Fill a hidden GHL form (rendered in the same page DOM, custom class
 // "nb-hidden-form") with the lead's data. Standard fields go by name; the
-// remaining text inputs are custom fields, filled by builder order:
-// 0 = business, 1 = monthly revenue, 2 = top treatment.
+// remaining single-line text inputs are custom fields, filled by builder
+// order. Create the 7 custom fields in this exact order on the GHL form:
+//   1 Owns medspa · 2 Physical location · 3 Top treatment · 4 Monthly revenue
+//   5 Weekend consults · 6 Years in business · 7 Business name
+const NB_CUSTOM_ORDER = ['own', 'location', 'treatment', 'revenue', 'frisat', 'tenure', 'business'];
 function fillGhlForm(form, d) {
   const setByName = (n, v) => { const i = form.querySelector('input[name="' + n + '"]'); if (i && v != null) setNativeInputValue(i, v); };
   const parts = (d.name || '').trim().split(/\s+/);
@@ -63,9 +66,7 @@ function fillGhlForm(form, d) {
   setByName('city', d.city);
   const known = ['first_name','last_name','full_name','name','phone','email','email1','address1','address','street_address','city','state','country','postal_code','postalCode','Search'];
   const custom = Array.from(form.querySelectorAll('input[type="text"]')).filter((i) => known.indexOf(i.name) === -1);
-  if (custom[0]) setNativeInputValue(custom[0], d.business || '');
-  if (custom[1]) setNativeInputValue(custom[1], d.revenue || '');
-  if (custom[2]) setNativeInputValue(custom[2], d.treatment || '');
+  NB_CUSTOM_ORDER.forEach((k, idx) => { if (custom[idx]) setNativeInputValue(custom[idx], d[k] || ''); });
   form.querySelectorAll('input[type="checkbox"]').forEach((cb) => { if (!cb.checked) cb.click(); });
 }
 
@@ -246,9 +247,14 @@ function Funnel({ embedded } = {}) {
     if (ghlForm && !dq) {
       fillGhlForm(ghlForm, {
         name: name.trim(), email: email.trim(), phone: phone.trim(),
-        city: (answers.city || '').trim(), business: (answers.business || '').trim(),
-        revenue: labelFor('revenue', answers.revenue),
+        city: (answers.city || '').trim(),
+        own: labelFor('own', answers.own),
+        location: labelFor('location', answers.location),
         treatment: labelFor('treatment', answers.treatment),
+        revenue: labelFor('revenue', answers.revenue),
+        frisat: labelFor('frisat', answers.frisat),
+        tenure: labelFor('tenure', answers.tenure),
+        business: (answers.business || '').trim(),
       });
       setTimeout(() => {
         const btn = ghlForm.querySelector('button[type="submit"]') || ghlForm.querySelector('button');
