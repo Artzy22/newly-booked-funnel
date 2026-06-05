@@ -126,6 +126,14 @@ function App() {
         </div>
       </section>
 
+      {/* CTA */}
+      <div className="cta-band">
+        <div className="container">
+          <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
+          <div className="cta-band-note">60-second qualifier · No retainer · No 12-month lock</div>
+        </div>
+      </div>
+
       {/* THE PROBLEM / WHY PERFORMANCE-BASED */}
       <section className="section" id="why" data-screen-label="05 Why">
         <div className="container">
@@ -350,6 +358,14 @@ function App() {
         </div>
       </section>
 
+      {/* CTA */}
+      <div className="cta-band">
+        <div className="container">
+          <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
+          <div className="cta-band-note">Owner-operated spas only · We only get paid when patients pay</div>
+        </div>
+      </div>
+
       {/* WHAT YOU GET */}
       <section className="section" id="what" data-screen-label="09 What">
         <div className="container">
@@ -394,6 +410,14 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* CTA */}
+      <div className="cta-band">
+        <div className="container">
+          <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
+          <div className="cta-band-note">60-second qualifier · See if your area is open</div>
+        </div>
+      </div>
 
       {/* FAQ */}
       <section className="section cream" id="faq" data-screen-label="10 FAQ">

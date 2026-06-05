@@ -5,6 +5,25 @@
 
 const { useState, useEffect } = React;
 
+// Bump when the funnel card images change, to bust browser/CDN cache.
+const IMG_V = 2;
+
+// Simple inline icons for yes/no cards (clean SVG, no busy photos).
+function PfIcon({ name }) {
+  const p = { width: 34, height: 34, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.6, strokeLinecap: 'round', strokeLinejoin: 'round' };
+  if (name === 'check') return (<svg {...p}><path d="M5 12.5l4.3 4.3L19 7" /></svg>);
+  if (name === 'x') return (<svg {...p}><path d="M17 7L7 17M7 7l10 10" /></svg>);
+  return null;
+}
+
+// Render a headline with one substring highlighted in the accent color.
+function renderQ(q, hl) {
+  if (!hl) return q;
+  const i = q.indexOf(hl);
+  if (i < 0) return q;
+  return (<>{q.slice(0, i)}<span className="pf-hl">{hl}</span>{q.slice(i + hl.length)}</>);
+}
+
 // Resolve a configurable URL global, ignoring unreplaced placeholders.
 function nbUrl(name, def) {
   try {
@@ -34,10 +53,11 @@ const STEPS = [
     id: 'own', kind: 'cards', key: 'own', cols: 2, big: true, trust: true,
     eyebrow: 'For medspa owners',
     q: 'Add $50K–$100K/month in new-patient revenue without tire-kickers or retainers.',
+    hl: '$50K–$100K',
     prompt: 'First — do you own a medspa?',
     options: [
-      { v: 'yes', label: 'Yes, I own a medspa', emoji: '🏢', img: 'assets/funnel/own-yes.png' },
-      { v: 'no', label: "No, I don't have a medspa", emoji: '🙋', img: 'assets/funnel/own-no.png', dq: true },
+      { v: 'yes', label: 'Yes, I own a medspa', icon: 'check' },
+      { v: 'no', label: "No, I don't have a medspa", icon: 'x', dq: true },
     ],
   },
   {
@@ -78,13 +98,13 @@ const STEPS = [
     ],
   },
   {
-    id: 'tenure', kind: 'tiles', key: 'tenure', cols: 4,
+    id: 'tenure', kind: 'choices', key: 'tenure', cols: 2,
     q: 'How long has your medspa been in business?',
     options: [
-      { v: '<1', label: 'Under 1 year', emoji: '🌱', img: 'assets/funnel/ten-1.png' },
-      { v: '1-3', label: '1 – 3 years', emoji: '🌿', img: 'assets/funnel/ten-2.png' },
-      { v: '3-5', label: '3 – 5 years', emoji: '🌳', img: 'assets/funnel/ten-3.png' },
-      { v: '5+', label: '5+ years', emoji: '🏛️', img: 'assets/funnel/ten-4.png' },
+      { v: '<1', label: 'Under 1 year' },
+      { v: '1-3', label: '1 – 3 years' },
+      { v: '3-5', label: '3 – 5 years' },
+      { v: '5+', label: '5+ years' },
     ],
   },
   {
@@ -246,7 +266,11 @@ function Funnel({ embedded } = {}) {
     <div className="pf-root" id="qualify">
       <div className="pf-top">
         <div className="pf-logo"><span className="pf-mark">N<i></i>B</span><span className="pf-wordmark">Newly Booked</span></div>
-        <button className="pf-back" hidden={idx === 0 || submitting} onClick={goBack}>← Back</button>
+        {idx === 0 && !submitting ? (
+          <div className="pf-slots"><span className="pf-pulse"></span>4 spots left · this month</div>
+        ) : (
+          <button className="pf-back" hidden={submitting} onClick={goBack}>← Back</button>
+        )}
       </div>
 
       <div className="pf-stage">
@@ -260,7 +284,7 @@ function Funnel({ embedded } = {}) {
           ) : (
             <>
               <div className="pf-eyebrow">{eyebrow}</div>
-              <h1 className={`pf-q${step.big ? ' lg' : ''}`}>{step.q}</h1>
+              <h1 className={`pf-q${step.big ? ' lg' : ''}`}>{renderQ(step.q, step.hl)}</h1>
               {step.sub && <p className="pf-sub">{step.sub}</p>}
               {step.prompt && <p className="pf-prompt">{step.prompt}</p>}
 
@@ -273,7 +297,9 @@ function Funnel({ embedded } = {}) {
                       onClick={() => pick(o)}
                     >
                       <span className="pf-card-media">
-                        {o.img ? <img src={o.img} alt={o.label} loading="lazy" /> : o.emoji}
+                        {o.img ? <img src={`${o.img}?v=${IMG_V}`} alt={o.label} loading="lazy" />
+                          : o.icon ? <span className={`pf-cardicon pf-cardicon-${o.icon}`}><PfIcon name={o.icon} /></span>
+                          : o.emoji}
                       </span>
                       <span className="pf-card-label">{o.label}</span>
                     </button>
