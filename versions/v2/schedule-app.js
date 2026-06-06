@@ -15,7 +15,44 @@
     document.head.appendChild(l);
   }
   addLink('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,500..600&display=swap');
-  addLink(BASE + 'schedule.css?v=' + v);
+
+  // Inline the styles instead of an external stylesheet: a <link> loads async,
+  // so the markup paints unstyled (oversized SVG icons) for a split second
+  // first. A <style> injected here applies synchronously with the markup.
+  var style = document.createElement('style');
+  style.textContent = [
+    ':root{--navy-900:#0A1628;--navy-500:#43597A;--navy-300:#8A9AB3;--blue-700:#1C3CB8;--blue-600:#2348D4;--blue-500:#2B54E8;--blue-400:#5C79F2;--blue-50:#EDF1FE;--line:#E5E9F1;--green:#149E55}',
+    '#nb-schedule *{box-sizing:border-box;margin:0;padding:0}',
+    'body{font-family:"Inter",sans-serif;color:var(--navy-900);-webkit-font-smoothing:antialiased;background:radial-gradient(135% 72% at 50% -10%,#E7EEFF 0%,#F4F7FE 44%,#fff 80%);min-height:100vh;min-height:100svh}',
+    '#nb-schedule .wrap{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;max-width:680px;margin:0 auto}',
+    '#nb-schedule .top{display:flex;align-items:center;justify-content:space-between;padding:22px 24px}',
+    '#nb-schedule .logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--navy-900)}',
+    '#nb-schedule .mark{display:inline-flex;align-items:center;gap:3px;background:var(--navy-900);color:#fff;font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:15px;line-height:1;letter-spacing:.5px;padding:7px 9px 8px;border-radius:6px}',
+    '#nb-schedule .mark i{width:1px;height:13px;background:rgba(255,255,255,.55);display:inline-block}',
+    '#nb-schedule .secure{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--navy-500)}',
+    '#nb-schedule .secure .dot{width:7px;height:7px;border-radius:999px;background:var(--green);box-shadow:0 0 0 0 rgba(20,158,85,.5);animation:nbpulse 2s infinite}',
+    '@keyframes nbpulse{0%{box-shadow:0 0 0 0 rgba(20,158,85,.5)}70%{box-shadow:0 0 0 7px rgba(20,158,85,0)}100%{box-shadow:0 0 0 0 rgba(20,158,85,0)}}',
+    '#nb-schedule .stage{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 22px 40px}',
+    '#nb-schedule .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(20,158,85,.1);color:#0E7C42;font-weight:700;font-size:12.5px;letter-spacing:.04em;padding:8px 15px;border-radius:999px;margin-bottom:18px}',
+    '#nb-schedule .eyebrow svg{width:14px;height:14px}',
+    '#nb-schedule h1{font-weight:800;font-size:clamp(28px,6.4vw,42px);line-height:1.12;letter-spacing:-.025em;max-width:16ch}',
+    '#nb-schedule .sub{margin-top:14px;font-size:16px;font-weight:500;color:var(--navy-500);line-height:1.5;max-width:42ch}',
+    '#nb-schedule .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-top:18px}',
+    '#nb-schedule .meta span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--navy-500)}',
+    '#nb-schedule .meta svg{width:15px;height:15px;color:var(--blue-500)}',
+    '#nb-schedule .cal{width:100%;max-width:560px;margin:26px auto 0;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 26px 60px -30px rgba(10,22,40,.34);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:48px 26px}',
+    '#nb-schedule .cal .ic{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#2B54E8,#1E3FC9);color:#fff;box-shadow:0 16px 30px -12px rgba(43,84,232,.5);margin-bottom:8px}',
+    '#nb-schedule .cal .ic svg{width:30px;height:30px}',
+    '#nb-schedule .cal h2{font-weight:800;font-size:20px;letter-spacing:-.01em}',
+    '#nb-schedule .cal p{font-size:14px;color:var(--navy-500);line-height:1.5;max-width:34ch;margin-top:2px}',
+    '#nb-schedule .book-btn{margin-top:16px;width:100%;max-width:360px;cursor:pointer;background:linear-gradient(160deg,#2B54E8,#1E3FC9);color:#fff;border:none;border-radius:15px;font-family:inherit;font-weight:800;font-size:17px;padding:18px 24px;display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 18px 36px -10px rgba(43,84,232,.55);transition:transform .12s ease,box-shadow .12s ease}',
+    '#nb-schedule .book-btn:hover{transform:translateY(-2px);box-shadow:0 22px 42px -10px rgba(43,84,232,.7)}',
+    '#nb-schedule .book-btn:active{transform:translateY(0)}',
+    '#nb-schedule .foot{padding:8px 24px 26px;text-align:center;font-size:12px;color:var(--navy-300)}',
+    '#nb-schedule .foot a{color:var(--navy-500);text-decoration:none;font-weight:600}',
+    '@media (max-width:560px){#nb-schedule .secure{display:none}}'
+  ].join('');
+  document.head.appendChild(style);
 
   // --- markup ---
   var host = document.getElementById('nb-schedule');
