@@ -3,76 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Newly Booked — Application received</title>
-  <meta name="description" content="Thanks for applying to Newly Booked. Based on your answers, we're not the right fit right now — here's what we look for, and how to reach us if something changes." />
+  <title>Newly Booked · Application received</title>
+  <meta name="description" content="Thanks for applying to Newly Booked. Based on your answers, we're not the right fit right now." />
   <meta name="robots" content="noindex" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    body { background: var(--navy-900); color: var(--paper); }
-    .dq-wrap {
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 48px 24px;
+    :root{
+      --navy-900:#0A1628; --navy-700:#1B2D4A; --navy-300:#8A9AB3; --navy-200:#C5D0E0;
+      --paper:#FFFFFF; --blue-500:#2B54E8; --blue-400:#5C79F2; --blue-200:#BCC8FA;
     }
-    .dq-card {
-      width: 100%; max-width: 640px; text-align: left;
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--navy-900); color:var(--paper);
+      font-family:"Inter",sans-serif; -webkit-font-smoothing:antialiased;
+      min-height:100vh; min-height:100svh;
     }
-    .dq-brand {
-      display: inline-flex; align-items: center; gap: 9px;
-      font-family: "Inter", sans-serif; font-weight: 600; font-size: 15px;
-      letter-spacing: 0.02em; color: var(--paper); margin-bottom: 40px;
-    }
-    .dq-brand .dot {
-      width: 9px; height: 9px; border-radius: 999px;
-      background: var(--gold-500); display: inline-block;
-    }
-    .dq-eyebrow {
-      font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600;
-      letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400);
-      padding-top: 14px; border-top: 1px solid var(--navy-700);
-      display: inline-block; margin-bottom: 18px;
-    }
-    .dq-h1 {
-      font-family: "Source Serif 4", Georgia, serif;
-      font-size: 40px; line-height: 1.12; letter-spacing: -0.02em;
-      margin: 0 0 18px; color: var(--paper);
-    }
-    .dq-h1 em { font-style: italic; color: var(--gold-400); }
-    .dq-sub {
-      font-family: "Inter", sans-serif; font-size: 16px; line-height: 1.6;
-      color: var(--navy-200); margin: 0 0 28px;
-    }
-    .dq-list {
-      list-style: none; margin: 0 0 32px; padding: 0;
-      border-top: 1px solid var(--navy-700);
-    }
-    .dq-list li {
-      font-family: "Inter", sans-serif; font-size: 14.5px; color: var(--navy-200);
-      padding: 14px 0 14px 26px; position: relative;
-      border-bottom: 1px solid var(--navy-700);
-    }
-    .dq-list li::before {
-      content: "—"; position: absolute; left: 0; color: var(--gold-500);
-    }
-    .dq-note {
-      font-family: "Inter", sans-serif; font-size: 13.5px; line-height: 1.6;
-      color: var(--navy-300); margin: 0 0 32px;
-    }
-    .dq-back {
-      font-family: "Inter", sans-serif; font-size: 13px; font-weight: 600;
-      letter-spacing: 0.04em; text-decoration: none; color: var(--gold-400);
-    }
-    .dq-back:hover { color: var(--gold-200); }
-    @media (max-width: 560px) {
-      .dq-h1 { font-size: 30px; }
-      .dq-brand { margin-bottom: 28px; }
-    }
+    .dq-wrap{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:48px 24px}
+    .dq-card{width:100%;max-width:640px;text-align:left}
+    .dq-brand{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;letter-spacing:.02em;color:var(--paper);margin-bottom:40px}
+    .dq-brand .dot{width:9px;height:9px;border-radius:999px;background:var(--blue-500);display:inline-block}
+    .dq-eyebrow{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--blue-400);padding-top:14px;border-top:1px solid var(--navy-700);display:inline-block;margin-bottom:18px}
+    .dq-h1{font-family:"Source Serif 4",Georgia,serif;font-size:40px;line-height:1.12;letter-spacing:-.02em;margin:0 0 18px;color:var(--paper)}
+    .dq-h1 em{font-style:italic;color:var(--blue-400)}
+    .dq-sub{font-size:16px;line-height:1.6;color:var(--navy-200);margin:0 0 28px}
+    .dq-list{list-style:none;margin:0 0 32px;padding:0;border-top:1px solid var(--navy-700)}
+    .dq-list li{font-size:14.5px;color:var(--navy-200);padding:14px 0 14px 26px;position:relative;border-bottom:1px solid var(--navy-700)}
+    .dq-list li::before{content:"";position:absolute;left:0;top:21px;width:12px;height:2px;border-radius:2px;background:var(--blue-500)}
+    .dq-note{font-size:13.5px;line-height:1.6;color:var(--navy-300);margin:0}
+    @media (max-width:560px){ .dq-h1{font-size:30px} .dq-brand{margin-bottom:28px} }
   </style>
 </head>
 <body>
@@ -82,7 +44,7 @@
       <div class="dq-eyebrow">Application received</div>
       <h1 class="dq-h1" id="dq-h1">Right now, we're <em>not the right fit.</em></h1>
       <p class="dq-sub" id="dq-sub">
-        Thanks for taking the time to apply. Based on your answers, your spa isn't a match for the program today — and we'd rather tell you straight than waste a call.
+        Thanks for taking the time to apply. Based on your answers, your spa isn't a match for the program today, and we'd rather tell you straight than waste a call.
       </p>
       <ul class="dq-list">
         <li>Owner-operated medspa or aesthetic clinic with a physical location</li>
@@ -91,9 +53,8 @@
         <li>Able to take Friday &amp; Saturday consultations</li>
       </ul>
       <p class="dq-note">
-        If your situation changes — or you think this was a mistake — just reply to the email we sent and we'll take another look.
+        If your situation changes, or you think this was a mistake, just reply to the email we sent and we'll take another look.
       </p>
-      <a class="dq-back" href="index.html">← Back to Newly Booked</a>
     </div>
   </main>
 
@@ -104,10 +65,10 @@
         var p = new URLSearchParams(window.location.search);
         var name = (p.get('name') || '').trim();
         if (name) {
-          var first = name.split(/\s+/)[0];
+          var first = name.split(/\s+/)[0].replace(/[<>&]/g, '');
           var sub = document.getElementById('dq-sub');
           sub.textContent = 'Thanks for taking the time to apply, ' + first +
-            '. Based on your answers, your spa isn’t a match for the program today — and we’d rather tell you straight than waste a call.';
+            '. Based on your answers, your spa isn’t a match for the program today, and we’d rather tell you straight than waste a call.';
         }
       } catch (e) {}
     })();
