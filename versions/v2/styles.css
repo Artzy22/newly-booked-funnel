@@ -566,11 +566,11 @@ wistia-player:not(:defined) {
 .video-thumb .play-btn {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 82px; height: 54px; border-radius: 12px;
-  background: rgba(56, 66, 82, 0.72);
+  background: rgba(43, 84, 232, 0.82);
   display: flex; align-items: center; justify-content: center;
   font-size: 0;
   border: none; z-index: 3; pointer-events: none;
-  box-shadow: 0 6px 20px rgba(10, 22, 40, 0.35);
+  box-shadow: 0 8px 24px rgba(43, 84, 232, 0.5);
   transition: transform 180ms ease, background 180ms ease;
 }
 .video-thumb .play-btn::after {
@@ -578,7 +578,7 @@ wistia-player:not(:defined) {
   border-style: solid; border-width: 9px 0 9px 15px;
   border-color: transparent transparent transparent #fff;
 }
-.video-thumb:hover .play-btn { transform: translate(-50%, -50%) scale(1.05); background: rgba(56, 66, 82, 0.88); }
+.video-thumb:hover .play-btn { transform: translate(-50%, -50%) scale(1.05); background: rgba(43, 84, 232, 0.98); }
 .video-thumb .timecode {
   position: absolute; top: 16px; right: 16px;
   font-family: "JetBrains Mono", monospace; font-size: 10px;
