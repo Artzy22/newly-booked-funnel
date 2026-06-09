@@ -101,7 +101,7 @@ function fillGhlForm(form, d) {
     }
   });
 
-  // Text custom fields, matched by label (their input names are random ids).
+  // Custom fields with random input names → match by the GHL field label.
   const setByLabel = (labelText, v) => {
     if (v == null) return;
     const lt = labelText.toLowerCase();
@@ -110,12 +110,28 @@ function fillGhlForm(form, d) {
       .find((i) => skip.indexOf(i.name) === -1 && fieldLabel(form, i).toLowerCase().indexOf(lt) !== -1);
     if (match) setNativeInputValue(match, v);
   };
+  // Native <select> dropdown custom fields → set the matching option by label.
+  const setSelect = (labelText, v) => {
+    if (!v) return;
+    const lt = labelText.toLowerCase(); const want = nbNorm(v);
+    const sel = Array.from(form.querySelectorAll('select')).find((s) => fieldLabel(form, s).toLowerCase().indexOf(lt) !== -1);
+    if (!sel) return;
+    const opt = Array.from(sel.options).find((o) => nbNorm(o.value) === want || nbNorm(o.textContent) === want);
+    if (opt) setNativeInputValue(sel, opt.value);
+  };
+  // For each quiz answer, also try a dropdown and a text field by the GHL field
+  // label, so it fills whatever type the field is (radios are handled above).
+  const fillAny = (labelText, v) => { setSelect(labelText, v); setByLabel(labelText, v); };
+  fillAny('priced at', d.own);
+  fillAny('before we move forward', d.location);
+  fillAny('kybella', d.treatment);
+  fillAny('fridays', d.frisat);
+  fillAny('monthly revenue', d.revenue);
+  fillAny('sales abilities', d.sales);
+  fillAny('run ads', d.ads);
   setByLabel('years in business', d.tenure);
-  setByLabel('company business name', d.business);
-  // Sales-confidence and ads-experience fields (text fallback; if they're radios
-  // they're handled above). Match on a distinctive word in the field label.
-  setByLabel('sales', d.sales);
-  setByLabel('ads', d.ads);
+  setByLabel('business name', d.business);
+  setByLabel('markets', d.city);
   // City / State: the funnel stores "City, ST" (e.g. "Austin, TX"). Split it
   // across the form's City and State fields, matched by name and by label so it
   // works for standalone City/State fields or the GHL Address widget's sub-fields.
