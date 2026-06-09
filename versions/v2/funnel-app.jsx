@@ -287,12 +287,13 @@ function Funnel({ embedded } = {}) {
 
     const dq = isDisqualified(answers);
 
-    // Qualified + a hidden GHL form on the page ("nb-hidden-form" element
-    // dropped on the GHL funnel page) → fill it and click its submit. GHL
-    // creates the contact and runs the form's On-Submit redirect to the
-    // schedule page. DQ leads skip this and go to the DQ page below.
+    // Every lead (qualified AND disqualified) fills the hidden GHL form
+    // ("nb-hidden-form" on the GHL funnel page) and submits it. GHL creates the
+    // contact and its own form conditions decide the redirect: disqualifying
+    // answers → the DQ page, everyone else → the schedule page. The funnel no
+    // longer routes DQ itself — that's owned by GHL now.
     const ghlForm = document.querySelector('.nb-hidden-form');
-    if (ghlForm && !dq) {
+    if (ghlForm) {
       fillGhlForm(ghlForm, {
         name: name.trim(), email: email.trim(), phone: phone.trim(),
         city: (answers.city || '').trim(),
