@@ -88,7 +88,7 @@ function fillGhlForm(form, d) {
   // its own state — so click the label (what a human clicks) AND fire
   // input/change so the framework registers the choice, not just the DOM.
   const radios = Array.from(form.querySelectorAll('input[type="radio"]'));
-  [d.own, d.location, d.treatment, d.revenue, d.frisat, d.sales, d.ads].forEach((val) => {
+  [d.own, d.location, d.treatment, d.revenue, d.frisat, d.tenure, d.sales, d.ads].forEach((val) => {
     if (!val) return;
     const nv = nbNorm(val);
     const r = radios.find((x) => nbNorm(x.value) === nv || nbNorm(fieldLabel(form, x)) === nv);
