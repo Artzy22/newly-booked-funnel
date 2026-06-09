@@ -244,9 +244,8 @@ const STEPS = [
     ],
   },
   {
-    id: 'city', kind: 'text', key: 'city',
-    q: 'What market(s) is your clinic located in?',
-    placeholder: 'e.g. Austin, TX',
+    id: 'city', kind: 'autocomplete', key: 'city',
+    q: 'Where is your medspa located?',
   },
   {
     id: 'business', kind: 'text', key: 'business',
