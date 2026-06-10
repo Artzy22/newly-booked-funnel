@@ -273,8 +273,7 @@ const STEPS = [
     options: [
       { v: '<15', label: 'Under $15K', dq: true },
       { v: '15-50', label: '$15K – $50K' },
-      { v: '50-100', label: '$50K – $100K' },
-      { v: '100-150', label: '$100K – $150K' },
+      { v: '50-150', label: '$50K – $150K' },
       { v: '150-250', label: '$150K – $250K' },
       { v: '250+', label: '$250K+' },
     ],
