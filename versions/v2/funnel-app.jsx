@@ -250,11 +250,11 @@ const STEPS = [
   {
     id: 'own', kind: 'cards', key: 'own', cols: 2, big: true, trust: true,
     eyebrow: 'For medspa owners',
-    q: 'Add $50K–$100K/month in new patient revenue without tire kickers or retainers.',
-    hl: '$50K–$100K',
+    q: 'Add $100K–$150K/month in new patient revenue without tire kickers or retainers.',
+    hl: '$100K–$150K',
     prompt: 'Do you own a medspa or aesthetic clinic with high-end devices and treatment plans priced at $1,000+?',
     options: [
-      { v: 'yes', label: 'Yes, we can inject those treatments', icon: 'check' },
+      { v: 'yes', label: 'Yes, we can inject', fill: 'Yes, we can inject those treatments', icon: 'check' },
       { v: 'no', label: "No, I'm going to leave this page immediately", icon: 'x', dq: true },
     ],
   },
@@ -270,27 +270,29 @@ const STEPS = [
   },
   {
     id: 'treatment', kind: 'choices', key: 'treatment', cols: 1,
-    q: 'Do you own a medical spa or aesthetic clinic that currently offers fat-reduction treatments like Kybella or PCDC (Liquid Lipo)?',
+    q: 'Do you currently offer Kybella, PCDC, Liquid Lipo, or Lemon Bottle?',
     options: [
-      { v: 'yes', label: 'Yes, we already offer it' },
-      { v: 'open', label: 'No, BUT we have injectors and are open to offer it, if it makes sense' },
-      { v: 'no', label: "No, and we can't or do not plan on offering it", dq: true },
+      { v: 'yes', label: 'Yes, we offer it', fill: 'Yes, we already offer it' },
+      { v: 'open', label: 'No, but we have injectors', fill: 'No, BUT we have injectors and are open to offer it, if it makes sense' },
+      { v: 'no', label: "No, we don't currently", fill: "No, and we can't or do not plan on offering it", dq: true },
     ],
   },
   {
     id: 'revenue', kind: 'choices', key: 'revenue', cols: 2,
     q: 'What does your spa currently bring in per month?',
     options: [
-      { v: '<10', label: 'Under $10K', dq: true },
-      { v: '10-30', label: '$10K – $30K' },
-      { v: '30-100', label: '$30K – $100K' },
-      { v: '100+', label: '$100K+' },
+      { v: '<15', label: 'Under $15K', dq: true },
+      { v: '15-50', label: '$15K – $50K' },
+      { v: '50-100', label: '$50K – $100K' },
+      { v: '100-150', label: '$100K – $150K' },
+      { v: '150-250', label: '$150K – $250K' },
+      { v: '250+', label: '$250K+' },
     ],
   },
   {
     id: 'frisat', kind: 'choices', key: 'frisat', cols: 1,
     q: '55% of sales happen Friday & Saturday. Are you willing to take consultations on those days every week?',
-    sub: 'This program has generated over $5.3M for our spas, and the weekend is the biggest revenue window.',
+    sub: 'This program has generated over $8M for our spas, and the weekend is the biggest revenue window.',
     options: [
       { v: 'yes', label: 'Yes, I am ready to do whatever it takes to grow my business' },
       { v: 'no', label: 'No, I am not willing to make Fridays and Saturdays available for consultations', dq: true },
@@ -328,7 +330,7 @@ const STEPS = [
   },
   {
     id: 'city', kind: 'autocomplete', key: 'city',
-    q: 'Where is your medspa located?',
+    q: 'What city or metro is your spa in?',
   },
   {
     id: 'business', kind: 'text', key: 'business',
@@ -352,11 +354,14 @@ function isDisqualified(answers) {
 }
 
 const QUESTION_KINDS = ['cards', 'tiles', 'text', 'choices', 'autocomplete'];
+// Value sent to the GHL form for a chosen option. Prefer an option's `fill` (the
+// exact text GHL's radio/dropdown matches on) so the visible `label` can be
+// reworded freely without breaking the form fill. Falls back to `label`.
 const labelFor = (stepId, value) => {
   const s = STEPS.find((x) => x.id === stepId);
   if (!s || !s.options) return value || '';
   const o = s.options.find((x) => x.v === value);
-  return o ? o.label : (value || '');
+  return o ? (o.fill || o.label) : (value || '');
 };
 
 function Funnel({ embedded } = {}) {
@@ -576,7 +581,7 @@ function Funnel({ embedded } = {}) {
                   <div className="pf-ac">
                     <input
                       className="pf-input" type="text" autoFocus autoComplete="off"
-                      placeholder="Start typing your city…"
+                      placeholder="Example: Plano, Texas"
                       value={answers[step.key] || ''}
                       onChange={(e) => { setAnswers((a) => ({ ...a, [step.key]: e.target.value })); setShowCity(true); }}
                       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if ((answers[step.key] || '').trim()) goNext(); } }}
@@ -626,8 +631,8 @@ function Funnel({ embedded } = {}) {
                 <div className="pf-trust">
                   <div className="pf-trust-label">The system behind it</div>
                   <div className="pf-stats">
-                    <div className="pf-stat"><span className="pf-stat-num">$7M+</span><span className="pf-stat-cap">package sales</span></div>
-                    <div className="pf-stat"><span className="pf-stat-num">80%+</span><span className="pf-stat-cap">Cherry approval</span></div>
+                    <div className="pf-stat"><span className="pf-stat-num">$8M+</span><span className="pf-stat-cap">package sales</span></div>
+                    <div className="pf-stat"><span className="pf-stat-num">80%+</span><span className="pf-stat-cap">approved for financing</span></div>
                     <div className="pf-stat"><span className="pf-stat-num">$0</span><span className="pf-stat-cap">retainer</span></div>
                   </div>
                 </div>

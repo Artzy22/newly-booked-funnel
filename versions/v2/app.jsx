@@ -109,7 +109,7 @@ function App() {
           <div className="numbers-band">
             <div className="number-cell">
               <div className="lbl">Lifetime sales</div>
-              <div className="num"><em>$7M+</em></div>
+              <div className="num"><em>$8M+</em></div>
               <div className="sub">In medspa package sales across our partner spas.</div>
             </div>
             <div className="number-cell">
@@ -269,7 +269,7 @@ function App() {
               <div className="mech-arrow us">↓</div>
               <div className="mech-flow-step">
                 <div className="mech-flow-icon us">🪑</div>
-                <div className="mech-flow-txt">Owner closes with our $7M+ script</div>
+                <div className="mech-flow-txt">Owner closes with our $8M+ script</div>
               </div>
               <div className="mech-flow-result us">
                 <div className="mech-result-stat">80%+</div>
@@ -309,7 +309,7 @@ function App() {
                 <div className="day">DAYS 1–14</div>
               </div>
               <h4>Onboarding</h4>
-              <p>Ads launch. Pre-qualified leads start coming in. Our setter team books appointments directly into your calendar. You learn the script that's done $7M+ in sales. We record every consult.</p>
+              <p>Ads launch. Pre-qualified leads start coming in. Our setter team books appointments directly into your calendar. You learn the script that's done $8M+ in sales. We record every consult.</p>
             </div>
             <div className="step-cell">
               <div className="marker">
@@ -317,7 +317,7 @@ function App() {
                 <div className="day">DAYS 30–45</div>
               </div>
               <h4>Closing rhythm locked in</h4>
-              <p>By day 45 you (or whoever closes in your spa) are running consults to our $7M+ script with daily live training from Ivan. Close rate, package mix, and revenue-per-patient all move in week one.</p>
+              <p>By day 45 you (or whoever closes in your spa) are running consults to our $8M+ script with daily live training from Ivan. Close rate, package mix, and revenue-per-patient all move in week one.</p>
             </div>
           </div>
         </div>
@@ -394,8 +394,8 @@ function App() {
             </div>
             <div className="feat">
               <div className="ix">04</div>
-              <h4>$7M+ tested sales script</h4>
-              <p>Not a template. The actual script that's driven $7M+ in package sales, refined across 25+ owner calls and thousands of patient consults.</p>
+              <h4>$8M+ tested sales script</h4>
+              <p>Not a template. The actual script that's driven $8M+ in package sales, refined across 25+ owner calls and thousands of patient consults.</p>
             </div>
             <div className="feat">
               <div className="ix">05</div>
