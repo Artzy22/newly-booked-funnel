@@ -1,127 +1,128 @@
-# Newly Booked: Funnel to GHL Field Map (for Vlad)
+# Newly Booked: Funnel → GHL Field Map (for Vlad)
 
-Full map of how the apply-page quiz connects into GHL. Updated 2026-06-09 (v2).
-**Read section 4 first** — duplicate fields are the one thing that needs cleanup.
+How the apply-page funnel connects into GHL. **Synced 2026-06-10** to the verified
+handoff (keys checked against the live workflows). Replaces the earlier draft.
+The funnel code (`versions/v2/funnel-app.jsx`) was updated the same day to match
+these keys — tenure label **"Business Experience"** and revenue key
+`current_monthly_revenue`.
 
-> The funnel matches each **radio** field by its **option text** (the answer wording),
-> NOT by the field name or key. So a field's name/key can be anything, but its radio
-> options must match section 6 (case/dashes don't matter, wording does). Text fields
-> are matched by their label.
+> **The one rule:** the funnel fills the hidden GHL form like a human.
+> **Radio** fields are matched by their **option text** (the answer wording —
+> case/dashes don't matter, wording does). **Text** fields are matched by their
+> **label**. The funnel **cannot** fill a **Dropdown / Single-Options** field —
+> those come through blank.
 
 ---
 
 ## 1. How it connects
 - The funnel at **newlybooked.com/apply** fills a **hidden GHL form** on the same page, then clicks its submit. GHL creates the contact and runs the form's redirect.
-- Hidden form = a GHL **Form element** with custom CSS class `nb-hidden-form`, placed on the page and hidden off-screen.
+- Hidden form = a GHL **Form element** with custom CSS class **`nb-hidden-form`**, placed on the page and hidden off-screen (`left:-9999px`, **not** `display:none`).
 - **Qualified** → form submits → GHL redirect → schedule page. **Disqualified** → funnel skips the form (no contact) → newlybooked.com/dq.
 - No webhook, no Zapier.
 
-## 2. Form setup
 | Setting | Value |
 |---|---|
 | Form | "B2B SURVEY LANDING PAGE BV" (`eZdat7aJqX9PIs7I11tJ`) |
 | Location | `xHVYjflu3TyKtrxryOzy` |
 | Custom CSS class | **`nb-hidden-form`** |
-| Placement | **Inline Form element**, NOT the iframe/embed code |
-| Hide method | Off-screen CSS (`left:-9999px`). **NOT `display:none`** |
+| Placement | Inline **Form element**, NOT the iframe/embed code |
 | On-Submit | Redirect → `https://newlybooked.com/schedule-822049` |
 
-## 3. Field types (the key rule)
-Funnel fills **Radio** and **Single-line text** reliably. It **cannot** fill **Dropdowns** (they come through blank). Every multiple-choice question must be a **Radio**.
+---
 
-## 4. IMPORTANT — duplicate fields to clean up
-There are several duplicate fields for the same question. When more than one is on the form, the funnel fills only the first and the rest stay blank. **Keep ONE field per question on the form, remove the others.**
+## 2. The 9 fields — verified keys, type, status
 
-| Question | # fields | Action |
-|---|---|---|
-| Monthly Revenue | **5** | keep 1, remove 4 |
-| Sales Confidence | **2** | keep 1, remove 1 |
-| Fat-Reduction Treatment | 2 | keep 1 |
-| Weekend Consults | 2 | keep 1 |
-| Owns Medspa / Physical Location / Years in Business / Business Name | 1 each | OK |
+| # | Field | Key | Type it must be | Action in GHL |
+|---|---|---|---|---|
+| 1 | Business Name | `contact.business_name` | Text | ✅ fills — none |
+| 2 | Market / City-State | `contact.what_markets_is_your_clinic_located_in` | Text | field must exist; funnel writes the `"City, ST"` string |
+| 3 | Monthly Revenue | `contact.current_monthly_revenue` | Text | ✅ fills — keep as Text |
+| 4 | Treatment | `contact.do_you_own_a_medical_spa_or_aesthetic_clinic_that_can_currently_treatments_like_kybella_or_pcdc_liquid_lipo_for_fat_reduction` | **Radio** | **flip Single-Options → Radio** (options already match §5) |
+| 5 | Physical Location | `contact.before_we_move_forward_can_you_confirm_that_your_business_is_a_medical_spa_or_aesthetic_clinic` | Radio | ✅ fills — none |
+| 6 | Weekend Consults | `contact.this_program_has_generated_over_5mil_for_our_spas_55_of_all_sales_happen_on_fridays__saturdays_are_you_willing_to_take_consultations_on_these_days_every_week_and_invest_the_extra_time_to_learn_how_to_become_a_success_story_with_our_program` | **Radio** | **flip Single-Options → Radio** (options match §5) |
+| 7 | Tenure | `contact.how_long_has_your_medspa_been_in_business` — display **"Business Experience"** | **Text** | **convert Radio → Text** (its options can't match the funnel) |
+| 8 | Sales | `contact.only_spas_with_sales_experience_are_wildly_successful_with_our_program_how_confident_are_you_in_your_sales_abilities` | **Radio** | **flip Single-Options → Radio** (options match §5) |
+| 9 | Ads | `contact.worked_with_agency_run_ads_before` | Radio | ✅ fills — none |
 
-**Duplicate revenue fields:**
-`contact.what_does_your_spa_currently_bring_in_per_month` · `contact.roughly_whats_your_monthly_revenue_right_now` · `contact.what_is_your_currennthly_revenue` (typo) · `contact.what_is_your_current_monthly_revenue` · `contact.monthly_revenue`
+> The funnel now fills **Tenure and Revenue whichever type you choose** — Tenure as
+> Text *or* as a Radio whose options you reset to the funnel's buckets; Revenue as
+> Text *or* Radio. The recommended setup is the **Type it must be** column above.
 
-**Duplicate sales fields:**
-`contact.sales_experience_is_the_common_thread_among_our_most_successful_spas_how_confident_are_you_in_your_sales_abilities` · `contact.on_a_scale_of_1_10_how_confident_are_you_in_your_sales_skills_the_spas_that_succeed_with_us_almost_always_rate_themselves_high`
+The funnel's first question ("Do you own a medspa with treatments priced $1,000+?")
+is a **funnel-only gate** — it has no GHL field; a "No" just routes the lead to /dq.
 
-Whichever you keep, make sure its options match section 6. (Optional: rename the long question-text fields to something short so the contact record reads clean.)
+---
 
-## 5. Exact answer options (set GHL radio values to match)
-🚫 = routes the lead to the disqualify page.
+## 3. Field types — the only blockers
+The funnel fills **Radio** and **single-line Text** reliably; it **cannot** fill **Dropdown / Single-Options**.
+- **Treatment, Weekend, Sales** are Single-Options today → **flip the type to Radio** and keep the exact option text in §5 (it already matches the funnel — no option editing needed).
+- **Tenure** is a Radio whose options ("Just opened / Less than 6 months / 6-12 months / 1-3 years / More than 3 years") **do not match** the funnel's buckets → **convert it to single-line Text**. The funnel then writes the bucket string ("3 – 5 years") and the workflow just prints it. (Changing the funnel's buckets instead would break its disqualify logic, so don't.)
+- Do NOT leave any of these as Dropdown/Single-Options.
 
-**1. Owns Medspa**
-- Yes, we can inject those treatments
-- 🚫 No, I'm going to leave this page immediately
+## 4. De-dupe — one field per question
+When more than one field for the same question is on the form, the funnel fills only the **first** match and the rest stay blank. Keep exactly **one** field per question, bound to the key in §2. (Earlier there were 5 revenue + 2 sales duplicates — remove the extras.)
 
-**2. Physical Location**
+---
+
+## 5. Exact answer options (set the GHL radio values to match)
+🚫 = routes the lead to the disqualify page (the funnel owns the DQ decision).
+
+**4. Treatment**
+- Yes, we already offer it
+- No, BUT we have injectors and are open to offer it, if it makes sense
+- 🚫 No, and we can't or do not plan on offering it
+
+**5. Physical Location**
 - Yes, I own a medical spa with a physical location (suite or storefront)
 - 🚫 I don't operate out of a physical location
 - 🚫 I haven't opened yet
 - 🚫 I'm not a medical spa or an aesthetic clinic
 
-**3. Fat-Reduction Treatment**
-- Yes, we already offer it
-- No, BUT we have injectors and are open to offer it, if it makes sense
-- 🚫 No, and we can't or do not plan on offering it
-
-**4. Monthly Revenue**
+**3. Monthly Revenue** (Text — funnel writes one of these strings)
 - 🚫 Under $10K
 - $10K – $30K  (qualifies, NOT a DQ)
 - $30K – $100K
 - $100K+
 
-**5. Weekend Consults**
+**6. Weekend Consults**
 - Yes, I am ready to do whatever it takes to grow my business
 - 🚫 No, I am not willing to make Fridays and Saturdays available for consultations
 
-**6. Years in Business**
-- 🚫 Under 1 year  (now disqualifies)
+**7. Tenure** (Text — funnel writes one of these strings)
+- 🚫 Under 1 year
 - 1 – 3 years
 - 3 – 5 years
 - 5+ years
 
-**7. Sales Confidence** (no DQ)
+**8. Sales** (no DQ)
 - I have prior sales experience or already sell 4-figure packages at my spa. I just need more appointments/opportunities.
 - I am charismatic and a natural hustler. Just tell me what to say and I'll sell it till the cows come home
 - I wouldn't consider myself a sales person
 - I don't like the idea of having to actively sell patients into 4-figure treatment plans
 
-**8. Ad / Agency Experience** (no DQ)
+**9. Ads** (no DQ)
 - Yes
 - No
 - No, I've never tried any forms of paid marketing
 
-## 6. Standard fields
-Full Name, Email, Phone, and "City, ST" from the location picker (splits into **City** + **State**, also fills the market(s) field). Business name → `contact.company_business_name`. Consent checkboxes auto-checked.
+---
 
-## 7. Disqualify routing (updated)
-DQ → newlybooked.com/dq when: no $1K+ medspa · no physical location / not a medspa / not open · won't offer fat-reduction · **under $10K/mo** (note: $10K–$30K now **qualifies**) · **under 1 year in business** · won't take Fri/Sat consults.
+## 6. Standard fields
+Full Name, Email, Phone, and "City, ST" from the location step (splits into **City** + **State**, and also fills the Market field #2). Consent checkboxes auto-checked.
+
+## 7. Disqualify routing
+DQ → newlybooked.com/dq when: leaving immediately on Q1 · no physical location / not a medspa / not open · won't offer fat-reduction · **under $10K/mo** ($10K–$30K now **qualifies**) · **under 1 year in business** · won't take Fri/Sat consults. **Sales and Ads never DQ.**
 
 ## 8. iClosed prefill
-Schedule page `/schedule-822049` opens iClosed pre-filled via `iclosedName`, `iclosedEmail`, `iclosedPhone` (digits + US country code `1`). Keep the `schedule-822049` slug in sync with the form's redirect.
+Schedule page `/schedule-822049` opens iClosed pre-filled from `localStorage` (`nb_name`, `nb_email`, `nb_phone`). Keep the `schedule-822049` slug in sync with the form's redirect.
 
 ## 9. Notification cleanup
-Remove the old "Sales Abilities" and "Experience With Ads/Agencies" placeholder lines from the "New iClosed Lead" workflow — they're now real questions (Sales Confidence + Ad/Agency Experience).
+In the "New iClosed Lead" / call-reminder workflow, make sure the **Sales** (#8) and **Ads** (#9) lines map to the real fields above — they used to be placeholders.
 
-## 10. Field keys reference
-| Question | Key(s) in GHL |
-|---|---|
-| Owns Medspa | `contact.owns_medspa` |
-| Physical Location | `contact.physical_location` |
-| Fat-Reduction Treatment | `contact.do_you_own_a_medical_spa_or_aesthetic_clinic_that_currently_offers_fat_reduction_treatments_like_kybella_or_pcdc_liquid_lipo` / `contact.top_treatment` |
-| Monthly Revenue | (5 dups — see §4) keep one |
-| Weekend Consults | `contact.program_has_generated_over_5_3_mil_..._success_story_with_our_program` / `contact.weekend_consults` |
-| Years in Business | `contact.years_in_business` |
-| Sales Confidence | (2 dups — see §4) keep one |
-| Business Name | `contact.company_business_name` (also seen: `contact.company_name`) |
-| Located in / Market | `contact.what_markets_is_your_clinic_located_in` |
+---
 
 ## Test checklist
-1. Clean up duplicate fields (§4) → one field per question on the form.
-2. Run newlybooked.com/apply with qualifying answers → confirm every field populates.
-3. Confirm redirect to schedule page + iClosed pre-filled.
+1. **Flip** Treatment / Weekend / Sales → Radio; **convert** Tenure → Text; **de-dupe** to one field per question (§3–4).
+2. Run **newlybooked.com/apply** with qualifying answers → confirm all 9 fields in §2 populate on the new contact and every workflow renders complete.
+3. Confirm redirect → schedule page + iClosed pre-filled.
 4. Run with a DQ answer ("Under $10K" or "Under 1 year") → lands on /dq, no contact.
-
-*Open question for Byron: should sales answer "I don't like the idea of having to actively sell…" disqualify? Currently it does not.*

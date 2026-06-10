@@ -106,18 +106,23 @@ function fillGhlForm(form, d) {
   // field slug, e.g. "what_markets_is_your_clinic_located_in").
   const setByLabel = (labelText, v) => {
     if (v == null) return;
-    const lt = labelText.toLowerCase();
+    // Accept one substring or several alternatives — a field can be labeled more
+    // than one way (e.g. tenure as "Years in Business" under the old key, or the
+    // quiz wording "How long has your medspa been in business" under the new
+    // how_long key) — so match if ANY alternative appears.
+    const alts = (Array.isArray(labelText) ? labelText : [labelText]).map((s) => s.toLowerCase());
     const skip = ['first_name', 'last_name', 'full_name', 'name'];
     const hay = (i) => (fieldLabel(form, i) + ' ' + (i.name || '') + ' ' + (i.id || '') + ' ' + (i.placeholder || '')).toLowerCase();
     const match = Array.from(form.querySelectorAll('input[type="text"], textarea'))
-      .find((i) => skip.indexOf(i.name) === -1 && hay(i).indexOf(lt) !== -1);
+      .find((i) => skip.indexOf(i.name) === -1 && alts.some((a) => hay(i).indexOf(a) !== -1));
     if (match) setNativeInputValue(match, v);
   };
   // Native <select> dropdown custom fields → set the matching option by label.
   const setSelect = (labelText, v) => {
     if (!v) return;
-    const lt = labelText.toLowerCase(); const want = nbNorm(v);
-    const sel = Array.from(form.querySelectorAll('select')).find((s) => fieldLabel(form, s).toLowerCase().indexOf(lt) !== -1);
+    const alts = (Array.isArray(labelText) ? labelText : [labelText]).map((s) => s.toLowerCase());
+    const want = nbNorm(v);
+    const sel = Array.from(form.querySelectorAll('select')).find((s) => { const fl = fieldLabel(form, s).toLowerCase(); return alts.some((a) => fl.indexOf(a) !== -1); });
     if (!sel) return;
     const opt = Array.from(sel.options).find((o) => nbNorm(o.value) === want || nbNorm(o.textContent) === want);
     if (opt) setNativeInputValue(sel, opt.value);
@@ -129,10 +134,17 @@ function fillGhlForm(form, d) {
   fillAny('before we move forward', d.location);
   fillAny('kybella', d.treatment);
   fillAny('fridays', d.frisat);
-  fillAny('per month', d.revenue);
+  // Revenue is now a Text field keyed current_monthly_revenue ("Monthly Revenue"),
+  // older copies were labeled "...per month" — match either.
+  fillAny(['revenue', 'per month'], d.revenue);
   fillAny('sales abilities', d.sales);
   fillAny('run ads', d.ads);
-  setByLabel('years in business', d.tenure);
+  // Tenure text field. Verified display name is "Business Experience" (key
+  // how_long_has_your_medspa_been_in_business); older copies were labeled
+  // "Years in Business" / the quiz wording — match any of them. Funnel writes the
+  // bucket string ("3 – 5 years") as free text, so the field MUST be Text: its
+  // GHL radio options ("Just opened / 6-12 months / ...") don't match our buckets.
+  setByLabel(['business experience', 'years in business', 'been in business', 'how long'], d.tenure);
   setByLabel('business name', d.business);
   setByLabel('market', d.city);
   // City / State: the funnel stores "City, ST" (e.g. "Austin, TX"). Split it
