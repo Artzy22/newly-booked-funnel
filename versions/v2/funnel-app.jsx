@@ -252,7 +252,7 @@ const STEPS = [
     eyebrow: 'For medspa owners',
     q: 'Add $100K–$150K/month in new patient revenue without tire kickers or retainers.',
     hl: '$100K–$150K',
-    prompt: 'Do you own a medspa or aesthetic clinic with high-end devices and treatment plans priced at $1,000+?',
+    prompt: 'Is your medspa able to perform injectable treatments?',
     options: [
       { v: 'yes', label: 'Yes, we can inject', fill: 'Yes, we can inject those treatments', icon: 'check' },
       { v: 'no', label: "No, I'm going to leave this page immediately", icon: 'x', dq: true },
