@@ -264,7 +264,7 @@ const STEPS = [
     options: [
       { v: 'yes', label: 'Yes, we offer it', fill: 'Yes, we already offer it' },
       { v: 'open', label: 'No, but we have injectors', fill: 'No, BUT we have injectors and are open to offer it, if it makes sense' },
-      { v: 'no', label: "No, we don't currently", fill: "No, and we can't or do not plan on offering it", dq: true },
+      { v: 'no', label: "No, we don't currently", fill: "No, and we can't or do not plan on offering it" },
     ],
   },
   {
