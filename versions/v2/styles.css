@@ -389,7 +389,6 @@ p { margin: 0; }
   text-transform: uppercase;
   color: var(--gold-200);
   width: max-content;
-  will-change: transform;
 }
 .marquee-inner span {
   display: inline-flex;
@@ -446,7 +445,6 @@ p { margin: 0; }
   gap: 0;
   animation: scroll-reverse 70s linear infinite;
   width: max-content;
-  will-change: transform;
 }
 .logo-cell {
   flex: 0 0 auto;
@@ -475,6 +473,17 @@ p { margin: 0; }
 @keyframes scroll-reverse {
   from { transform: translate3d(-50%, 0, 0); }
   to { transform: translate3d(0, 0, 0); }
+}
+
+/* Respect iOS / system "Reduce Motion": neutralize the infinite marquees,
+   pulses, and transitions so nothing animates or repaints during scroll. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 @media (max-width: 720px) {
   .logo-marquee { padding: 16px 0; }
