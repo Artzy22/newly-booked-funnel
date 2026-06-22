@@ -97,6 +97,11 @@ function RealReceipt({ tag, src, alt, dark, wide, title }) {
 function Lightbox({ items, index, onClose, onPrev, onNext }) {
   const touchStart = React.useRef(null);
   React.useEffect(() => {
+    // Only trap scroll + keys while the lightbox is actually OPEN. This effect
+    // still runs when the component renders null (index == null), so without
+    // this guard it set body overflow:hidden the moment the wall mounted and
+    // froze the whole page. Bail when closed so the page scrolls normally.
+    if (index == null) return;
     function onKey(e) {
       if (e.key === 'Escape') onClose();
       else if (e.key === 'ArrowLeft') onPrev();
@@ -108,7 +113,7 @@ function Lightbox({ items, index, onClose, onPrev, onNext }) {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [onClose, onPrev, onNext]);
+  }, [index, onClose, onPrev, onNext]);
 
   if (index == null) return null;
   const item = items[index];
