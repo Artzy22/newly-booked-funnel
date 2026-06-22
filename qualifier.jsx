@@ -294,10 +294,29 @@ function Qualifier({ accent }) {
   const current = QUALIFIER_STEPS[step];
   const total = QUALIFIER_STEPS.length;
 
+  // PostHog: fire once when the qualifier mounts, then once for every step the
+  // lead actually reaches. The per-step event (with step_key + question text) is
+  // what the drop-off funnel is built on — step_viewed[owner] -> [revenue] -> ...
+  React.useEffect(() => {
+    if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: total });
+  }, []);
+  React.useEffect(() => {
+    if (disqualified || done) return;
+    const s = QUALIFIER_STEPS[step];
+    if (s && window.nbTrack) {
+      window.nbTrack('qualifier_step_viewed', {
+        step_index: step, step_number: step + 1, step_key: s.key, question: s.q,
+      });
+    }
+  }, [step, disqualified, done]);
+
   const choose = (v, opt) => {
     const next = { ...answers, [current.key]: v };
     setAnswers(next);
+    const label = opt ? opt.label : labelFor(current.key, v);
+    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: v, label });
     if (current.fail && current.fail(v)) {
+      if (window.nbTrack) window.nbTrack('qualifier_disqualified', { step_key: current.key, step_index: step, value: v, label });
       setDisqualified(true);
       return;
     }
@@ -308,6 +327,7 @@ function Qualifier({ accent }) {
     e.preventDefault();
     if (!textVal.trim()) return;
     setAnswers({ ...answers, [current.key]: textVal.trim() });
+    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: textVal.trim() });
     setTextVal('');
     setStep(step + 1);
   };
@@ -326,6 +346,19 @@ function Qualifier({ accent }) {
     if (!name.trim() || !email.trim() || !isValidPhone(phone)) return;
     const all = { ...answers, name, email, phone };
     setAnswers(all);
+
+    // PostHog: identify the lead (so their session replay + prior anonymous
+    // events attach to a real person / their GHL contact) and fire the terminal
+    // funnel event. Done before the GHL submit/redirect so it sends first.
+    if (window.nbIdentify) window.nbIdentify(email.trim(), {
+      name: name.trim(), email: email.trim(), phone: phone.trim(),
+      city: all.city || '', revenue: labelFor('revenue', all.revenue), treatment: labelFor('treatment', all.treatment),
+    });
+    if (window.nbTrack) window.nbTrack('qualifier_submitted', {
+      city: all.city || '',
+      revenue: all.revenue || '', revenue_label: labelFor('revenue', all.revenue),
+      treatment: all.treatment || '', treatment_label: labelFor('treatment', all.treatment),
+    });
 
     // If a hidden GHL form is on the page (the setup we use inside a GHL
     // funnel), fill it programmatically and click its native submit so GHL

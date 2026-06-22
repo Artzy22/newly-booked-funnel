@@ -1,4 +1,29 @@
 // Thank you / Confirmed page — modeled after LVR template structure (no hero video).
+
+/* ── PostHog analytics — Newly Booked B2B funnel (project "B2B Acquisition Funnel") ──
+   Same inline init as the other pages. This page is the booking confirmation GHL
+   redirects to after a slot is picked, so its load ≈ "call booked" — the funnel's
+   terminal step. Input values masked. Idempotent. */
+(function () {
+  if (window.__nbPHInit) return;
+  window.__nbPHInit = true;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  window.posthog.init('phc_uC7ziZakJ7qhBZUbaqG88ZCorG3VCmzzFh3T5bQbo7k8', {
+    api_host: 'https://us.i.posthog.com',
+    ui_host: 'https://us.posthog.com',
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    capture_pageleave: true,
+    autocapture: true,
+    session_recording: { maskAllInputs: true },
+  });
+})();
+window.nbTrack = window.nbTrack || function (event, props) {
+  try { if (window.posthog) window.posthog.capture(event, props || {}); } catch (e) {}
+};
+window.nbIdentify = window.nbIdentify || function (id, props) {
+  try { if (window.posthog && id) window.posthog.identify(String(id), props || {}); } catch (e) {}
+};
 const { useState: useCfState, useEffect: useCfEffect, useMemo: useCfMemo } = React;
 
 const CF_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -190,6 +215,17 @@ function CfApp() {
     return out;
   }, []);
   const v = { ...tweaks, ...urlVals };
+
+  // PostHog: re-identify from URL (if present — same-domain distinct_id already
+  // carries the person from earlier pages) + fire the terminal "booked" event.
+  useCfEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const email = (p.get('email') || '').trim();
+      if (email && window.nbIdentify) window.nbIdentify(email, { name: (p.get('name') || '').trim() });
+      if (window.nbTrack) window.nbTrack('booking_confirmed', { slot: (p.get('slot') || '').trim(), has_email: !!email });
+    } catch (e) {}
+  }, []);
 
   useCfEffect(() => {
     const a = CF_ACCENTS[tweaks.accent] || CF_ACCENTS.gold;

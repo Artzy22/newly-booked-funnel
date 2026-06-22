@@ -1,4 +1,32 @@
 // Main App — composes all sections. Uses tweaks for hero variations, density, accent.
+
+/* ── PostHog analytics — Newly Booked B2B funnel (project "B2B Acquisition Funnel") ──
+   Initialized inline per page-entry so a single repo push ships it live via GitHub
+   Pages (no GHL re-paste). Captures pageviews + session replay (all input VALUES
+   masked, so name/email/phone/city typed by leads are never recorded) and exposes
+   window.nbTrack / window.nbIdentify for the qualifier funnel events. Idempotent. */
+(function () {
+  if (window.__nbPHInit) return;
+  window.__nbPHInit = true;
+  // Official PostHog web snippet (loads posthog-js, queues calls until ready).
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  window.posthog.init('phc_uC7ziZakJ7qhBZUbaqG88ZCorG3VCmzzFh3T5bQbo7k8', {
+    api_host: 'https://us.i.posthog.com',
+    ui_host: 'https://us.posthog.com',
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    capture_pageleave: true,
+    autocapture: true,
+    session_recording: { maskAllInputs: true },
+  });
+})();
+window.nbTrack = window.nbTrack || function (event, props) {
+  try { if (window.posthog) window.posthog.capture(event, props || {}); } catch (e) {}
+};
+window.nbIdentify = window.nbIdentify || function (id, props) {
+  try { if (window.posthog && id) window.posthog.identify(String(id), props || {}); } catch (e) {}
+};
+
 const { useState, useEffect } = React;
 
 const HERO_VARIATIONS = [
