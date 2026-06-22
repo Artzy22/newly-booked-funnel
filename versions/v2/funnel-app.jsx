@@ -286,16 +286,6 @@ const STEPS = [
     ],
   },
   {
-    id: 'tenure', kind: 'choices', key: 'tenure', cols: 2,
-    q: 'How long has your medspa been in business?',
-    options: [
-      { v: '<1', label: 'Under 1 year', dq: true },
-      { v: '1-3', label: '1 – 3 years' },
-      { v: '3-5', label: '3 – 5 years' },
-      { v: '5+', label: '5+ years' },
-    ],
-  },
-  {
     id: 'sales', kind: 'choices', key: 'sales', cols: 1,
     q: 'How confident are you in your sales abilities?',
     sub: 'Sales experience is the common thread among our most successful spas.',
@@ -312,7 +302,6 @@ const STEPS = [
     options: [
       { v: 'yes', label: 'Yes' },
       { v: 'no', label: 'No' },
-      { v: 'never', label: "No, I've never tried any forms of paid marketing" },
     ],
   },
   {
