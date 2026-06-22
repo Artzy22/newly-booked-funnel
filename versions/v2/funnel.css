@@ -31,8 +31,11 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  /* svh = the "small" (URL-bar-shown) viewport height — a STABLE value that
+     does NOT change as the mobile URL bar hides/shows. Using dvh here made the
+     hero grow/shrink mid-scroll, reflowing the page and glitching the scroll.
+     svh keeps the hero a fixed height so scrolling stays smooth. */
   min-height: 100svh;
-  min-height: 100dvh; /* tracks the visible viewport so the hero doesn't snap when the mobile URL bar shows/hides */
   display: flex;
   flex-direction: column;
   position: relative;

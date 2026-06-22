@@ -41,6 +41,10 @@ html, body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
   max-width: 100vw;
+  /* Stop the iOS rubber-band overscroll from exposing the white page
+     background past the dark footer (the "white space at the bottom") and
+     from making the scroll feel like it glitches/bounces at the edges. */
+  overscroll-behavior-y: none;
 }
 html { overflow-x: hidden; }
 
