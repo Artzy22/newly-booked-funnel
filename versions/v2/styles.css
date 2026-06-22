@@ -1400,8 +1400,10 @@ body.airy .hero { padding: 110px 0 80px; }
 /* Responsive */
 @media (max-width: 1100px) {
   .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  /* 2-up grid below 1100px. Drop the featured card's 2x2 span so all six sit in
+     an even 2x3 — no orphan empty cell, and a shorter section. */
   .video-grid { grid-template-columns: repeat(2, 1fr); }
-  .video-card.featured { grid-column: span 2; }
+  .video-card.featured { grid-column: span 1; grid-row: span 1; }
   .screenshot-grid { column-count: 3; }
   .mech-grid, .steps, .feat-grid { grid-template-columns: 1fr 1fr; }
   .mech-flow { grid-template-columns: 1fr; }
@@ -1444,8 +1446,9 @@ body.airy .hero { padding: 110px 0 80px; }
   .qualifier-card { padding: 28px 22px 22px; min-height: auto; }
   .qualifier-q { font-size: 22px; }
   .qualifier-opt { padding: 12px 14px; font-size: 13px; }
-  .video-grid { grid-template-columns: 1fr; gap: 18px; }
-  .video-card.featured { grid-column: span 1; }
+  /* Keep videos 2-up at tablet / narrow-desktop widths — stacking all 6 into a
+     single column here was creating a ~2800px "scroll forever" section. */
+  .video-grid { gap: 18px; }
   .video-card.featured .video-thumb .quote { font-size: 22px; }
   .video-thumb { aspect-ratio: 4 / 5; }
   .video-card.featured .video-thumb { aspect-ratio: 4 / 5; }
@@ -1499,6 +1502,9 @@ body.airy .hero { padding: 110px 0 80px; }
   .qualifier-head { flex-wrap: wrap; gap: 8px; }
   .qualifier-card { padding: 24px 18px 20px; }
   .qualifier-q { font-size: 19px; }
+  /* Phones: videos go single-column (2-up would be too small to watch). */
+  .video-grid { grid-template-columns: 1fr; }
+  .video-card.featured { grid-column: span 1; }
 }
 
 
