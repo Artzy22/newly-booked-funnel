@@ -247,7 +247,7 @@ const STEPS = [
   {
     id: 'own', kind: 'cards', key: 'own', cols: 2, big: true, trust: true,
     eyebrow: 'For medspa owners',
-    rating: '49.9',
+    rating: '4.9',
     q: 'Add $100K–$150K/month in new patient revenue without tire kickers or retainers.',
     hl: '$100K–$150K',
     prompt: 'Is your medspa able to perform injectable treatments?',
@@ -590,10 +590,10 @@ function Funnel({ embedded } = {}) {
               <div className="pf-eyebrow">{eyebrow}</div>
               <h1 className={`pf-q${step.big ? ' lg' : ''}`}>{renderQ(step.q, step.hl)}</h1>
               {step.rating && (
-                <div className="pf-rating" aria-label={`Rated ${step.rating} out of 50 by medspa owners`}>
+                <div className="pf-rating" aria-label={`Rated ${step.rating} out of 5 stars by 53 medspa owners`}>
                   <span className="pf-rating-stars" aria-hidden="true">★★★★★</span>
-                  <span className="pf-rating-score"><b>{step.rating}</b>/50</span>
-                  <span className="pf-rating-label">rated by medspa owners</span>
+                  <span className="pf-rating-score"><b>{step.rating}</b>/5</span>
+                  <span className="pf-rating-label">rated by 53 medspa owners</span>
                 </div>
               )}
               {step.sub && <p className="pf-sub">{step.sub}</p>}
