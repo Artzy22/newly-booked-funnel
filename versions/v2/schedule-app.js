@@ -36,6 +36,11 @@
     '#nb-schedule .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(20,158,85,.1);color:#0E7C42;font-weight:700;font-size:12.5px;letter-spacing:.04em;padding:8px 15px;border-radius:999px;margin-bottom:18px}',
     '#nb-schedule .eyebrow svg{width:14px;height:14px}',
     '#nb-schedule h1{font-weight:800;font-size:clamp(28px,6.4vw,42px);line-height:1.12;letter-spacing:-.025em;max-width:16ch}',
+    '#nb-schedule h1 .hl{color:var(--green)}',
+    '#nb-schedule .reveal{margin-top:10px;font-weight:800;font-size:clamp(19px,3.2vw,27px);line-height:1.15;letter-spacing:-.02em;color:var(--green)}',
+    '#nb-schedule .success-ring{width:76px;height:76px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#1FB866,#0E8C49);color:#fff;box-shadow:0 18px 40px -12px rgba(20,158,85,.5),0 0 0 8px rgba(20,158,85,.10);margin-bottom:20px;animation:nbpop .5s cubic-bezier(.2,.8,.2,1.2) both}',
+    '#nb-schedule .success-ring svg{width:38px;height:38px}',
+    '@keyframes nbpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}',
     '#nb-schedule .sub{margin-top:14px;font-size:16px;font-weight:500;color:var(--navy-500);line-height:1.5;max-width:42ch}',
     '#nb-schedule .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-top:18px}',
     '#nb-schedule .meta span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--navy-500)}',
@@ -66,12 +71,12 @@
       </div>
 
       <div class="stage">
-        <div class="eyebrow">
+        <div class="success-ring" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.3 4.3L19 7"/></svg>
-          You qualify
         </div>
-        <h1 id="sch-h1">Pick your time.</h1>
-        <p class="sub">A quick <b style="color:var(--navy-900);font-weight:700">15-minute intro call</b> with a patient generation specialist. We’ll look at your local market, your current offerings, and your experience, then estimate how many new patients you should be seeing, and whether Newly Booked is the right fit. No pressure, just a conversation.</p>
+        <h1 id="sch-h1">Congratulations!</h1>
+        <p class="reveal">Your area is available.</p>
+        <p class="sub">You qualified for Newly Booked. Pick a time below for a quick <b style="color:var(--navy-900);font-weight:700">15-minute intro call</b>. No pressure, just a conversation about your market and whether we’re a fit.</p>
         <div class="meta">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 minutes</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Phone call</span>
@@ -100,7 +105,7 @@
   if (name) {
     var first = name.split(/\s+/)[0].replace(/[<>&]/g, '');
     var h1 = document.getElementById('sch-h1');
-    if (h1) h1.textContent = 'Pick your time, ' + first + '.';
+    if (h1) h1.textContent = 'Congratulations, ' + first + '!';
     try { sessionStorage.setItem('nb_name', name); } catch (e) {}
   }
 
