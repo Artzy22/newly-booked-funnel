@@ -5,6 +5,24 @@
 
 const { useState, useEffect } = React;
 
+/* ── PostHog analytics — Newly Booked B2B funnel v2 (/apply). Project "B2B
+   Acquisition Funnel" 481523. Loads from this file so a repo push ships it
+   (no GHL re-paste). Session replay on, input VALUES masked. Idempotent guard
+   composes with any other PostHog init on the page. Events mirror the existing
+   Meta-pixel QuizStep hook (per-question drop-off), tagged version:'v2'. */
+(function () {
+  if (window.__nbPHInit) return;
+  window.__nbPHInit = true;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  window.posthog.init('phc_uC7ziZakJ7qhBZUbaqG88ZCorG3VCmzzFh3T5bQbo7k8', {
+    api_host: 'https://us.i.posthog.com', ui_host: 'https://us.posthog.com',
+    person_profiles: 'identified_only', capture_pageview: true, capture_pageleave: true,
+    autocapture: true, session_recording: { maskAllInputs: true },
+  });
+})();
+window.nbTrack = window.nbTrack || function (e, p) { try { if (window.posthog) window.posthog.capture(e, p || {}); } catch (x) {} };
+window.nbIdentify = window.nbIdentify || function (i, p) { try { if (window.posthog && i) window.posthog.identify(String(i), p || {}); } catch (x) {} };
+
 // Bump when the funnel card images change, to bust browser/CDN cache.
 const IMG_V = 2;
 
@@ -364,7 +382,22 @@ function Funnel({ embedded } = {}) {
         window.fbq('trackCustom', 'QuizStep', { step: idx + 1, step_name: s.id, total_steps: STEPS.length });
       }
     } catch (e) {}
+    // PostHog: same per-question signal, for the drop-off funnel + session replay.
+    try {
+      const s = STEPS[idx];
+      if (s && window.nbTrack) {
+        window.nbTrack('qualifier_step_viewed', {
+          step_index: idx, step_number: idx + 1, step_key: s.id, question: s.q,
+          total_steps: STEPS.length, version: 'v2',
+        });
+      }
+    } catch (e) {}
   }, [idx]);
+
+  // PostHog: fire once when the quiz mounts (entry to the funnel).
+  useEffect(() => {
+    try { if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: STEPS.length, version: 'v2' }); } catch (e) {}
+  }, []);
 
   // City autocomplete
   const cityList = (typeof window !== 'undefined' && window.NB_CITIES) || [];
@@ -391,6 +424,7 @@ function Funnel({ embedded } = {}) {
 
   const pick = (opt) => {
     if (step.key) setAnswers((a) => ({ ...a, [step.key]: opt.v }));
+    try { if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: step.id, step_index: idx, value: opt.v, label: opt.label, version: 'v2' }); } catch (e) {}
     setPicked(opt.v);
     setTimeout(() => { setPicked(null); goNext(); }, 230);
   };
@@ -424,6 +458,25 @@ function Funnel({ embedded } = {}) {
     } catch (e) {}
 
     const dq = isDisqualified(answers);
+
+    // PostHog: identify the lead + fire the terminal event (disqualified vs
+    // submitted) before the GHL submit/redirect so it sends first.
+    try {
+      if (window.nbIdentify) window.nbIdentify(email.trim(), {
+        name: name.trim(), email: email.trim(), phone: phone.trim(),
+        city: (answers.city || '').trim(), business: (answers.business || '').trim(),
+      });
+      if (window.nbTrack) {
+        if (dq) {
+          const dqStep = STEPS.find((s) => s.key && s.options && s.options.find((o) => o.v === answers[s.key] && o.dq));
+          window.nbTrack('qualifier_disqualified', { step_key: dqStep ? dqStep.id : null, value: dqStep ? answers[dqStep.key] : null, version: 'v2' });
+        } else {
+          window.nbTrack('qualifier_submitted', {
+            city: (answers.city || '').trim(), revenue: answers.revenue || '', treatment: answers.treatment || '', version: 'v2',
+          });
+        }
+      }
+    } catch (e) {}
 
     // Qualified + a hidden GHL form on the page ("nb-hidden-form" element
     // dropped on the GHL funnel page) → fill it and click its submit. GHL
