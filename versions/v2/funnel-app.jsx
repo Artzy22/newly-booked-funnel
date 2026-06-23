@@ -182,7 +182,12 @@ function fillGhlForm(form, d, onComplete) {
   // as a fallback by the input's name/id/placeholder (which often carry the
   // field slug, e.g. "what_markets_is_your_clinic_located_in").
   const setByLabel = (labelText, v) => {
-    if (v == null) return;
+    // Skip empty too, not just null/undefined: removed steps (e.g. the dropped
+    // "tenure" question) now resolve to '' via labelFor's `value || ''`, and we
+    // never want to WRITE a blank into a live GHL text field — that would touch
+    // (and on a resubmit/upsert, erase) the matching field. Matches the radio
+    // loop's `if (!val) return` and setSelect's `if (!v) return`.
+    if (v == null || v === '') return;
     // Accept one substring or several alternatives — a field can be labeled more
     // than one way (e.g. tenure as "Years in Business" under the old key, or the
     // quiz wording "How long has your medspa been in business" under the new
