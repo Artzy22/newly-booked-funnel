@@ -660,9 +660,14 @@ wistia-player:not(:defined) {
   color: var(--paper);
   padding: 110px 0;
   position: relative;
-  overflow: hidden;
+  /* No overflow:hidden here — combined with the multicolumn masonry it clipped
+     the lower receipts on some Chrome builds. The ::before glow is inset:0 so it
+     stays in bounds without it. */
 }
 .screenshot-wall .container { position: relative; z-index: 1; }
+/* Wrapper that holds the wide hero receipt + the column masonry. Keeping the
+   wide hero OUT of .screenshot-grid is what stops the multicol height bug. */
+.screenshot-wall-grid { position: relative; }
 .screenshot-wall::before {
   content: "";
   position: absolute; inset: 0;
@@ -685,7 +690,6 @@ wistia-player:not(:defined) {
   transition: transform 200ms ease;
 }
 .screenshot.wide {
-  column-span: all;
   margin: 0 auto 22px;
   max-width: 880px;
 }

@@ -183,10 +183,14 @@ function ScreenshotWall() {
 
   return (
     <React.Fragment>
-      <div className="screenshot-grid" ref={gridRef} onClick={onClick}>
-        {/* Cherry portal — pinned full-width at top */}
+      <div className="screenshot-wall-grid" ref={gridRef} onClick={onClick}>
+        {/* Cherry portal — pinned full-width at top, OUTSIDE the column grid so
+            the masonry below computes its height correctly. (multicol + a
+            column-span:all child + an overflow:hidden ancestor clipped the lower
+            receipts on some Chrome builds/widths — that's the "stuck, rest won't
+            show" bug.) */}
         <RealReceipt wide title="One Month, One Location. 70 contracts, 42% approval rate." src="assets/receipts/cherry-stats-155k.webp" alt="Cherry portal — $155,511 gross sales, 70 contracts, 42.45% approval rate, $112,900 approved" />
-
+        <div className="screenshot-grid">
       {/* Real Cherry approval — Body Sculpt */}
       <RealReceipt title="$7,500 package financed. Patient walks out the same day." src="assets/receipts/cherry-body-sculpt-7500.webp" alt="Cherry payment plan issued — Body Sculpt Laser Center, $7,500" />
 
@@ -237,6 +241,7 @@ function ScreenshotWall() {
 
       {/* Real Cherry approval — Breeze $7,500 (2nd) */}
       <RealReceipt title="Another $7,500 financed at the same spa, weeks later." src="assets/receipts/cherry-breeze-7500-b.webp" alt="Cherry payment plan issued — Breeze Medspa AZ, $7,500" />
+        </div>
       </div>
       <Lightbox
         items={items}
