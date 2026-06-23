@@ -298,14 +298,14 @@ function Qualifier({ accent }) {
   // lead actually reaches. The per-step event (with step_key + question text) is
   // what the drop-off funnel is built on — step_viewed[owner] -> [revenue] -> ...
   React.useEffect(() => {
-    if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: total });
+    if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: total, version: 'v1' });
   }, []);
   React.useEffect(() => {
     if (disqualified || done) return;
     const s = QUALIFIER_STEPS[step];
     if (s && window.nbTrack) {
       window.nbTrack('qualifier_step_viewed', {
-        step_index: step, step_number: step + 1, step_key: s.key, question: s.q,
+        step_index: step, step_number: step + 1, step_key: s.key, question: s.q, version: 'v1',
       });
     }
   }, [step, disqualified, done]);
@@ -314,9 +314,9 @@ function Qualifier({ accent }) {
     const next = { ...answers, [current.key]: v };
     setAnswers(next);
     const label = opt ? opt.label : labelFor(current.key, v);
-    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: v, label });
+    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: v, label, version: 'v1' });
     if (current.fail && current.fail(v)) {
-      if (window.nbTrack) window.nbTrack('qualifier_disqualified', { step_key: current.key, step_index: step, value: v, label });
+      if (window.nbTrack) window.nbTrack('qualifier_disqualified', { step_key: current.key, step_index: step, value: v, label, version: 'v1' });
       setDisqualified(true);
       return;
     }
@@ -327,7 +327,7 @@ function Qualifier({ accent }) {
     e.preventDefault();
     if (!textVal.trim()) return;
     setAnswers({ ...answers, [current.key]: textVal.trim() });
-    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: textVal.trim() });
+    if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: current.key, step_index: step, value: textVal.trim(), version: 'v1' });
     setTextVal('');
     setStep(step + 1);
   };
@@ -358,6 +358,7 @@ function Qualifier({ accent }) {
       city: all.city || '',
       revenue: all.revenue || '', revenue_label: labelFor('revenue', all.revenue),
       treatment: all.treatment || '', treatment_label: labelFor('treatment', all.treatment),
+      version: 'v1',
     });
 
     // If a hidden GHL form is on the page (the setup we use inside a GHL
