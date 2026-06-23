@@ -38,7 +38,9 @@ function App() {
   // stays rendered off-screen and fully fillable. Re-run on load + a couple
   // delays since GHL may mount/re-position the form after our first paint.
   useEffect(() => {
-    const pinHiddenForm = () => {
+    const fixGhlScroll = () => {
+      // 1. Pin the hidden lead-form out of the page's scroll height (left:-9999px,
+      // but its height was extending the <body> and spawning a 2nd nested scrollbar).
       document.querySelectorAll('.nb-hidden-form').forEach((f) => {
         if (getComputedStyle(f).position !== 'fixed') {
           f.style.setProperty('position', 'fixed', 'important');
@@ -46,24 +48,37 @@ function App() {
           f.style.setProperty('left', '-9999px', 'important');
         }
       });
+      // 2. GHL pins <body> to a fixed height with overflow:auto, leaving it a
+      // "can't-really-scroll" container that EATS the mouse wheel over the page
+      // content (only dragging the scrollbar worked). Take <body> out of the wheel
+      // path so the wheel reaches the real scroller (<html>). Safe: <html> is the
+      // scrollingElement, not <body>, so the page still scrolls everywhere.
+      if (document.scrollingElement && document.scrollingElement !== document.body) {
+        const oy = getComputedStyle(document.body).overflowY;
+        if (oy === 'auto' || oy === 'scroll') {
+          document.body.style.setProperty('overflow-y', 'hidden', 'important');
+        }
+      }
     };
-    pinHiddenForm();
-    window.addEventListener('load', pinHiddenForm);
-    const t1 = setTimeout(pinHiddenForm, 800);
-    const t2 = setTimeout(pinHiddenForm, 2500);
-    // GHL may mount/re-position the hidden form AFTER our first paints, so also
-    // re-pin on any DOM change (debounced to once per frame) for the first ~8s.
+    fixGhlScroll();
+    window.addEventListener('load', fixGhlScroll);
+    window.addEventListener('resize', fixGhlScroll);
+    const t1 = setTimeout(fixGhlScroll, 800);
+    const t2 = setTimeout(fixGhlScroll, 2500);
+    // GHL may mount/re-position the form or re-pin the body after our first
+    // paints, so also re-apply on any DOM change (debounced) for the first ~8s.
     let scheduled = false;
     const schedule = () => {
       if (scheduled) return;
       scheduled = true;
-      requestAnimationFrame(() => { scheduled = false; pinHiddenForm(); });
+      requestAnimationFrame(() => { scheduled = false; fixGhlScroll(); });
     };
     const mo = new MutationObserver(schedule);
     mo.observe(document.body, { childList: true, subtree: true });
     const t3 = setTimeout(() => mo.disconnect(), 8000);
     return () => {
-      window.removeEventListener('load', pinHiddenForm);
+      window.removeEventListener('load', fixGhlScroll);
+      window.removeEventListener('resize', fixGhlScroll);
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); mo.disconnect();
     };
   }, []);
