@@ -262,29 +262,24 @@ function isValidEmail(raw) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(raw
 // kind: intro | cards | tiles | text | contact
 // option.dq:true  → choosing it routes the lead to the DQ page at the end.
 const STEPS = [
+  // Landing / hero: just the headline + a big red "Check availability" button
+  // (Byron/Ivan: replace the Yes/No injectable cards with a single CTA). The
+  // injectable "Do you have an injector?" question is being reworked separately
+  // per the call's Wistia walkthrough, so it is intentionally not here yet.
   {
-    id: 'own', kind: 'cards', key: 'own', cols: 2, big: true, trust: true,
+    id: 'hero', kind: 'intro', big: true, trust: true,
     eyebrow: 'For medspa owners',
     rating: '4.9',
     q: 'Add $100K–$150K/month in new patient revenue without tire kickers or retainers.',
     hl: '$100K–$150K',
-    prompt: 'Is your medspa able to perform injectable treatments?',
-    options: [
-      { v: 'yes', label: 'Yes, we can inject', fill: 'Yes, we can inject those treatments', icon: 'check' },
-      { v: 'no', label: "No, I'm going to leave this page immediately", icon: 'x', dq: true },
-    ],
+    sub: 'We only work with one medspa per area.',
+    subStrong: 'See if yours is still open.',
+    cta: 'Check availability',
   },
-  {
-    id: 'treatment', kind: 'choices', key: 'treatment', cols: 1,
-    q: 'Do you currently offer Kybella, PCDC, Liquid Lipo, or Lemon Bottle?',
-    options: [
-      { v: 'yes', label: 'Yes, we offer it', fill: 'Yes, we already offer it' },
-      { v: 'open', label: 'No, but we have injectors', fill: 'No, BUT we have injectors and are open to offer it, if it makes sense' },
-      { v: 'no', label: "No, we don't currently", fill: "No, and we can't or do not plan on offering it" },
-    ],
-  },
+  // Q1 (carries the framing lead): monthly revenue — under $50K disqualifies.
   {
     id: 'revenue', kind: 'choices', key: 'revenue', cols: 2,
+    lead: "Before we see if your area's open, let's answer a few quick questions.",
     q: 'What does your spa currently bring in per month?',
     options: [
       { v: '<15', label: 'Under $15K', dq: true },
@@ -292,6 +287,29 @@ const STEPS = [
       { v: '50-150', label: '$50K – $150K' },
       { v: '150-250', label: '$150K – $250K' },
       { v: '250+', label: '$250K & above' },
+    ],
+  },
+  // Q2: injector on staff. "No" does NOT disqualify (Ivan) — it just skips the
+  // offerings question below. id/key 'own' keeps the existing GHL injectables
+  // field fill working ("Yes, we can inject those treatments").
+  {
+    id: 'own', kind: 'choices', key: 'own', cols: 2,
+    q: 'Do you have an injector on staff?',
+    options: [
+      { v: 'yes', label: 'Yes', fill: 'Yes, we can inject those treatments' },
+      { v: 'no', label: 'No', fill: 'No, we do not have an injector on staff' },
+    ],
+  },
+  // Q3: current offerings — only shown when they HAVE an injector (skipped
+  // otherwise). "No, but we have injectors" option dropped (Byron) since the
+  // injector question above now covers that.
+  {
+    id: 'treatment', kind: 'choices', key: 'treatment', cols: 1,
+    skipIf: (a) => a.own === 'no',
+    q: 'Do you currently offer Kybella, PCDC, Liquid Lipo, or Lemon Bottle?',
+    options: [
+      { v: 'yes', label: 'Yes, we offer it', fill: 'Yes, we already offer it' },
+      { v: 'no', label: "No, we don't currently", fill: "No, and we can't or do not plan on offering it" },
     ],
   },
   {
@@ -308,10 +326,9 @@ const STEPS = [
     q: 'How confident are you in your sales abilities?',
     sub: 'Sales experience is the common thread among our most successful spas.',
     options: [
-      { v: 'experienced', label: 'I have prior sales experience or already sell 4-figure packages at my spa. I just need more appointments/opportunities.' },
-      { v: 'natural', label: "I am charismatic and a natural hustler. Just tell me what to say and I'll sell it till the cows come home" },
-      { v: 'not-sales', label: "I wouldn't consider myself a sales person" },
-      { v: 'dislike', label: "I don't like the idea of having to actively sell patients into 4-figure treatment plans" },
+      { v: 'very', label: 'Very confident' },
+      { v: 'somewhat', label: 'Somewhat confident' },
+      { v: 'dislike', label: "I don't like to sell" },
     ],
   },
   {
@@ -333,8 +350,8 @@ const STEPS = [
   },
   {
     id: 'contact', kind: 'contact',
-    q: 'Last step — then pick your time.',
-    sub: 'Add your details and we’ll take you straight to the calendar to lock in your call.',
+    q: 'Last step — add your details.',
+    sub: 'We’ll check if you qualify and take you right to your available times.',
   },
 ];
 
@@ -414,19 +431,33 @@ function Funnel({ embedded } = {}) {
   const last = STEPS.length - 1;
   // Count question steps for the "Question X of N" label, excluding the hook
   // screen (which shows its own eyebrow instead of a counter).
-  const counted = STEPS.filter((s) => QUESTION_KINDS.includes(s.kind) && !s.eyebrow);
+  const counted = STEPS.filter((s) => QUESTION_KINDS.includes(s.kind) && !s.eyebrow && !(s.skipIf && s.skipIf(answers)));
   const qTotal = counted.length;
   const qNum = counted.indexOf(step) + 1;
   const progress = Math.round((idx / last) * 100);
 
-  const goNext = () => setIdx((i) => Math.min(i + 1, last));
-  const goBack = () => setIdx((i) => Math.max(i - 1, 0));
+  // Conditional steps: walk over any step whose skipIf(answers) is true (e.g. the
+  // offerings question is skipped when they have no injector). Pass an explicit
+  // answers snapshot so a just-picked answer is taken into account.
+  const nextIndexFrom = (from, ans) => {
+    let n = from + 1;
+    while (n < STEPS.length && STEPS[n].skipIf && STEPS[n].skipIf(ans)) n++;
+    return Math.min(n, last);
+  };
+  const prevIndexFrom = (from, ans) => {
+    let n = from - 1;
+    while (n > 0 && STEPS[n].skipIf && STEPS[n].skipIf(ans)) n--;
+    return Math.max(n, 0);
+  };
+  const goNext = () => setIdx((i) => nextIndexFrom(i, answers));
+  const goBack = () => setIdx((i) => prevIndexFrom(i, answers));
 
   const pick = (opt) => {
-    if (step.key) setAnswers((a) => ({ ...a, [step.key]: opt.v }));
+    const nextAns = step.key ? { ...answers, [step.key]: opt.v } : answers;
+    if (step.key) setAnswers(nextAns);
     try { if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: step.id, step_index: idx, value: opt.v, label: opt.label, version: 'v2' }); } catch (e) {}
     setPicked(opt.v);
-    setTimeout(() => { setPicked(null); goNext(); }, 230);
+    setTimeout(() => { setPicked(null); setIdx(nextIndexFrom(idx, nextAns)); }, 230);
   };
 
   const eyebrow = step.eyebrow ? step.eyebrow
@@ -629,16 +660,18 @@ function Funnel({ embedded } = {}) {
             </>
           ) : (
             <>
-              <div className="pf-eyebrow">{eyebrow}</div>
-              <h1 className={`pf-q${step.big ? ' lg' : ''}`}>{renderQ(step.q, step.hl)}</h1>
-              {step.rating && (
-                <div className="pf-rating" aria-label={`Rated ${step.rating} out of 5 stars by 53 medspa owners`}>
-                  <span className="pf-rating-stars" aria-hidden="true">★★★★★</span>
-                  <span className="pf-rating-score"><b>{step.rating}</b>/5</span>
-                  <span className="pf-rating-label">rated by 53 medspa owners</span>
+              {!step.lead && <div className="pf-eyebrow">{eyebrow}</div>}
+              {step.lead && (
+                <div className="pf-lead">
+                  <span className="pf-lead-ic" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.3 4.3L19 7" /></svg>
+                  </span>
+                  <span>{step.lead}</span>
                 </div>
               )}
+              <h1 className={`pf-q${step.big ? ' lg' : ''}`}>{renderQ(step.q, step.hl)}</h1>
               {step.sub && <p className="pf-sub">{step.sub}</p>}
+              {step.subStrong && <p className="pf-substrong">{renderQ(step.subStrong, step.subHl)}</p>}
               {step.prompt && <p className="pf-prompt">{step.prompt}</p>}
 
               {(step.kind === 'cards' || step.kind === 'tiles') && (
@@ -660,14 +693,24 @@ function Funnel({ embedded } = {}) {
                 </div>
               )}
 
+              {step.kind === 'intro' && (
+                <div className="pf-form pf-intro">
+                  <button type="button" className="pf-btn pf-btn-block pf-btn-lg" onClick={goNext}>{step.cta} →</button>
+                </div>
+              )}
+
               {step.kind === 'choices' && !otherMode && (
                 <div className={`pf-choices cols-${step.cols || 2}`}>
-                  {step.options.map((o) => (
+                  {step.options.map((o, oi) => (
                     <button
                       key={o.v}
                       className={`pf-choice${o.other ? ' other' : ''}${picked === o.v ? ' selected' : ''}`}
                       onClick={() => (o.other ? setOtherMode(true) : pick(o))}
-                    >{o.label}{o.other ? ' →' : ''}</button>
+                    >
+                      <span className="pf-choice-badge" aria-hidden="true">{String.fromCharCode(65 + oi)}</span>
+                      <span className="pf-choice-text">{o.label}{o.other ? ' →' : ''}</span>
+                      <span className="pf-choice-chev" aria-hidden="true">›</span>
+                    </button>
                   ))}
                 </div>
               )}
@@ -730,6 +773,14 @@ function Funnel({ embedded } = {}) {
                   <div className="pf-consent">By submitting, you agree to receive text messages from Newly Booked. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</div>
                   <div className="pf-fineprint">No retainer pitch · No 12-month contract</div>
                 </form>
+              )}
+
+              {step.rating && (
+                <div className="pf-rating" aria-label={`Rated ${step.rating} out of 5 stars by 53 medspa owners`}>
+                  <span className="pf-rating-stars" aria-hidden="true">★★★★★</span>
+                  <span className="pf-rating-score"><b>{step.rating}</b>/5</span>
+                  <span className="pf-rating-label">rated by 53 medspa owners</span>
+                </div>
               )}
 
               {step.trust && (

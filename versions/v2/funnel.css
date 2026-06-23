@@ -130,6 +130,29 @@
   font-size: clamp(15px, 1.6vw, 19px); line-height: 1.5;
   color: var(--navy-500); margin: 18px auto 0; max-width: 46ch;
 }
+/* Framing callout above the first question (the low-friction intro shown right
+   after "Check availability", in place of a separate Start screen). Soft-red
+   chip with a check so it reads as a friendly "you're in, here's the deal". */
+.pf-lead {
+  display: flex; align-items: center; gap: 11px;
+  margin: 0 auto 26px; padding: 12px 18px;
+  background: #FFF4F3; border: 1px solid #FFD9D4; border-radius: 14px;
+  color: var(--navy-700); font-size: clamp(13.5px, 1.4vw, 15px); font-weight: 600;
+  line-height: 1.4; text-align: left; max-width: 430px;
+}
+.pf-lead-ic {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #FF453A, #E11900); color: #fff;
+}
+.pf-lead-ic svg { display: block; }
+/* Second sub-headline line — the action hook above the CTA ("See if yours is
+   still open."). Bolder + darker than .pf-sub so it draws the eye to the button. */
+.pf-substrong {
+  font-size: clamp(18px, 2.4vw, 25px); font-weight: 800;
+  color: var(--navy-900); line-height: 1.2; letter-spacing: -0.015em;
+  margin: 8px auto 0; max-width: 30ch;
+}
 /* Prominent question prompt on the hook screen */
 .pf-prompt {
   font-size: clamp(20px, 2.5vw, 28px); font-weight: 700;
@@ -210,7 +233,29 @@
 /* Single-column choices carry long answer text — left-align and relax the weight
    so multi-line options read cleanly (keeps the navy card look). */
 .pf-choices.cols-1 { max-width: 560px; }
-.pf-choices.cols-1 .pf-choice { text-align: left; font-weight: 600; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.4; padding: 18px 20px; }
+.pf-choices.cols-1 .pf-choice {
+  display: flex; align-items: center; gap: 14px;
+  text-align: left; font-weight: 600; font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.4; padding: 16px 18px;
+}
+/* Polished list affordances: index badge (A/B/C) + chevron (single-column only) */
+.pf-choice-badge {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  background: #FFECEA; color: #E11900; font-weight: 800; font-size: 14px;
+  transition: background 130ms ease, color 130ms ease;
+}
+.pf-choice-text { flex: 1 1 auto; }
+.pf-choice-chev {
+  flex: 0 0 auto; color: var(--navy-300); font-size: 24px; line-height: 1; font-weight: 700;
+  transition: color 130ms ease, transform 130ms ease;
+}
+.pf-choices.cols-1 .pf-choice:hover .pf-choice-badge { background: #FF453A; color: #fff; }
+.pf-choices.cols-1 .pf-choice:hover .pf-choice-chev { color: #FF453A; transform: translateX(4px); }
+.pf-choices.cols-1 .pf-choice.selected .pf-choice-badge { background: #E11900; color: #fff; }
+/* Grid tiles (revenue, 2/3-up) stay centered — hide the list affordances */
+.pf-choices:not(.cols-1) .pf-choice-badge,
+.pf-choices:not(.cols-1) .pf-choice-chev { display: none; }
 
 /* City autocomplete */
 .pf-ac { position: relative; }
