@@ -1,65 +1,92 @@
 /* Newly Booked — disqualified ("not a fit") page, streamed from the repo.
    A thin loader on the GHL page pulls this in, so edits here go live on push —
-   no re-paste. Renders as a single fixed, full-viewport overlay with the navy
-   background directly on it, so it reliably covers GHL's (white) host page
-   regardless of how GHL nests the embed. */
+   no re-paste. Renders as a single fixed, full-viewport overlay (covers GHL's
+   host page reliably) in the v2 LIGHT look that matches the landing + schedule
+   pages. Reads ?reason= (which question disqualified them) and tells the owner
+   WHY, in their own context, with the door left open. */
 (function () {
   // Fonts
   var f = document.createElement('link');
   f.rel = 'stylesheet';
-  f.href = 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&display=swap';
+  f.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500..600&display=swap';
   document.head.appendChild(f);
 
-  // Styles (everything scoped under #nb-dq-overlay so it can't clash with GHL)
+  // Styles (scoped under #nb-dq so they can't clash with GHL)
   var style = document.createElement('style');
   style.textContent = [
-    '#nb-dq-overlay{position:fixed;inset:0;z-index:2147483600;background:#0A1628;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased}',
-    '#nb-dq-overlay *{box-sizing:border-box;margin:0;padding:0}',
-    '#nb-dq-overlay .dq-wrap{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:48px 24px}',
-    '#nb-dq-overlay .dq-card{width:100%;max-width:640px;text-align:left}',
-    '#nb-dq-overlay .dq-brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;letter-spacing:.02em;color:#fff;margin-bottom:40px}',
-    '#nb-dq-overlay .dq-brand .dot{width:9px;height:9px;border-radius:999px;background:#2B54E8;display:inline-block}',
-    '#nb-dq-overlay .dq-eyebrow{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#5C79F2;padding-top:14px;border-top:1px solid #1B2D4A;display:inline-block;margin-bottom:18px}',
-    '#nb-dq-overlay .dq-h1{font-family:"Source Serif 4",Georgia,serif;font-size:40px;line-height:1.12;letter-spacing:-.02em;margin:0 0 18px;color:#fff}',
-    '#nb-dq-overlay .dq-h1 em{font-style:italic;color:#5C79F2}',
-    '#nb-dq-overlay .dq-sub{font-size:16px;line-height:1.6;color:#C5D0E0;margin:0 0 28px}',
-    '#nb-dq-overlay .dq-list{list-style:none;margin:0 0 32px;padding:0;border-top:1px solid #1B2D4A}',
-    '#nb-dq-overlay .dq-list li{font-size:14.5px;color:#C5D0E0;padding:14px 0 14px 26px;position:relative;border-bottom:1px solid #1B2D4A}',
-    '#nb-dq-overlay .dq-list li::before{content:"";position:absolute;left:0;top:21px;width:12px;height:2px;border-radius:2px;background:#2B54E8}',
-    '#nb-dq-overlay .dq-note{font-size:13.5px;line-height:1.6;color:#8A9AB3;margin:0}',
-    '@media (max-width:560px){#nb-dq-overlay .dq-h1{font-size:30px}#nb-dq-overlay .dq-brand{margin-bottom:28px}}'
+    '#nb-dq{position:fixed;inset:0;z-index:2147483600;color:#0A1628;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(135% 72% at 50% -10%,#E7EEFF 0%,#F4F7FE 44%,#fff 80%)}',
+    '#nb-dq *{box-sizing:border-box;margin:0;padding:0}',
+    '#nb-dq .wrap{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;max-width:640px;margin:0 auto}',
+    '#nb-dq .top{display:flex;align-items:center;justify-content:space-between;padding:22px 24px}',
+    '#nb-dq .logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:#0A1628}',
+    '#nb-dq .mark{display:inline-flex;align-items:center;gap:3px;background:#0A1628;color:#fff;font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:15px;line-height:1;letter-spacing:.5px;padding:7px 9px 8px;border-radius:6px}',
+    '#nb-dq .mark i{width:1px;height:13px;background:rgba(255,255,255,.55);display:inline-block}',
+    '#nb-dq .badge{font-size:12px;font-weight:600;color:#43597A}',
+    '#nb-dq .stage{flex:1;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:14px 24px 48px}',
+    '#nb-dq .ring{width:54px;height:54px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #E5E9F1;color:#2B54E8;box-shadow:0 16px 34px -16px rgba(10,22,40,.22);margin-bottom:22px}',
+    '#nb-dq .ring svg{width:26px;height:26px}',
+    '#nb-dq .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#2348D4;margin-bottom:15px}',
+    '#nb-dq h1{font-weight:800;font-size:clamp(28px,6vw,40px);line-height:1.13;letter-spacing:-.025em;margin-bottom:14px;color:#0A1628;max-width:18ch}',
+    '#nb-dq h1 em{font-style:normal;color:#2348D4}',
+    '#nb-dq .lead{font-size:16px;line-height:1.6;color:#43597A;margin-bottom:24px;max-width:46ch}',
+    '#nb-dq .why{width:100%;background:#fff;border:1px solid #E5E9F1;border-radius:16px;padding:20px 22px;box-shadow:0 20px 48px -30px rgba(10,22,40,.3);margin-bottom:24px}',
+    '#nb-dq .why .tag{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2348D4;margin-bottom:11px}',
+    '#nb-dq .why .tag .d{width:7px;height:7px;border-radius:999px;background:#2B54E8;display:inline-block}',
+    '#nb-dq .why p{font-size:16px;line-height:1.62;color:#1B2D4A}',
+    '#nb-dq .note{font-size:13.5px;line-height:1.6;color:#8A9AB3;max-width:48ch}',
+    '#nb-dq .note a{color:#43597A;font-weight:600}',
+    '@media (max-width:560px){#nb-dq h1{font-size:30px}#nb-dq .stage{padding-bottom:36px}}'
   ].join('');
   document.head.appendChild(style);
 
-  // Overlay (remove any previous instance first, in case of double-load)
-  var old = document.getElementById('nb-dq-overlay');
+  // What disqualified them → why, in their own context. Keys match the funnel's
+  // dqStep.id values (revenue / frisat). Anything else falls back to generic.
+  var REASONS = {
+    revenue: {
+      h1: 'Not the right fit <em>just yet.</em>',
+      tag: 'Based on your current monthly revenue',
+      why: 'Newly Booked is built for spas already doing $50K+ a month — that’s the level where our system compounds the fastest and we can stand behind the results we promise. You’re not at that line yet, but the day you cross it, come back. We’d genuinely love to build with you.'
+    },
+    frisat: {
+      h1: 'We’re not the right fit <em>right now.</em>',
+      tag: 'Based on your weekend availability',
+      why: 'Our entire model runs on weekend consultations — 55% of sales happen Friday & Saturday, and that’s the window we use to fill your calendar with pre-paid appointments. Without those days open, we can’t deliver the numbers we promise. If that ever changes, the door is open.'
+    },
+    _default: {
+      h1: 'Right now, we’re <em>not the right fit.</em>',
+      tag: 'Based on your answers',
+      why: 'Based on your answers, your spa isn’t a match for the program today — and we’d rather tell you straight than put you on a call that wastes your time.'
+    }
+  };
+
+  var p = new URLSearchParams(location.search);
+  var reason = (p.get('reason') || '').trim();
+  var r = REASONS[reason] || REASONS._default;
+  var name = (p.get('name') || '').trim();
+  var first = name ? name.split(/\s+/)[0].replace(/[<>&]/g, '') : '';
+  var lead = 'Thanks for taking the time to apply' + (first ? ', ' + first : '') + '. We read every application by hand — here’s where things stand.';
+
+  var old = document.getElementById('nb-dq');
   if (old) old.remove();
   var overlay = document.createElement('div');
-  overlay.id = 'nb-dq-overlay';
+  overlay.id = 'nb-dq';
   overlay.innerHTML =
-    '<main class="dq-wrap"><div class="dq-card">' +
-      '<div class="dq-brand"><span class="dot"></span>Newly Booked</div>' +
-      '<div class="dq-eyebrow">Application received</div>' +
-      '<h1 class="dq-h1" id="dq-h1">Right now, we’re <em>not the right fit.</em></h1>' +
-      '<p class="dq-sub" id="dq-sub">Thanks for taking the time to apply. Based on your answers, your spa isn’t a match for the program today, and we’d rather tell you straight than waste a call.</p>' +
-      '<ul class="dq-list">' +
-        '<li>Owner-operated medspa or aesthetic clinic with a physical location</li>' +
-        '<li>Already doing $30K+ per month in revenue</li>' +
-        '<li>Offers fat-reduction treatments (Kybella, PCDC / Liquid Lipo, or similar)</li>' +
-        '<li>Able to take Friday &amp; Saturday consultations</li>' +
-      '</ul>' +
-      '<p class="dq-note">If your situation changes, or you think this was a mistake, just reply to the email we sent and we’ll take another look.</p>' +
-    '</div></main>';
+    '<div class="wrap">' +
+      '<div class="top">' +
+        '<div class="logo"><span class="mark">N<i></i>B</span>Newly Booked</div>' +
+        '<div class="badge">Application reviewed</div>' +
+      '</div>' +
+      '<main class="stage">' +
+        '<div class="ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>' +
+        '<div class="eyebrow">Application reviewed</div>' +
+        '<h1>' + r.h1 + '</h1>' +
+        '<p class="lead">' + lead + '</p>' +
+        '<div class="why">' +
+          '<div class="tag"><span class="d"></span>' + r.tag + '</div>' +
+          '<p>' + r.why + '</p>' +
+        '</div>' +
+        '<p class="note">If your situation changes — or you think this was a mistake — just reply to the email we sent and we’ll take another look.</p>' +
+      '</main>' +
+    '</div>';
   document.body.appendChild(overlay);
-
-  // Personalize with the first name from the URL, if present.
-  try {
-    var name = (new URLSearchParams(location.search).get('name') || '').trim();
-    if (name) {
-      var first = name.split(/\s+/)[0].replace(/[<>&]/g, '');
-      document.getElementById('dq-sub').textContent =
-        'Thanks for taking the time to apply, ' + first +
-        '. Based on your answers, your spa isn’t a match for the program today, and we’d rather tell you straight than waste a call.';
-    }
-  } catch (e) {}
 })();

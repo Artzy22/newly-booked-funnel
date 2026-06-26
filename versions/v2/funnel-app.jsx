@@ -494,6 +494,10 @@ function Funnel({ embedded } = {}) {
     } catch (e) {}
 
     const dq = isDisqualified(answers);
+    // Which question disqualified them — drives the /dq page's tailored "why"
+    // (passed as ?reason=) and the PostHog dq_step/value below.
+    const dqStep = dq ? STEPS.find((s) => s.key && s.options && s.options.find((o) => o.v === answers[s.key] && o.dq)) : null;
+    const dqReason = dqStep ? dqStep.id : '';
 
     // PostHog: identify the lead + fire the terminal event (disqualified vs
     // submitted) before the GHL submit/redirect so it sends first.
@@ -512,7 +516,6 @@ function Funnel({ embedded } = {}) {
       // a filtered-out completion. Fire ONE qualifier_completed for every finisher,
       // tagged with `outcome`, so PostHog can tell abandoned vs disqualified vs
       // qualified apart. Keep the existing events so current funnels don't break.
-      const dqStep = dq ? STEPS.find((s) => s.key && s.options && s.options.find((o) => o.v === answers[s.key] && o.dq)) : null;
       if (window.nbTrack) {
         window.nbTrack('qualifier_completed', {
           outcome: dq ? 'disqualified' : 'qualified',
@@ -642,7 +645,9 @@ function Funnel({ embedded } = {}) {
       // lead to /dq once the contact has had time to save.
       setTimeout(() => {
         const d = nbUrl('__NB_DQ_URL', 'https://newlybooked.com/dq');
-        window.location.href = d + (d.indexOf('?') > -1 ? '&' : '?') + 'status=dq';
+        const qp = new URLSearchParams({ status: 'dq', name: name.trim(), business: (answers.business || '').trim() });
+        if (dqReason) qp.set('reason', dqReason);
+        window.location.href = d + (d.indexOf('?') > -1 ? '&' : '?') + qp.toString();
       }, 4500);
       return;
     }
@@ -679,6 +684,7 @@ function Funnel({ embedded } = {}) {
       business: (answers.business || '').trim(), city: (answers.city || '').trim(),
     });
     if (dq) params.set('status', 'dq');
+    if (dq && dqReason) params.set('reason', dqReason);
     const dest = dq
       ? nbUrl('__NB_DQ_URL', 'https://newlybooked.com/dq')
       : nbUrl('__NB_SCHEDULE_URL', 'https://newlybooked.com/schedule-822049');
