@@ -174,6 +174,12 @@ function App() {
             </div>
           </div>
           <VideoTestimonials />
+          <div style={{ textAlign: 'center', marginTop: 56 }}>
+            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-500)', marginTop: 14, letterSpacing: '0.06em' }}>
+              Same playbook, your market · No retainer · We only win when you do
+            </div>
+          </div>
         </div>
       </section>
 
