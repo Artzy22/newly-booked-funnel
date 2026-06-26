@@ -351,6 +351,10 @@
 /* Mobile */
 @media (max-width: 640px) {
   .pf-top { padding: 18px 20px; }
+  /* "4 spots left this month" badge: smaller on mobile so it doesn't crowd the
+     logo (both were ~171px wide, filling the row edge-to-edge). */
+  .pf-slots { font-size: 11px; padding: 5px 10px; gap: 6px; }
+  .pf-slots .pf-pulse { width: 6px; height: 6px; }
   .pf-stage { padding: 24px 0 36px; justify-content: center; }
   .pf-inner { padding: 0 18px; }
   .pf-cards { gap: 12px; margin-top: 30px; }
