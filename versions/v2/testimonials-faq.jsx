@@ -1,5 +1,19 @@
 // Video testimonials data + component
+// Order matters: the first (featured) card should mirror whichever ad is
+// getting the most reach in Ads Manager right now (ad↔page congruency —
+// a visitor who just watched that ad's story should land on the SAME story).
+// Currently: COS CASE STUDY LONG FORM (Cosmetica/Azmi) is the top distributor.
 const TESTIMONIALS = [
+  {
+    name: 'Azmi',
+    spa: 'Cosmetica',
+    market: 'Dallas, TX',
+    quote: '"First month: $43K. No medical background, no high-ticket sales experience."',
+    stat: '$43K first month',
+    time: '02:36',
+    featured: true,
+    wistiaId: 'f0vlaj8cng',
+  },
   {
     name: 'Isabel',
     spa: 'Issil Beauty Spa',
@@ -7,14 +21,13 @@ const TESTIMONIALS = [
     quote: '"$18K in adspend. $220K in new patient revenue. Last month."',
     stat: '$2.9M lifetime',
     time: '02:14',
-    featured: true,
     wistiaId: '8t1vtmy0my',
   },
   {
     name: 'Natalie',
     spa: 'Breeze Med Spa',
     market: 'Year 1 → Year 2',
-    quote: '"I paid for the storefront — $300K — in cash, 100%."',
+    quote: '"I paid for the storefront, $300K, in cash, 100%."',
     stat: '$2.7M lifetime',
     time: '03:08',
     wistiaId: 's6a0lg2l2b',
@@ -27,15 +40,6 @@ const TESTIMONIALS = [
     stat: '$0 → $300K',
     time: '01:52',
     wistiaId: 'krkefwptbl',
-  },
-  {
-    name: 'Azmi',
-    spa: 'Cosmetica',
-    market: 'Dallas, TX',
-    quote: '"First month: $43K — no medical background, no high-ticket sales experience."',
-    stat: '$43K first month',
-    time: '02:36',
-    wistiaId: 'f0vlaj8cng',
   },
   {
     name: 'Micaela',
@@ -148,7 +152,7 @@ const FAQS = [
   },
   {
     q: "I'm not a salesperson. Will I have to do consultations?",
-    a: 'For the first 30–45 days, yes. You\'ll learn our $7M+ script with daily live training from Ivan. After that, you can keep selling personally (most owners do, because the close rate is highest), or train someone on your team using the same script and live coaching rhythm. Spas where the owner sells personally for the first 6 months grow significantly faster than spas that delegate too early.',
+    a: 'For the first 30–45 days, yes. You\'ll learn our $8M+ script with daily live training from Ivan. After that, you can keep selling personally (most owners do, because the close rate is highest), or train someone on your team using the same script and live coaching rhythm. Spas where the owner sells personally for the first 6 months grow significantly faster than spas that delegate too early.',
   },
   {
     q: "I can't afford another marketing investment right now.",

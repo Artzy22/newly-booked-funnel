@@ -273,11 +273,11 @@ const STEPS = [
   // per the call's Wistia walkthrough, so it is intentionally not here yet.
   {
     id: 'hero', kind: 'intro', big: true, trust: true,
-    eyebrow: 'For medspa owners',
+    eyebrow: 'For medspa owners doing $50K+/month',
     rating: '4.9',
     q: 'Add $100K–$150K/month in new patient revenue without tire kickers or retainers.',
     hl: '$100K–$150K',
-    sub: 'We only work with one medspa per area.',
+    sub: 'We take on 4 new spas a month, one medspa per area.',
     subStrong: 'See if yours is still open.',
     cta: 'Check availability',
   },
@@ -329,7 +329,7 @@ const STEPS = [
   {
     id: 'sales', kind: 'choices', key: 'sales', cols: 1,
     q: 'How confident are you in your sales abilities?',
-    sub: 'Sales experience is the common thread among our most successful spas.',
+    sub: 'No wrong answer here. Every owner gets trained on the exact script our top spas close with.',
     options: [
       { v: 'very', label: 'Very confident' },
       { v: 'somewhat', label: 'Somewhat confident' },
@@ -355,7 +355,7 @@ const STEPS = [
   },
   {
     id: 'contact', kind: 'contact',
-    q: 'Last step — add your details.',
+    q: 'Last step: add your details.',
     sub: 'We’ll check if you qualify and take you right to your available times.',
   },
 ];
@@ -750,6 +750,7 @@ function Funnel({ embedded } = {}) {
               {step.kind === 'intro' && (
                 <div className="pf-form pf-intro">
                   <button type="button" className="pf-btn pf-btn-block pf-btn-lg" onClick={goNext}>{step.cta} →</button>
+                  <div className="pf-fineprint">60-second qualifier · No retainer · No 12-month lock</div>
                 </div>
               )}
 

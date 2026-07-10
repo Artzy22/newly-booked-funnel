@@ -205,16 +205,28 @@ function App() {
         </div>
       </section>
 
+      {/* FAQ — the objections owners actually have, answered BEFORE the final ask.
+          Component already existed in testimonials-faq.jsx but was never mounted in v2. */}
+      <section className="section cream" id="faq" data-screen-label="04 FAQ">
+        <div className="container-narrow">
+          <div className="section-head" style={{ gridTemplateColumns: '1fr', gap: 16 }}>
+            <div className="label" style={{ paddingTop: 12 }}>What every owner asks</div>
+            <h2>What every owner asks <em>before</em> they book.</h2>
+          </div>
+          <FAQ />
+        </div>
+      </section>
+
       {/* BIG CTA — straight after the testimonials */}
-      <section className="final-cta" id="final-cta" data-screen-label="04 Final CTA">
+      <section className="final-cta" id="final-cta" data-screen-label="05 Final CTA">
         <div className="container">
           <div className="eyebrow light" style={{ marginBottom: 24 }}>The diagnostic</div>
           <h2>Forty-five minutes. <em>Zero pressure.</em><br/>Real numbers.</h2>
           <p className="lede">We open your funnel. Set rate, no-show rate, close rate, ad spend. We tell you exactly where you're leaking. One-page diagnosis, yours to keep, work with us or not.</p>
           <ul className="final-cta-list">
-            <li><span className="ix">— I.</span>Funnel teardown — set rate, deposit rate, close rate</li>
-            <li><span className="ix">— II.</span>What every leak in your funnel is actually costing you</li>
-            <li><span className="ix">— III.</span>A 30-day plan you can run yourself, even if we don't sign</li>
+            <li><span className="ix">I.</span>Funnel teardown: set rate, deposit rate, close rate</li>
+            <li><span className="ix">II.</span>What every leak in your funnel is actually costing you</li>
+            <li><span className="ix">III.</span>A 30-day plan you can run yourself, even if we don't sign</li>
           </ul>
           <div className="final-cta-row">
             <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
@@ -236,6 +248,9 @@ function App() {
               <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')} style={{ textDecoration: 'none' }}>Privacy</a>
               <a href="#qualify" style={{ textDecoration: 'none', color: 'var(--gold-400)' }}>Qualify →</a>
             </div>
+          </div>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: 'var(--navy-400, #6B7E9C)', textAlign: 'center', marginTop: 18, lineHeight: 1.6 }}>
+            Client results shown are real and verifiable, and they are top performers, not a promise. Your results depend on your market, capacity, pricing, and close rate.
           </div>
         </div>
       </footer>
