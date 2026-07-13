@@ -365,3 +365,69 @@
   .pf-eyebrow { margin-bottom: 14px; }
   .pf-form { margin-top: 28px; }
 }
+
+/* Exit-intent popup: the money question as a floating question screen */
+.pf-exit-veil,
+.pf-exit-veil * { box-sizing: border-box; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.pf-exit-veil {
+  position: fixed; inset: 0; z-index: 2147482000;
+  background: rgba(10, 22, 40, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+}
+.pf-exit {
+  position: relative;
+  width: min(560px, calc(100vw - 36px));
+  background: #fff;
+  border-radius: 16px;
+  padding: 34px 28px 24px;
+  box-shadow: 0 24px 70px rgba(10, 22, 40, 0.35);
+  text-align: center;
+  animation: pfExitRise 0.26s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) { .pf-exit { animation: none; } }
+@keyframes pfExitRise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+.pf-exit .pf-sub { margin: 6px auto 0; }
+.pf-exit .pf-choices { margin-top: 18px; }
+.pf-exit .pf-choice { padding: 16px 12px; font-size: 16px; }
+.pf-exit-x {
+  position: absolute; top: 12px; right: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--line); background: #fff; color: var(--navy-300);
+  font-size: 14px; line-height: 1;
+}
+.pf-exit-x:hover, .pf-exit-x:focus-visible { color: var(--navy-900); border-color: var(--navy-200); }
+@media (max-width: 480px) {
+  .pf-exit { padding: 28px 16px 18px; }
+  .pf-exit .pf-choices { grid-template-columns: 1fr; }
+}
+
+.pf-exit-wait {
+  font-weight: 800;
+  font-size: clamp(28px, 4.4vw, 38px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  color: var(--navy-900);
+  margin: 4px 0 0;
+}
+.pf-exit .pf-sub { margin-top: 10px; }
+.pf-exit-q2 {
+  font-weight: 700;
+  font-size: clamp(17px, 2.2vw, 20px);
+  color: var(--navy-900);
+  margin: 22px 0 0;
+}
+
+/* Popup quiz mode: the embedded full Funnel living inside the modal */
+.pf-exit.pf-exit-quiz {
+  width: min(680px, calc(100vw - 24px));
+  max-height: min(88vh, 860px);
+  overflow-y: auto;
+  padding: 10px 6px 18px;
+  text-align: initial;
+}
+.pf-exit-quiz .pf-root { min-height: 0; background: transparent; }
+.pf-exit-quiz .pf-top { padding: 12px 18px 0; }
+.pf-exit-quiz .pf-logo { display: none; }
+.pf-exit-quiz .pf-stage { padding: 8px 22px 10px; }
+.pf-exit-quiz .pf-progress { position: sticky; bottom: 0; }

@@ -299,6 +299,9 @@ const STEPS = [
   // field fill working ("Yes, we can inject those treatments").
   {
     id: 'own', kind: 'choices', key: 'own', cols: 2,
+    // Answered in the exit-intent popup → don't ask twice. The marker is set
+    // ONLY by the popup, so normal flow (and back-nav) is untouched.
+    skipIf: (a) => !!a.exitOwn,
     q: 'Do you have an injector on staff?',
     options: [
       { v: 'yes', label: 'Yes', fill: 'Yes, we can inject those treatments' },
@@ -380,9 +383,10 @@ const labelFor = (stepId, value) => {
   return o ? (o.fill || o.label) : (value || '');
 };
 
-function Funnel({ embedded } = {}) {
-  const [idx, setIdx] = useState(0);
-  const [answers, setAnswers] = useState({});
+function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
+  const NB_SRC = inExitPopup ? 'exit_popup' : 'page';
+  const [idx, setIdx] = useState(initialIdx ?? 0);
+  const [answers, setAnswers] = useState(initialAnswers ?? {});
   const [picked, setPicked] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -391,6 +395,14 @@ function Funnel({ embedded } = {}) {
   const [submitting, setSubmitting] = useState(false);
   const [otherMode, setOtherMode] = useState(false);
   const [showCity, setShowCity] = useState(false);
+  // Exit-intent popup: catches a leaver with the money question. The answer
+  // seeds the funnel (revenue screen skipIf's itself; DQ rules still apply).
+  const [exitOpen, setExitOpen] = useState(false);
+  const [exitPicked, setExitPicked] = useState(null);
+  // After the injector answer, the popup hosts the FULL quiz (an embedded
+  // Funnel seeded with that answer) — the lead finishes everything, contact
+  // step included, without leaving the modal.
+  const [exitQuiz, setExitQuiz] = useState(null);
   useEffect(() => { setOtherMode(false); setShowCity(false); }, [idx]);
 
   // Fire a Meta Pixel event each time a step is shown, so per-question drop-off
@@ -410,7 +422,7 @@ function Funnel({ embedded } = {}) {
       if (s && window.nbTrack) {
         window.nbTrack('qualifier_step_viewed', {
           step_index: idx, step_number: idx + 1, step_key: s.id, question: s.q,
-          total_steps: STEPS.length, version: 'v2',
+          total_steps: STEPS.length, version: 'v2', source: NB_SRC,
         });
       }
     } catch (e) {}
@@ -418,7 +430,7 @@ function Funnel({ embedded } = {}) {
 
   // PostHog: fire once when the quiz mounts (entry to the funnel).
   useEffect(() => {
-    try { if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: STEPS.length, version: 'v2' }); } catch (e) {}
+    try { if (window.nbTrack) window.nbTrack('qualifier_started', { total_steps: STEPS.length, version: 'v2', source: NB_SRC }); } catch (e) {}
   }, []);
 
   // City autocomplete
@@ -457,10 +469,72 @@ function Funnel({ embedded } = {}) {
   const goNext = () => setIdx((i) => nextIndexFrom(i, answers));
   const goBack = () => setIdx((i) => prevIndexFrom(i, answers));
 
+  // Exit intent: fire once per session, only while the injector question is
+  // still unanswered. Desktop signal = cursor leaving through the top of the
+  // viewport. Mobile signal = the first Back press (we arm a history entry;
+  // the popup absorbs that Back, a second Back really leaves).
+  useEffect(() => {
+    if (inExitPopup) return; // the popup's own quiz never re-arms the popup
+    const fire = () => {
+      if (sessionStorage.getItem('nbExitShown')) return false;
+      if (submitting || answers.own != null) return false;
+      sessionStorage.setItem('nbExitShown', '1');
+      setExitOpen(true);
+      try { if (window.fbq) window.fbq('trackCustom', 'ExitPopupShown', {}); } catch (e) {}
+      try { if (window.nbTrack) window.nbTrack('exit_popup_shown', { step_index: idx, version: 'v2', source: NB_SRC }); } catch (e) {}
+      return true;
+    };
+    const onMouseOut = (e) => { if (!e.relatedTarget && e.clientY <= 0) fire(); };
+    document.addEventListener('mouseout', onMouseOut);
+    // Mobile: arm one history entry and intercept the first Back press.
+    const touch = 'ontouchstart' in window;
+    const onPop = () => {
+      if (fire()) {
+        try { history.pushState({ nbExit: 1 }, ''); } catch (e) {} // stay on page
+      } else {
+        try { history.back(); } catch (e) {} // popup already had its shot — really leave
+      }
+    };
+    if (touch && !sessionStorage.getItem('nbExitShown')) {
+      try { history.pushState({ nbExit: 1 }, ''); } catch (e) {}
+      window.addEventListener('popstate', onPop);
+    }
+    // manual trigger for QA (?exitpreview=1 auto-fires it after load)
+    window.nbFireExitPopup = () => { sessionStorage.removeItem('nbExitShown'); fire(); };
+    let t;
+    if (/[?&]exitpreview=(1|quiz)/.test(window.location.search)) t = setTimeout(() => { window.nbFireExitPopup(); if (/exitpreview=quiz/.test(window.location.search)) setTimeout(() => { const b = document.querySelector('.pf-exit .pf-choice'); if (b) b.click(); }, 700); }, 1200);
+    return () => {
+      document.removeEventListener('mouseout', onMouseOut);
+      window.removeEventListener('popstate', onPop);
+      if (t) clearTimeout(t);
+    };
+  }, [submitting, answers.own, idx]);
+
+  const exitDismiss = (how) => {
+    setExitOpen(false);
+    try { if (window.nbTrack) window.nbTrack('exit_popup_dismissed', { how, version: 'v2', source: NB_SRC }); } catch (e) {}
+  };
+  // Answering the popup's injector question = entering the quiz: record the
+  // answer, mark the injector step to be skipped, and start the questions
+  // exactly as if they pressed "Check availability".
+  const exitPick = (opt) => {
+    const seed = { own: opt.v, exitOwn: true };
+    setExitPicked(opt.v);
+    try { if (window.fbq) window.fbq('trackCustom', 'ExitPopupAnswered', { value: opt.v }); } catch (e) {}
+    try { if (window.nbTrack) window.nbTrack('exit_popup_answered', { value: opt.v, label: opt.label, version: 'v2', source: NB_SRC }); } catch (e) {}
+    try { if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: 'own', step_index: OWN_STEP, value: opt.v, label: opt.label, source: 'exit_popup', version: 'v2', source: NB_SRC }); } catch (e) {}
+    setTimeout(() => {
+      setExitPicked(null);
+      // swap the WAIT screen for the full quiz, injector already answered —
+      // it opens on the revenue question and runs through contact + submit.
+      setExitQuiz({ answers: seed, startIdx: nextIndexFrom(0, seed) });
+    }, 230);
+  };
+
   const pick = (opt) => {
     const nextAns = step.key ? { ...answers, [step.key]: opt.v } : answers;
     if (step.key) setAnswers(nextAns);
-    try { if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: step.id, step_index: idx, value: opt.v, label: opt.label, version: 'v2' }); } catch (e) {}
+    try { if (window.nbTrack) window.nbTrack('qualifier_answered', { step_key: step.id, step_index: idx, value: opt.v, label: opt.label, version: 'v2', source: NB_SRC }); } catch (e) {}
     setPicked(opt.v);
     setTimeout(() => { setPicked(null); setIdx(nextIndexFrom(idx, nextAns)); }, 230);
   };
@@ -522,13 +596,13 @@ function Funnel({ embedded } = {}) {
           dq_step: dqStep ? dqStep.id : null,
           dq_value: dqStep ? answers[dqStep.key] : null,
           revenue: answers.revenue || '', city: (answers.city || '').trim(),
-          version: 'v2',
+          version: 'v2', source: NB_SRC,
         });
         if (dq) {
-          window.nbTrack('qualifier_disqualified', { step_key: dqStep ? dqStep.id : null, value: dqStep ? answers[dqStep.key] : null, version: 'v2' });
+          window.nbTrack('qualifier_disqualified', { step_key: dqStep ? dqStep.id : null, value: dqStep ? answers[dqStep.key] : null, version: 'v2', source: NB_SRC });
         } else {
           window.nbTrack('qualifier_submitted', {
-            city: (answers.city || '').trim(), revenue: answers.revenue || '', treatment: answers.treatment || '', version: 'v2',
+            city: (answers.city || '').trim(), revenue: answers.revenue || '', treatment: answers.treatment || '', version: 'v2', source: NB_SRC,
           });
         }
       }
@@ -543,7 +617,7 @@ function Funnel({ embedded } = {}) {
     // Telemetry: a qualified lead with no hidden form to fill never reaches GHL
     // (no webhook configured) — they still book via iClosed, creating a contact
     // with no business name and no Submission row. Surface it so it's diagnosable.
-    if (!ghlForm && !dq) { try { if (window.nbTrack) window.nbTrack('ghl_form_missing', { version: 'v2' }); } catch (e) {} }
+    if (!ghlForm && !dq) { try { if (window.nbTrack) window.nbTrack('ghl_form_missing', { version: 'v2', source: NB_SRC }); } catch (e) {} }
     if (ghlForm && !dq) {
       // The vue-multiselect dropdowns fill asynchronously (open → render → click),
       // so submit only AFTER fillGhlForm signals it's done — with a 2.5s fallback
@@ -582,7 +656,7 @@ function Funnel({ embedded } = {}) {
             el.removeAttribute('required'); el.removeAttribute('aria-required');
           });
         } catch (e) {}
-        try { if (window.nbTrack) window.nbTrack('ghl_submit_attempt', { version: 'v2' }); } catch (e) {}
+        try { if (window.nbTrack) window.nbTrack('ghl_submit_attempt', { version: 'v2', source: NB_SRC }); } catch (e) {}
         const btn = ghlForm.querySelector('button[type="submit"]') || ghlForm.querySelector('button');
         if (btn) btn.click();
         setTimeout(goSchedule, 6000);
@@ -609,7 +683,7 @@ function Funnel({ embedded } = {}) {
           business: (answers.business || '').trim(),
         }, () => { clearTimeout(fillTimer); setTimeout(doSubmit, 120); });
       } catch (e) {
-        try { if (window.nbTrack) window.nbTrack('ghl_fill_error', { message: String((e && e.message) || e), version: 'v2' }); } catch (_) {}
+        try { if (window.nbTrack) window.nbTrack('ghl_fill_error', { message: String((e && e.message) || e), version: 'v2', source: NB_SRC }); } catch (_) {}
       }
       return;
     }
@@ -861,8 +935,37 @@ function Funnel({ embedded } = {}) {
         </div>
       )}
       <div className="pf-progress"><div className="pf-progress-bar" style={{ width: `${Math.max(progress, 4)}%` }}></div></div>
+
+      {exitOpen && !submitting && ReactDOM.createPortal(
+        <div className="pf-exit-veil" onClick={(e) => { if (e.target === e.currentTarget) exitDismiss('backdrop'); }}>
+          <div className={`pf-exit${exitQuiz ? ' pf-exit-quiz' : ''}`} role="dialog" aria-modal="true" aria-label="Before you go">
+            <button className="pf-exit-x" aria-label="Close" onClick={() => exitDismiss('x')}>✕</button>
+            {!exitQuiz ? (
+              <>
+                <h2 className="pf-exit-wait">Wait. Before you go.</h2>
+                <p className="pf-sub">Answer these quick questions and see if your area is still open.</p>
+                <p className="pf-exit-q2">{STEPS[OWN_STEP].q}</p>
+                <div className="pf-choices cols-2">
+                  {STEPS[OWN_STEP].options.map((o) => (
+                    <button
+                      key={o.v}
+                      className={`pf-choice${exitPicked === o.v ? ' selected' : ''}`}
+                      onClick={() => exitPick(o)}
+                    >{o.label}</button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <Funnel embedded inExitPopup initialAnswers={exitQuiz.answers} initialIdx={exitQuiz.startIdx} />
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
+
+const OWN_STEP = STEPS.findIndex((s) => s.id === 'own');
 
 window.Funnel = Funnel;
