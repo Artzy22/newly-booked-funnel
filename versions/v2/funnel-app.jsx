@@ -947,7 +947,7 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
       <div className="pf-progress"><div className="pf-progress-bar" style={{ width: `${Math.max(progress, 4)}%` }}></div></div>
 
       {exitOpen && !submitting && ReactDOM.createPortal(
-        <div className="pf-exit-veil" onClick={(e) => { if (e.target === e.currentTarget) exitDismiss('backdrop'); }}>
+        <div className={`pf-exit-veil${exitQuiz ? ' quiz' : ''}`} onClick={(e) => { if (e.target === e.currentTarget) exitDismiss('backdrop'); }}>
           <div className={`pf-exit${exitQuiz ? ' pf-exit-quiz' : ''}`} role="dialog" aria-modal="true" aria-label="Before you go">
             <button className="pf-exit-x" aria-label="Close" onClick={() => exitDismiss('x')}>✕</button>
             {!exitQuiz ? (
@@ -966,7 +966,9 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
                 </div>
               </>
             ) : (
-              <Funnel embedded inExitPopup initialAnswers={exitQuiz.answers} initialIdx={exitQuiz.startIdx} />
+              <div className="pf-exit-scroll">
+                <Funnel embedded inExitPopup initialAnswers={exitQuiz.answers} initialIdx={exitQuiz.startIdx} />
+              </div>
             )}
           </div>
         </div>,

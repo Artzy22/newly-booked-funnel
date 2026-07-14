@@ -392,10 +392,12 @@
 .pf-exit .pf-choices { margin-top: 18px; }
 .pf-exit .pf-choice { padding: 16px 12px; font-size: 16px; }
 .pf-exit-x {
-  position: absolute; top: 12px; right: 12px;
-  width: 32px; height: 32px; border-radius: 50%;
+  position: absolute; top: 10px; right: 10px;
+  width: 40px; height: 40px; border-radius: 50%;
   border: 1px solid var(--line); background: #fff; color: var(--navy-300);
-  font-size: 14px; line-height: 1;
+  font-size: 16px; line-height: 1;
+  z-index: 30;
+  box-shadow: 0 2px 10px rgba(10, 22, 40, 0.12);
 }
 .pf-exit-x:hover, .pf-exit-x:focus-visible { color: var(--navy-900); border-color: var(--navy-200); }
 @media (max-width: 480px) {
@@ -420,14 +422,42 @@
 
 /* Popup quiz mode: the embedded full Funnel living inside the modal */
 .pf-exit.pf-exit-quiz {
+  animation: none;
   width: min(680px, calc(100vw - 24px));
   max-height: min(88vh, 860px);
-  overflow-y: auto;
-  padding: 10px 6px 18px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  padding: 0;
   text-align: initial;
+}
+.pf-exit-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 6px 14px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .pf-exit-quiz .pf-root { min-height: 0; background: transparent; }
 .pf-exit-quiz .pf-top { padding: 12px 18px 0; }
 .pf-exit-quiz .pf-logo { display: none; }
 .pf-exit-quiz .pf-stage { padding: 8px 22px 10px; }
 .pf-exit-quiz .pf-progress { position: sticky; bottom: 0; }
+
+@media (max-width: 640px) {
+  .pf-exit-veil.quiz { padding: 0; }
+  .pf-exit.pf-exit-quiz {
+    width: 100vw;
+    height: 100svh;
+    max-height: none;
+    border-radius: 0;
+  }
+  .pf-exit-quiz .pf-top { padding: 14px 16px 0; min-height: 44px; }
+  .pf-exit-quiz .pf-stage { padding: 10px 20px 16px; }
+  .pf-exit-quiz .pf-q { font-size: clamp(20px, 5.8vw, 25px); }
+  .pf-exit-quiz .pf-sub { font-size: 14px; }
+  .pf-exit-quiz .pf-choice { padding: 15px 14px; font-size: 15.5px; }
+  .pf-exit-quiz .pf-choices { gap: 9px; margin-top: 20px; }
+  /* wait screen: comfier card */
+  .pf-exit:not(.pf-exit-quiz) { padding: 30px 18px 22px; }
+  .pf-exit-wait { font-size: 27px; }
+}
