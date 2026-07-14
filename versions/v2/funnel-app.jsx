@@ -498,9 +498,15 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
         try { history.back(); } catch (e) {} // popup already had its shot — really leave
       }
     };
+    let idleTimer;
     if (touch && !sessionStorage.getItem('nbExitShown')) {
       try { history.pushState({ nbExit: 1 }, ''); } catch (e) {}
       window.addEventListener('popstate', onPop);
+      // Phones give no exit signal beyond Back, so also fire after 30s — but
+      // ONLY while they're still parked on the hero. A lead who's answering
+      // questions never gets interrupted. (Timer re-arms if they Back out to
+      // the hero and sit again.)
+      idleTimer = setTimeout(() => { if (idx === 0) fire(); }, 30000);
     }
     // manual trigger for QA (?exitpreview=1 auto-fires it after load)
     window.nbFireExitPopup = () => { sessionStorage.removeItem('nbExitShown'); fire(); };
@@ -510,6 +516,7 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
       document.removeEventListener('mouseout', onMouseOut);
       window.removeEventListener('popstate', onPop);
       if (t) clearTimeout(t);
+      if (idleTimer) clearTimeout(idleTimer);
     };
   }, [submitting, answers.own, idx]);
 
