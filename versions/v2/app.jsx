@@ -90,6 +90,26 @@ function App() {
           document.body.style.setProperty('overflow-y', 'hidden', 'important');
         }
       }
+      // 3. Full-bleed: GHL's section/row/column wrappers around our #root carry
+      // padding, margins, and a max-width that frame the page in a white gutter
+      // (visible now that the hero is navy). Flatten every ancestor between
+      // #root and <body> so the landing truly spans edge to edge; the 100vw
+      // breakout in landing.css covers left/right, this kills the top/bottom
+      // padding too. GHL-embed only — standalone has no wrappers to flatten.
+      if (inGhlEmbed) {
+        const nb = document.getElementById('nb-landing');
+        if (nb) nb.classList.add('nb-ghl'); // arms the 100vw breakout in landing.css
+        let el = document.getElementById('root');
+        el = el && el.parentElement;
+        while (el && el !== document.body && el !== document.documentElement) {
+          const s = el.style;
+          s.setProperty('padding', '0', 'important');
+          s.setProperty('margin', '0', 'important');
+          s.setProperty('max-width', 'none', 'important');
+          s.setProperty('width', '100%', 'important');
+          el = el.parentElement;
+        }
+      }
     };
     fixGhlScroll();
     window.addEventListener('load', fixGhlScroll);
