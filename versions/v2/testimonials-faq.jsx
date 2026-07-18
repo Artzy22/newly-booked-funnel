@@ -175,10 +175,16 @@ function CaseCard({ t }) {
   );
 }
 
+// Display order for the landing's case grid (Byron, Jul 2026):
+// Natalie, Isabel, Couzue, Azmi, Micaela, Eliana. Kept separate from
+// TESTIMONIALS so the old VideoTestimonials ad-congruency order stays intact.
+const CASE_ORDER = ['s6a0lg2l2b', '8t1vtmy0my', 'krkefwptbl', 'f0vlaj8cng', '4ft5xbenoa', '69l69xocrq'];
+
 function CaseGrid() {
+  const ordered = CASE_ORDER.map((id) => TESTIMONIALS.find((t) => t.wistiaId === id)).filter(Boolean);
   return (
     <div className="bfn-case-grid">
-      {TESTIMONIALS.map((t, i) => <CaseCard key={i} t={t} />)}
+      {ordered.map((t, i) => <CaseCard key={t.wistiaId} t={t} />)}
     </div>
   );
 }

@@ -55,8 +55,8 @@ html, body { background: #081124; }
 #nb-landing .bfn-logo.white{color:#fff}
 #nb-landing .bfn-logo-badge{height:34px;width:34px;border-radius:9px;display:block}
 /* screen-blend melts the logo's navy square into the dark hero/footer */
-#nb-landing .bfn-logo-hero{height:112px;width:112px;margin:0 auto;mix-blend-mode:screen;border-radius:20px}
-#nb-landing .bfn-logo-foot{height:64px;width:64px;margin:0 auto;mix-blend-mode:screen;display:block;border-radius:12px}
+#nb-landing .bfn-logo-hero{height:72px;width:72px;margin:0 auto;mix-blend-mode:screen;border-radius:14px}
+#nb-landing .bfn-logo-foot{height:52px;width:52px;margin:0 auto;mix-blend-mode:screen;display:block;border-radius:10px}
 
 /* ---------- hero ---------- */
 #nb-landing .bfn-hero{position:relative;background:
@@ -67,20 +67,20 @@ html, body { background: #081124; }
 #nb-landing .bfn-hero::before{content:"";position:absolute;inset:0;
   background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
   background-size:56px 56px;mask-image:radial-gradient(75% 75% at 50% 30%,#000 0%,transparent 100%);-webkit-mask-image:radial-gradient(75% 75% at 50% 30%,#000 0%,transparent 100%)}
-#nb-landing .bfn-hero-in{position:relative;max-width:880px;margin:0 auto;padding:56px 22px 72px;text-align:center}
-#nb-landing .bfn-hero-logo{justify-content:center;margin:0 auto 38px;display:flex}
+#nb-landing .bfn-hero-in{position:relative;max-width:880px;margin:0 auto;padding:38px 22px 58px;text-align:center}
+#nb-landing .bfn-hero-logo{justify-content:center;margin:0 auto 22px;display:flex}
 #nb-landing .bfn-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:#BCD5FF;background:rgba(34,119,255,.16);border:1px solid rgba(120,170,255,.35);border-radius:99px;padding:6px 14px}
 #nb-landing .bfn-eyebrow i{width:6px;height:6px;border-radius:50%;background:#5EA0FF;display:inline-block}
-#nb-landing .bfn-hero h1{font-family:var(--display);font-weight:700;font-size:clamp(32px,5.2vw,56px);line-height:1.13;letter-spacing:-1.2px;margin:26px 0 10px;color:#fff}
+#nb-landing .bfn-hero h1{font-family:var(--display);font-weight:700;font-size:clamp(32px,5.2vw,56px);line-height:1.13;letter-spacing:-1.2px;margin:18px 0 8px;color:#fff}
 #nb-landing .bfn-hero h1 .accent{color:#5EA0FF}
 #nb-landing .bfn-pay{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,34px);letter-spacing:-.5px;line-height:1.3;color:#fff;margin:12px 0 0}
 /* styles.css sets a global `em { italic; gold }` — reset every property here so
    the under-highlight reads white-on-blue like the reference. */
 #nb-landing .bfn-pay em{font-style:normal;font-weight:700;color:#fff;background:linear-gradient(180deg,transparent 55%,rgba(34,119,255,.6) 55%);padding:0 5px;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-#nb-landing .bfn-risk{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.7vw,27px);letter-spacing:-.4px;color:#fff;margin:22px auto 0}
+#nb-landing .bfn-risk{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.7vw,27px);letter-spacing:-.4px;color:#fff;margin:14px auto 0}
 /* CTA accent: the funnel's bright red (Ivan) — the action buttons pop against
    the navy/blue page. */
-#nb-landing .bfn-cta{display:inline-block;background:linear-gradient(165deg,#FF453A,#E11900);color:#fff;text-decoration:none;font-family:var(--display);font-weight:700;font-size:18px;padding:19px 46px;border-radius:16px;margin-top:34px;box-shadow:0 22px 44px -14px rgba(225,25,0,.6);transition:.18s ease}
+#nb-landing .bfn-cta{display:inline-block;background:linear-gradient(165deg,#FF453A,#E11900);color:#fff;text-decoration:none;font-family:var(--display);font-weight:700;font-size:18px;padding:19px 46px;border-radius:16px;margin-top:24px;box-shadow:0 22px 44px -14px rgba(225,25,0,.6);transition:.18s ease}
 #nb-landing .bfn-cta:hover{transform:translateY(-2px);box-shadow:0 28px 54px -14px rgba(225,25,0,.7);filter:brightness(1.05)}
 #nb-landing .bfn-cta small{display:block;font-family:var(--body);font-weight:500;font-size:12.5px;opacity:.85;margin-top:3px}
 
@@ -192,19 +192,23 @@ html, body { background: #081124; }
 }
 @media (max-width:860px){
   #nb-landing .bfn-nav{display:block}
-  #nb-landing section{padding:48px 0}
-  #nb-landing .bfn-case-grid{grid-template-columns:1fr;gap:20px}
+  #nb-landing section{padding:44px 0}
+  #nb-landing .bfn-case-grid{grid-template-columns:1fr;gap:20px;margin-top:24px}
   #nb-landing .bfn-perf-grid{grid-template-columns:1fr;gap:16px}
-  #nb-landing .bfn-hero-in{padding:48px 22px 56px}
-  #nb-landing .bfn-hero-logo{margin-bottom:30px}
+  #nb-landing .bfn-hero-in{padding:24px 22px 36px}
+  #nb-landing .bfn-hero-logo{margin-bottom:14px}
+  #nb-landing .bfn-logo-hero{height:56px;width:56px;border-radius:11px}
+  #nb-landing .bfn-cases{padding-top:34px}
 }
 @media (max-width:480px){
   #nb-landing .bfn-eyebrow{font-size:9.5px;letter-spacing:1px;padding:6px 12px}
   #nb-landing .bfn-nav-in{padding:12px 16px}
   #nb-landing .bfn-nav-cta{font-size:13px;padding:9px 15px}
-  #nb-landing .bfn-cta{display:block;text-align:center;padding:17px 20px}
+  #nb-landing .bfn-cta{display:block;text-align:center;padding:16px 20px;margin-top:20px}
   #nb-landing .bfn-avail-card{padding:8px}
-  #nb-landing .bfn-logo-hero{height:88px;width:88px}
+  #nb-landing .bfn-hero h1{font-size:29px;letter-spacing:-.8px}
+  #nb-landing .bfn-pay{font-size:20px}
+  #nb-landing .bfn-risk{font-size:17px;margin-top:12px}
   #nb-landing .nb-quiz-host .pf-root{min-height:460px}
   #nb-landing .nb-quiz-host .pf-q{font-size:20px}
   #nb-landing .nb-quiz-host .pf-choice{padding:13px 12px;font-size:14px}

@@ -44,7 +44,9 @@
     // immediately instead of waiting on the GitHub Pages 10-min CDN TTL.
     (function () {
       var v = Date.now();
-      ['logo-marquee.jsx','screenshots.jsx','testimonials-faq.jsx','funnel-app.jsx','app.jsx'].forEach(function (s) {
+      // logo-marquee.jsx + screenshots.jsx dropped from the load: the Bluefer
+      // landing doesn't mount them, and skipping them cuts Babel compile time.
+      ['testimonials-faq.jsx','funnel-app.jsx','app.jsx'].forEach(function (s) {
         document.write('<script type="text/babel" src="' + s + '?v=' + v + '"><\/script>');
       });
     })();

@@ -219,7 +219,7 @@ function App() {
   // the dark sections.
   const Logo = ({ white }) => (
     <a className={`bfn-logo${white ? ' white' : ''}`} href="#top">
-      <img className="bfn-logo-badge" src="assets/nb-logo.png" alt="Newly Booked" />
+      <img className="bfn-logo-badge" src="assets/nb-logo.png?v=2" alt="Newly Booked" width="34" height="34" decoding="async" />
       <span>Newly Booked</span>
     </a>
   );
@@ -238,7 +238,7 @@ function App() {
       {/* ============ HERO ============ */}
       <div className="bfn-hero" id="top">
         <div className="bfn-hero-in">
-          <div className="bfn-hero-logo"><img className="bfn-logo-hero" src="assets/nb-logo.png" alt="Newly Booked" /></div>
+          <div className="bfn-hero-logo"><img className="bfn-logo-hero" src="assets/nb-logo.png?v=2" alt="Newly Booked" width="72" height="72" fetchpriority="high" /></div>
           <div><span className="bfn-eyebrow"><i></i>Only for medspa owners doing $50K+/month</span></div>
           <h1>Add <span className="accent">$150K–$300K</span> in new patient revenue to your medspa</h1>
           <p className="bfn-pay"><em>We only get paid when patients pay you.</em></p>
@@ -288,7 +288,7 @@ function App() {
           <div className="bfn-founder-grid">
             <div className="bfn-founder-photo">
               {founderImgOk ? (
-                <img loading="lazy" src="assets/founder.webp" alt="Ivan Merlo, founder of Newly Booked" onError={() => setFounderImgOk(false)} />
+                <img loading="lazy" decoding="async" src="assets/founder.webp" alt="Ivan Merlo, founder of Newly Booked" width="600" height="600" onError={() => setFounderImgOk(false)} />
               ) : (
                 <div className="bfn-founder-ph" aria-label="Ivan Merlo">IM</div>
               )}
@@ -330,7 +330,7 @@ function App() {
       {/* ============ FOOTER ============ */}
       <footer>
         <div className="wrap">
-          <img className="bfn-logo-foot" src="assets/nb-logo.png" alt="Newly Booked" />
+          <img className="bfn-logo-foot" src="assets/nb-logo.png?v=2" alt="Newly Booked" width="52" height="52" loading="lazy" decoding="async" />
           <div className="fine">Performance-based patient acquisition — only for medspas &amp; aesthetic clinics.</div>
           <div className="fine">© 2026 Newly Booked · We Only Make Money When You Do</div>
           <div className="links">
