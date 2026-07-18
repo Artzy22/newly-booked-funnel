@@ -1,1 +1,4 @@
 .DS_Store
+
+# local graphify knowledge-graph output (analysis tooling, not site content)
+graphify-out/

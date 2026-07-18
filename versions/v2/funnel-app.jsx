@@ -461,9 +461,11 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
     while (n < STEPS.length && STEPS[n].skipIf && STEPS[n].skipIf(ans)) n++;
     return Math.min(n, last);
   };
-  // In the exit popup the quiz starts at the first question — Back must never
-  // walk below it (it used to reach the hero screen INSIDE the modal).
-  const minIdx = inExitPopup ? (initialIdx ?? 0) : 0;
+  // Wherever the quiz starts (exit popup, or the in-card embed on the new
+  // landing that skips the intro step), Back must never walk below that start —
+  // it used to reach the hero screen INSIDE the modal. Page default (no
+  // initialIdx) is unchanged: floor stays 0.
+  const minIdx = initialIdx ?? 0;
   const prevIndexFrom = (from, ans) => {
     let n = from - 1;
     while (n > minIdx && STEPS[n].skipIf && STEPS[n].skipIf(ans)) n--;
@@ -498,15 +500,24 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
         try { history.back(); } catch (e) {} // popup already had its shot — really leave
       }
     };
+    // Phones give no exit signal beyond Back, so also fire after 30s of NO
+    // interaction — a true IDLE timer. Any touch, scroll, or tap RESETS the
+    // countdown, so a visitor who is reading, scrolling, or answering is never
+    // interrupted mid-engagement; only someone genuinely parked for a quiet 30s
+    // gets the popup. Still gated to the quiz's entry step (idx === minIdx):
+    // once they advance past the first question the timer can never fire.
     let idleTimer;
+    const armIdle = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => { if (idx === minIdx) fire(); }, 30000);
+    };
     if (touch && !sessionStorage.getItem('nbExitShown')) {
       try { history.pushState({ nbExit: 1 }, ''); } catch (e) {}
       window.addEventListener('popstate', onPop);
-      // Phones give no exit signal beyond Back, so also fire after 30s — but
-      // ONLY while they're still parked on the hero. A lead who's answering
-      // questions never gets interrupted. (Timer re-arms if they Back out to
-      // the hero and sit again.)
-      idleTimer = setTimeout(() => { if (idx === 0) fire(); }, 30000);
+      armIdle();
+      window.addEventListener('touchstart', armIdle, { passive: true });
+      window.addEventListener('scroll', armIdle, { passive: true });
+      window.addEventListener('pointerdown', armIdle, { passive: true });
     }
     // manual trigger for QA (?exitpreview=1 auto-fires it after load)
     window.nbFireExitPopup = () => { sessionStorage.removeItem('nbExitShown'); fire(); };
@@ -517,6 +528,9 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
       window.removeEventListener('popstate', onPop);
       if (t) clearTimeout(t);
       if (idleTimer) clearTimeout(idleTimer);
+      window.removeEventListener('touchstart', armIdle);
+      window.removeEventListener('scroll', armIdle);
+      window.removeEventListener('pointerdown', armIdle);
     };
   }, [submitting, answers.own, idx]);
 
@@ -781,10 +795,10 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
     <div className="pf-root" id="qualify">
       <div className="pf-top">
         <div className="pf-logo"><span className="pf-mark">N<i></i>B</span><span className="pf-wordmark">Newly Booked</span></div>
-        {idx === 0 && !submitting ? (
+        {idx === minIdx && !inExitPopup && !submitting ? (
           <div className="pf-slots"><span className="pf-pulse"></span>4 spots left this month</div>
         ) : (
-          <button className="pf-back" hidden={submitting || (inExitPopup && idx <= minIdx)} onClick={goBack}>← Back</button>
+          <button className="pf-back" hidden={submitting || idx <= minIdx} onClick={goBack}>← Back</button>
         )}
       </div>
 

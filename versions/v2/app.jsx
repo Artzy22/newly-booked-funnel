@@ -1,7 +1,33 @@
-// Combined page — the funnel is the hero, then editorial proof sections below.
+// Combined page — Bluefer-style landing (hero → results → model → founder →
+// quiz → closer), tailored to Newly Booked. The qualifier quiz keeps ALL of its
+// existing logic (GHL form fill, DQ routing, tracking, exit popup) and is
+// mounted inside the availability card, starting at the first question.
 const { useState, useEffect } = React;
 
-const CTA = 'See if your area is open';
+// Self-sufficiency shim for the GHL embed: the loader pasted into GHL
+// (ghl-pages/funnel-page.html) predates the Bluefer-style redesign and only
+// links styles.css + funnel.css. Inject landing.css and the Sora display font
+// here so a repo push alone fully updates the live page — relative hrefs
+// resolve against the GHL page's <base> tag straight to the CDN. No-op on the
+// standalone page, where index.html already links both.
+(function () {
+  try {
+    if (!document.querySelector('link[href*="landing.css"]')) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = 'landing.css?v=' + Date.now();
+      document.head.appendChild(l);
+    }
+    if (!document.querySelector('link[href*="family=Sora"]')) {
+      var f = document.createElement('link');
+      f.rel = 'stylesheet';
+      f.href = 'https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap';
+      document.head.appendChild(f);
+    }
+  } catch (e) {}
+})();
+
+const CTA = 'Check availability';
 
 function App() {
 
@@ -51,9 +77,14 @@ function App() {
       // 2. GHL pins <body> to a fixed height with overflow:auto, leaving it a
       // "can't-really-scroll" container that EATS the mouse wheel over the page
       // content (only dragging the scrollbar worked). Take <body> out of the wheel
-      // path so the wheel reaches the real scroller (<html>). Safe: <html> is the
-      // scrollingElement, not <body>, so the page still scrolls everywhere.
-      if (document.scrollingElement && document.scrollingElement !== document.body) {
+      // path so the wheel reaches the real scroller (<html>). ONLY inside the GHL
+      // embed (same markers the wheel-rescue binds on): on the standalone page,
+      // styles.css's body{overflow-x:hidden} makes computed overflow-y 'auto', so
+      // this guard used to fire there too — and a hidden-overflow <body> TRAPS the
+      // wheel (no scroll chaining) with no wheel-rescue bound to compensate,
+      // killing mouse-wheel scroll on local/standalone builds.
+      const inGhlEmbed = document.querySelector('.nb-hidden-form, .hl_page-preview--content') || document.getElementById('__nuxt');
+      if (inGhlEmbed && document.scrollingElement && document.scrollingElement !== document.body) {
         const oy = getComputedStyle(document.body).overflowY;
         if (oy === 'auto' || oy === 'scroll') {
           document.body.style.setProperty('overflow-y', 'hidden', 'important');
@@ -125,143 +156,166 @@ function App() {
     };
   }, []);
 
+  // Mobile top bar (Bluefer behavior): slides in once the hero scrolls away,
+  // and stays hidden whenever a section carrying its own CTA is on screen
+  // (hero, quiz, closer) so the button never doubles up.
+  useEffect(() => {
+    const nav = document.querySelector('#nb-landing .bfn-nav');
+    const secs = ['.bfn-hero', '#availability', '.bfn-closer']
+      .map((s) => document.querySelector('#nb-landing ' + s)).filter(Boolean);
+    if (!nav || !secs.length) return;
+    let pending = false;
+    const update = () => {
+      pending = false;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const any = secs.some((el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < vh; });
+      nav.classList.toggle('show', !any);
+    };
+    const onScroll = () => { if (!pending) { pending = true; setTimeout(update, 80); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  // Founder photo: uses assets/founder.webp when the asset exists, falls back
+  // to an initials badge until Byron drops the real photo in.
+  const [founderImgOk, setFounderImgOk] = useState(true);
+
+  // Real brand mark (white N|B lockup on navy, assets/nb-logo.png). The badge
+  // form pairs the square mark with the wordmark; the hero/footer forms show
+  // the lockup alone with mix-blend-mode:screen so its navy square melts into
+  // the dark sections.
+  const Logo = ({ white }) => (
+    <a className={`bfn-logo${white ? ' white' : ''}`} href="#top">
+      <img className="bfn-logo-badge" src="assets/nb-logo.png" alt="Newly Booked" />
+      <span>Newly Booked</span>
+    </a>
+  );
+
   return (
-    <>
-      {/* HERO = the multi-step funnel */}
-      <Funnel embedded />
+    <div id="nb-landing">
 
-      {/* MARQUEE */}
-      {(
-        <>
-        <div className="marquee">
-          <div className="marquee-inner">
-            <span>"Doubled the business with Ivan's one service" · Arlington VA</span>
-            <span>$220K from $18K adspend · Plano TX</span>
-            <span>"Almost $300K first year in business" · Minneapolis MN</span>
-            <span>$2.7M lifetime · Breeze Med Spa</span>
-            <span>"Increased my sales trifold" · Edinburg TX</span>
-            <span>$2.9M lifetime · Issil Beauty Spa</span>
-            <span>$60K/mo → $250K/mo new patient revenue</span>
-            <span>"Best business decision. If you're serious about growing, this is it" · Murrieta CA</span>
-            <span>$300K cash storefront · Natalie</span>
-            <span>$43K our first month · Fort Worth TX</span>
-            <span>$30K profit in 45 days · Naturalness Med Spa</span>
-            <span>"Doubled the business with Ivan's one service" · Arlington VA</span>
-            <span>$220K from $18K adspend · Plano TX</span>
-            <span>"Almost $300K first year in business" · Minneapolis MN</span>
-            <span>$2.7M lifetime · Breeze Med Spa</span>
-            <span>"Increased my sales trifold" · Edinburg TX</span>
-            <span>$2.9M lifetime · Issil Beauty Spa</span>
-            <span>$60K/mo → $250K/mo new patient revenue</span>
-            <span>"Best business decision. If you're serious about growing, this is it" · Murrieta CA</span>
-            <span>$300K cash storefront · Natalie</span>
-            <span>$43K our first month · Fort Worth TX</span>
-            <span>$30K profit in 45 days · Naturalness Med Spa</span>
-          </div>
+      {/* ============ NAV (mobile only) ============ */}
+      <div className="bfn-nav">
+        <div className="bfn-nav-in">
+          <Logo />
+          <a className="bfn-nav-cta" href="#availability">{CTA}</a>
         </div>
-        <LogoMarquee />
-        </>
-      )}
+      </div>
 
-      {/* VIDEO TESTIMONIALS */}
-      <section className="section" id="proof" data-screen-label="02 Testimonials">
-        <div className="container">
-          <div className="section-head">
-            <div className="label">Owner testimony</div>
-            <div>
-              <h2>Hear it from owners who've <em>done it.</em></h2>
-              <p className="lede">Six medspa owners. Six different markets. The same playbook running underneath all of them.</p>
+      {/* ============ HERO ============ */}
+      <div className="bfn-hero" id="top">
+        <div className="bfn-hero-in">
+          <div className="bfn-hero-logo"><img className="bfn-logo-hero" src="assets/nb-logo.png" alt="Newly Booked" /></div>
+          <div><span className="bfn-eyebrow"><i></i>Only for medspa owners doing $50K+/month</span></div>
+          <h1>Add <span className="accent">$150K–$300K</span> in new patient revenue to your medspa</h1>
+          <p className="bfn-pay"><em>We only get paid when patients pay you.</em></p>
+          <p className="bfn-risk">Try it for 30 days, risk-free.</p>
+          <a className="bfn-cta" href="#availability">{CTA}<small>See if your area is still open</small></a>
+        </div>
+      </div>
+
+      {/* ============ CLIENT RESULTS ============ */}
+      <section className="bfn-cases" id="results">
+        <div className="wrap">
+          <span className="bfn-sec-eyebrow">Client results</span>
+          <h2>What medspa owners say about us</h2>
+          <CaseGrid />
+        </div>
+      </section>
+
+      {/* ============ THE MODEL ============ */}
+      <section className="bfn-perf">
+        <div className="wrap-n">
+          <span className="bfn-sec-eyebrow" style={{ color: '#8FBAFF' }}>The Newly Booked model</span>
+          <h2>We only get paid when patients pay you.<br />100% performance-based.</h2>
+          <p className="bfn-sec-sub">If you are looking for a "brand awareness" agency — that is not us. If you are looking for an ROI machine, look no further.</p>
+          <div className="bfn-perf-grid">
+            <div className="bfn-perk">
+              <span className="tick">✓</span>
+              <h3>Pay after results</h3>
+              <p>You don't pay us a retainer. You pay us when you sell — our model is 100% performance-based, so we have to perform to get paid.</p>
             </div>
-          </div>
-          <VideoTestimonials />
-          <div style={{ textAlign: 'center', marginTop: 56 }}>
-            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
-            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-500)', marginTop: 14, letterSpacing: '0.06em' }}>
-              Same playbook, your market · No retainer · We only win when you do
+            <div className="bfn-perk">
+              <span className="tick">✓</span>
+              <h3>No commitment</h3>
+              <p>No retainer pitch and no 12-month contract. Judge us purely on the revenue the system generates for your spa.</p>
+            </div>
+            <div className="bfn-perk">
+              <span className="tick">✓</span>
+              <h3>Limited spots per area</h3>
+              <p>We take on 4 new spas a month, one medspa per area, so every spa we work with gets results. Check if your area is still open before someone else claims it.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SCREENSHOT WALL — real proof: Cherry approvals, calendars, owner DMs */}
-      <section className="screenshot-wall" id="screenshots" data-screen-label="03 Proof">
-        <div className="container">
-          <div className="section-head">
-            <div className="label" style={{ color: 'var(--gold-400)', borderTopColor: 'var(--gold-600)' }}>Receipts, not stories</div>
-            <div>
-              <h2 style={{ color: 'var(--paper)' }}>Cherry sales. Calendars filling. <em>Real owner DMs.</em></h2>
-              <p className="lede" style={{ color: 'var(--navy-200)' }}>
-                A wall of receipts from owners running our system right now: pre-qual approvals, day-of-deposit screenshots, calendars with back-to-back pre-paid appointments, and the group chats where owners report numbers in real time.
-              </p>
+      {/* ============ FOUNDER ============ */}
+      <section id="founder">
+        <div className="wrap">
+          <div className="bfn-founder-grid">
+            <div className="bfn-founder-photo">
+              {founderImgOk ? (
+                <img loading="lazy" src="assets/founder.webp" alt="Ivan Merlo, founder of Newly Booked" onError={() => setFounderImgOk(false)} />
+              ) : (
+                <div className="bfn-founder-ph" aria-label="Ivan Merlo">IM</div>
+              )}
             </div>
-          </div>
-          <ScreenshotWall />
-          <div style={{ textAlign: 'center', marginTop: 56 }}>
-            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
-            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-200)', marginTop: 14, letterSpacing: '0.06em' }}>
-              60-second qualifier · No retainer · No 12-month lock
+            <div className="bfn-founder-copy">
+              <span className="bfn-sec-eyebrow">Our story</span>
+              <h2>Meet the founder</h2>
+              <p>Ivan built Newly Booked around one job: filling medspa calendars with pre-paid, pre-financed patients. The system behind it has generated over $8M in package sales for partner spas, with 80%+ of patients approved for financing before they ever walk in.</p>
+              <p>Every owner trains on the same closing script our top spas use, with live coaching from Ivan — and you only pay Newly Booked when patients pay you.</p>
+              <div className="sig">Ivan Merlo<span>Founder, Newly Booked</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ — the objections owners actually have, answered BEFORE the final ask.
-          Component already existed in testimonials-faq.jsx but was never mounted in v2. */}
-      <section className="section cream" id="faq" data-screen-label="04 FAQ">
-        <div className="container-narrow">
-          <div className="section-head" style={{ gridTemplateColumns: '1fr', gap: 16 }}>
-            <div className="label" style={{ paddingTop: 12 }}>What every owner asks</div>
-            <h2>What every owner asks <em>before</em> they book.</h2>
+      {/* ============ AVAILABILITY / QUIZ ============ */}
+      <section className="bfn-avail" id="availability">
+        <div className="wrap-n">
+          <span className="bfn-sec-eyebrow">Check availability</span>
+          <h2>Is your area still open?</h2>
+          <p className="bfn-sec-sub">Answer a few quick questions to see if your medspa qualifies. If your area is already claimed, you can join the waiting list.</p>
+
+          <div className="bfn-avail-card nb-quiz-host">
+            <Funnel embedded initialIdx={1} />
           </div>
-          <FAQ />
+          <div className="bfn-avail-note"><i></i>We take on 4 new spas a month — one medspa per area</div>
         </div>
       </section>
 
-      {/* BIG CTA — straight after the testimonials */}
-      <section className="final-cta" id="final-cta" data-screen-label="05 Final CTA">
-        <div className="container">
-          <div className="eyebrow light" style={{ marginBottom: 24 }}>The diagnostic</div>
-          <h2>Forty-five minutes. <em>Zero pressure.</em><br/>Real numbers.</h2>
-          <p className="lede">We open your funnel. Set rate, no-show rate, close rate, ad spend. We tell you exactly where you're leaking. One-page diagnosis, yours to keep, work with us or not.</p>
-          <ul className="final-cta-list">
-            <li><span className="ix">I.</span>Funnel teardown: set rate, deposit rate, close rate</li>
-            <li><span className="ix">II.</span>What every leak in your funnel is actually costing you</li>
-            <li><span className="ix">III.</span>A 30-day plan you can run yourself, even if we don't sign</li>
-          </ul>
-          <div className="final-cta-row">
-            <a href="#qualify" className="btn btn-gold btn-lg btn-arrow">{CTA} </a>
-            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--navy-200)', letterSpacing: '0.06em' }}>
-              No retainer pitch · No 12-month contract · Commission only
-            </span>
-          </div>
+      {/* ============ CLOSER ============ */}
+      <section className="bfn-closer">
+        <div className="wrap-n">
+          <h2>This is your defining moment.</h2>
+          <p>We add <b>$150K–$300K in new patient revenue</b> — pre-qualified, pre-financed patients booked onto your calendar — and <b>we only get paid when patients pay you</b>. Try it for 30 days, risk-free.</p>
+          <a className="bfn-cta" href="#availability">{CTA}<small>See if your area is still open</small></a>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-inner">
-            <div className="brand"><span className="dot"></span>Newly Booked</div>
-            <div>© 2026 Newly Booked · We Only Make Money When You Do</div>
-            <div style={{ display: 'flex', gap: 22 }}>
-              <a href={window.nbUrl('__NB_TERMS_URL', 'terms.html')} style={{ textDecoration: 'none' }}>Terms</a>
-              <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')} style={{ textDecoration: 'none' }}>Privacy</a>
-              <a href="#qualify" style={{ textDecoration: 'none', color: 'var(--gold-400)' }}>Qualify →</a>
-            </div>
+      {/* ============ FOOTER ============ */}
+      <footer>
+        <div className="wrap">
+          <img className="bfn-logo-foot" src="assets/nb-logo.png" alt="Newly Booked" />
+          <div className="fine">Performance-based patient acquisition — only for medspas &amp; aesthetic clinics.</div>
+          <div className="fine">© 2026 Newly Booked · We Only Make Money When You Do</div>
+          <div className="links">
+            <a href={window.nbUrl('__NB_TERMS_URL', 'terms.html')}>Terms</a>
+            <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')}>Privacy</a>
+            <a href="#availability">Qualify →</a>
           </div>
-          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: 'var(--navy-400, #6B7E9C)', textAlign: 'center', marginTop: 18, lineHeight: 1.6 }}>
+          <div className="disclaimer">
             Client results shown are real and verifiable, and they are top performers, not a promise. Your results depend on your market, capacity, pricing, and close rate.
           </div>
         </div>
       </footer>
-
-      {/* Sticky qualify CTA */}
-      <a href="#qualify" className="sticky-cta">
-        <span style={{ width: 7, height: 7, borderRadius: 999, background: 'var(--navy-900)', display: 'inline-block' }}></span>
-        See if your area is open
-        <span>→</span>
-      </a>
-    </>
+    </div>
   );
 }
 

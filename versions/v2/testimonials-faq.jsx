@@ -136,6 +136,55 @@ function VideoTestimonials() {
 
 window.VideoTestimonials = VideoTestimonials;
 
+// ---- Bluefer-style case grid (landing redesign) ----------------------------
+// Same six Wistia testimonials, rendered as bluefer.com-style result cards:
+// video (click-to-play facade) on top, result headline + name + stars below.
+// Headlines are derived from each owner's on-camera quote/stat above.
+const CASE_AMTS = {
+  f0vlaj8cng: <><b>$43K</b> in his first month</>,
+  '8t1vtmy0my': <>From $18K adspend to <b>$220K</b> in a month</>,
+  s6a0lg2l2b: <>Paid the <b>$300K</b> storefront in cash</>,
+  krkefwptbl: <>Almost <b>$300K</b> first year in business</>,
+  '4ft5xbenoa': <><b>2×</b> the business with one service</>,
+  '69l69xocrq': <><b>$30K</b> profit in the first 45 days</>,
+};
+
+function CaseCard({ t }) {
+  const [playing, setPlaying] = React.useState(false);
+  useWistiaEmbed(t.wistiaId, playing);
+  return (
+    <div className="bfn-case">
+      <button className={`bfn-yt${playing ? ' playing' : ''}`} aria-label={`Play ${t.name}'s interview`} onClick={() => setPlaying(true)}>
+        {playing ? (
+          <wistia-player media-id={t.wistiaId} aspect="1.7777777777777777" autoplay="true"></wistia-player>
+        ) : (
+          <>
+            <img loading="lazy" src={WISTIA_POSTER[t.wistiaId]} alt={`${t.name}'s success interview`} />
+            <span className="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></span>
+          </>
+        )}
+      </button>
+      <div className="bfn-case-body">
+        <div className="bfn-case-amt">{CASE_AMTS[t.wistiaId]}</div>
+        <div className="bfn-case-meta">
+          <span className="bfn-case-name">{t.name} — {t.spa}, {t.market}</span>
+          <span className="bfn-case-stars">★★★★★</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CaseGrid() {
+  return (
+    <div className="bfn-case-grid">
+      {TESTIMONIALS.map((t, i) => <CaseCard key={i} t={t} />)}
+    </div>
+  );
+}
+
+window.CaseGrid = CaseGrid;
+
 // FAQ
 const FAQS = [
   {
