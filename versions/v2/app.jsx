@@ -99,6 +99,11 @@ function App() {
       if (inGhlEmbed) {
         const nb = document.getElementById('nb-landing');
         if (nb) nb.classList.add('nb-ghl'); // arms the 100vw breakout in landing.css
+        // GHL's own stylesheet out-specifies landing.css's html/body navy —
+        // force it inline so the area below the footer reads as footer, not
+        // as a white band.
+        document.documentElement.style.setProperty('background', '#081124', 'important');
+        document.body.style.setProperty('background', '#081124', 'important');
         let el = document.getElementById('root');
         el = el && el.parentElement;
         while (el && el !== document.body && el !== document.documentElement) {
