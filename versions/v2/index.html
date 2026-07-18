@@ -10,46 +10,43 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Sora:wght@600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet" />
 
-  <!-- Open the script-CDN connection early and start the big libraries
-       downloading in parallel with the CSS/fonts (instead of waiting until the
-       parser reaches the <body> tags). Same URLs are reused by the scripts. -->
-  <link rel="preconnect" href="https://unpkg.com" crossorigin />
-  <link rel="preconnect" href="https://fast.wistia.com" />
-  <link rel="preload" href="https://unpkg.com/react@18.3.1/umd/react.production.min.js" as="script" crossorigin="anonymous" />
-  <link rel="preload" href="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" as="script" crossorigin="anonymous" />
-  <link rel="preload" href="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" as="script" crossorigin="anonymous" />
+  <!-- Paint something branded immediately: dark boot screen shown until React
+       mounts and replaces #root. Inline so it needs zero network requests. -->
+  <style>
+    html{background:#081124}
+    .nb-boot{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#081124}
+    .nb-boot-mark{font-family:system-ui,-apple-system,sans-serif;font-weight:800;font-size:15px;letter-spacing:5px;color:#fff}
+    .nb-boot-mark span{color:#3E8BFF}
+    .nb-boot-spin{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#3E8BFF;animation:nbspin .8s linear infinite}
+    @keyframes nbspin{to{transform:rotate(360deg)}}
+  </style>
 
-  <script>
-    var __v = Date.now();
-    document.write('<link rel="stylesheet" href="styles.css?v=' + __v + '">');
-    document.write('<link rel="stylesheet" href="funnel.css?v=' + __v + '">');
-    document.write('<link rel="stylesheet" href="landing.css?v=' + __v + '">');
-  </script>
+  <!-- JSX is precompiled by build.sh into app.v2.min.js — no Babel and no
+       in-browser compilation. React is self-hosted from ./vendor (same origin,
+       no third-party CDN in the critical path). ?v= is stamped by build.sh. -->
+  <link rel="preload" href="vendor/react.production.min.js" as="script" />
+  <link rel="preload" href="vendor/react-dom.production.min.js" as="script" />
+  <link rel="preload" href="app.v2.min.js?v=NBBUILD202607181512" as="script" />
+
+  <link rel="stylesheet" href="styles.css?v=NBBUILD202607181512" />
+  <link rel="stylesheet" href="funnel.css?v=NBBUILD202607181512" />
+  <link rel="stylesheet" href="landing.css?v=NBBUILD202607181512" />
 
   <script src="https://fast.wistia.com/player.js" async></script>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div class="nb-boot">
+      <div class="nb-boot-mark">NEWLY&nbsp;<span>BOOKED</span></div>
+      <div class="nb-boot-spin"></div>
+    </div>
+  </div>
 
-  <script src="cities.js"></script>
-
-  <!-- React in PRODUCTION builds (smaller + faster than the dev builds; same
-       18.3.1 API). Babel Standalone still compiles the JSX below at load. -->
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-
-  <script>
-    // Cache-bust JSX on each page load so a fresh deploy is picked up
-    // immediately instead of waiting on the GitHub Pages 10-min CDN TTL.
-    (function () {
-      var v = Date.now();
-      // logo-marquee.jsx + screenshots.jsx dropped from the load: the Bluefer
-      // landing doesn't mount them, and skipping them cuts Babel compile time.
-      ['testimonials-faq.jsx','funnel-app.jsx','app.jsx'].forEach(function (s) {
-        document.write('<script type="text/babel" src="' + s + '?v=' + v + '"><\/script>');
-      });
-    })();
-  </script>
+  <!-- defer keeps download off the critical path but preserves execution order:
+       cities → React → ReactDOM → app bundle (which mounts into #root). -->
+  <script src="cities.js?v=NBBUILD202607181512" defer></script>
+  <script src="vendor/react.production.min.js" defer></script>
+  <script src="vendor/react-dom.production.min.js" defer></script>
+  <script src="app.v2.min.js?v=NBBUILD202607181512" defer></script>
 </body>
 </html>
