@@ -125,7 +125,7 @@ html, body { background: #081124; }
 /* ---------- founder ---------- */
 #nb-landing .bfn-founder-grid{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center}
 #nb-landing .bfn-founder-photo{position:relative;padding:6px}
-#nb-landing .bfn-founder-photo img{border-radius:50%;width:100%;aspect-ratio:1/1;object-fit:cover;border:4px solid #fff;box-shadow:0 30px 70px -30px rgba(34,119,255,.5)}
+#nb-landing .bfn-founder-photo img{border-radius:50%;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:4px solid #fff;box-shadow:0 30px 70px -30px rgba(34,119,255,.5)}
 #nb-landing .bfn-founder-photo::after{content:"";position:absolute;inset:-8px;border:1.5px solid var(--brand-line);border-radius:50%;pointer-events:none}
 /* placeholder until the founder photo asset lands */
 #nb-landing .bfn-founder-ph{border-radius:50%;width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:64px;color:#fff;background:linear-gradient(135deg,#3E8BFF,var(--brand) 55%,var(--brand-deep));border:4px solid #fff;box-shadow:0 30px 70px -30px rgba(34,119,255,.5)}
