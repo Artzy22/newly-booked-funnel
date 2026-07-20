@@ -3,7 +3,7 @@
 Three self-contained HTML files in this folder, one per funnel
 step. Each one is a full page that loads the React app, CSS, fonts,
 videos, and images from the GitHub Pages CDN at
-`artzy22.github.io/newly-booked-funnel/`.
+`newly-booked.github.io/newly-booked-funnel/`.
 
 When you push a change to the GitHub repo, the GHL pages update
 automatically. You only re-paste if you change the HTML files in

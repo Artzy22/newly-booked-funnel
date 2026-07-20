@@ -4,7 +4,7 @@
    funnel wrote). A tiny shell on the GHL page loads this file, so every edit
    here goes live on push — no re-paste of the schedule page ever again. */
 (function () {
-  var BASE = 'https://artzy22.github.io/newly-booked-funnel/versions/v2/';
+  var BASE = 'https://newly-booked.github.io/newly-booked-funnel/versions/v2/';
   var v = Date.now();
 
   // --- fonts + styles ---

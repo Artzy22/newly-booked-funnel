@@ -52,10 +52,10 @@ function App() {
     if (tweaks.density === 'airy') document.body.classList.add('airy');
   }, [tweaks.density]);
 
-  // When this page is embedded in GHL, a <base href="https://artzy22.github.io/...">
+  // When this page is embedded in GHL, a <base href="https://newly-booked.github.io/...">
   // tag is set so relative asset URLs resolve to the CDN. But a side-effect is
   // that hash-only anchors like href="#qualify" also resolve against the base —
-  // so clicking a CTA bounces the user from newlybooked.com to artzy22.github.io.
+  // so clicking a CTA bounces the user from newlybooked.com to newly-booked.github.io.
   // This handler intercepts SAME-PAGE hash anchor clicks only and scrolls in
   // place. Cross-page URLs and modified clicks (cmd/ctrl/middle) fall through.
   useEffect(() => {

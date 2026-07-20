@@ -16,7 +16,7 @@ type: project
 
 ## Hosting
 - **GitHub:** https://github.com/Artzy22/newly-booked-funnel (public)
-- **GitHub Pages:** https://artzy22.github.io/newly-booked-funnel/
+- **GitHub Pages:** https://newly-booked.github.io/newly-booked-funnel/
 - **GHL production (newlybooked.com):**
   - Landing: `/landing-page-480036`
   - Schedule: `/schedule`
