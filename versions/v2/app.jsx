@@ -213,6 +213,22 @@ function App() {
   // to an initials badge until Byron drops the real photo in.
   const [founderImgOk, setFounderImgOk] = useState(true);
 
+  // Check-availability takeover (Byron, 2026-07-21): pressing a CTA no longer
+  // scrolls down to a quiz card — the form swaps in where the hero was and the
+  // page jumps to the top, so it reads as its own page (the pre-redesign
+  // behavior). The rest of the landing stays below for anyone who scrolls.
+  // The Funnel mounts hidden from page load, NOT on first open, because
+  // (a) quiz answers must survive close/reopen and (b) the exit-intent popup
+  // lives inside Funnel and has to stay armed while someone parks on the hero.
+  const [formOn, setFormOn] = useState(false);
+  const openForm = (e) => {
+    if (e) e.preventDefault();
+    setFormOn(true);
+    window.scrollTo(0, 0);
+    try { if (window.nbTrack) window.nbTrack('landing_form_opened', { version: 'v2' }); } catch (err) {}
+  };
+  const closeForm = () => { setFormOn(false); window.scrollTo(0, 0); };
+
   // Real brand mark (white N|B lockup on navy, assets/nb-logo.png). The badge
   // form pairs the square mark with the wordmark; the hero/footer forms show
   // the lockup alone with mix-blend-mode:screen so its navy square melts into
@@ -231,19 +247,24 @@ function App() {
       <div className="bfn-nav">
         <div className="bfn-nav-in">
           <Logo />
-          <a className="bfn-nav-cta" href="#availability">{CTA}</a>
+          <a className="bfn-nav-cta" href="#top" onClick={openForm}>{CTA}</a>
         </div>
       </div>
 
       {/* ============ HERO ============ */}
       <div className="bfn-hero" id="top">
-        <div className="bfn-hero-in">
+        <div className="bfn-hero-in" hidden={formOn}>
           <div className="bfn-hero-logo"><img className="bfn-logo-hero" src="assets/nb-logo.png?v=2" alt="Newly Booked" width="72" height="72" fetchpriority="high" /></div>
           <div><span className="bfn-eyebrow"><i></i>Only for medspa owners doing $50K+/month</span></div>
           <h1>Add <span className="accent">$150K–$300K</span> in new patient revenue to your medspa</h1>
           <p className="bfn-pay"><em>We only get paid when patients pay you.</em></p>
           <p className="bfn-risk">Try it for 30 days, risk-free.</p>
-          <a className="bfn-cta" href="#availability">{CTA}<small>See if your area is still open</small></a>
+          <a className="bfn-cta" href="#top" onClick={openForm}>{CTA}<small>See if your area is still open</small></a>
+        </div>
+        <div className="bfn-hero-form" hidden={!formOn}>
+          <div className="bfn-avail-card nb-quiz-host">
+            <Funnel embedded initialIdx={1} onExit={closeForm} />
+          </div>
         </div>
       </div>
 
@@ -304,16 +325,14 @@ function App() {
         </div>
       </section>
 
-      {/* ============ AVAILABILITY / QUIZ ============ */}
+      {/* ============ AVAILABILITY (CTA band — the quiz now lives in the hero
+          takeover; a second live quiz here would double it up) ============ */}
       <section className="bfn-avail" id="availability">
         <div className="wrap-n">
           <span className="bfn-sec-eyebrow">Check availability</span>
           <h2>Is your area still open?</h2>
           <p className="bfn-sec-sub">Answer a few quick questions to see if your medspa qualifies. If your area is already claimed, you can join the waiting list.</p>
-
-          <div className="bfn-avail-card nb-quiz-host">
-            <Funnel embedded initialIdx={1} />
-          </div>
+          <a className="bfn-cta" href="#top" onClick={openForm}>{CTA}<small>See if your area is still open</small></a>
           <div className="bfn-avail-note"><i></i>We take on 4 new spas a month — one medspa per area</div>
         </div>
       </section>
@@ -323,7 +342,7 @@ function App() {
         <div className="wrap-n">
           <h2>This is your defining moment.</h2>
           <p>We add <b>$150K–$300K in new patient revenue</b> — pre-qualified, pre-financed patients booked onto your calendar — and <b>we only get paid when patients pay you</b>. Try it for 30 days, risk-free.</p>
-          <a className="bfn-cta" href="#availability">{CTA}<small>See if your area is still open</small></a>
+          <a className="bfn-cta" href="#top" onClick={openForm}>{CTA}<small>See if your area is still open</small></a>
         </div>
       </section>
 
@@ -336,7 +355,7 @@ function App() {
           <div className="links">
             <a href={window.nbUrl('__NB_TERMS_URL', 'terms.html')}>Terms</a>
             <a href={window.nbUrl('__NB_PRIVACY_URL', 'privacy.html')}>Privacy</a>
-            <a href="#availability">Qualify →</a>
+            <a href="#top" onClick={openForm}>Qualify →</a>
           </div>
           <div className="disclaimer">
             Client results shown are real and verifiable, and they are top performers, not a promise. Your results depend on your market, capacity, pricing, and close rate.

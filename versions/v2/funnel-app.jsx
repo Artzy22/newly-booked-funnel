@@ -383,7 +383,7 @@ const labelFor = (stepId, value) => {
   return o ? (o.fill || o.label) : (value || '');
 };
 
-function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
+function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx, onExit } = {}) {
   const NB_SRC = inExitPopup ? 'exit_popup' : 'page';
   const [idx, setIdx] = useState(initialIdx ?? 0);
   const [answers, setAnswers] = useState(initialAnswers ?? {});
@@ -796,7 +796,14 @@ function Funnel({ embedded, inExitPopup, initialAnswers, initialIdx } = {}) {
       <div className="pf-top">
         <div className="pf-logo"><span className="pf-mark">N<i></i>B</span><span className="pf-wordmark">Newly Booked</span></div>
         {idx === minIdx && !inExitPopup && !submitting ? (
-          <div className="pf-slots"><span className="pf-pulse"></span>4 spots left this month</div>
+          onExit ? (
+            // Hosted in the hero takeover: Back at the first question leaves
+            // the form and restores the landing hero (matches the old funnel,
+            // where Back at Q1 returned to the intro screen).
+            <button className="pf-back" onClick={onExit}>← Back</button>
+          ) : (
+            <div className="pf-slots"><span className="pf-pulse"></span>4 spots left this month</div>
+          )
         ) : (
           <button className="pf-back" hidden={submitting || idx <= minIdx} onClick={goBack}>← Back</button>
         )}
